@@ -1,4 +1,4 @@
-module github.com/treporting/specs-and-deploy/tools
+module github.com/treporting/tools
 
 go 1.25
 

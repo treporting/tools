@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 )
 
 // fakeGit holds the files of the base commit in memory.
@@ -114,7 +114,7 @@ func TestAKindOnNeitherList(t *testing.T) {
 		"a.go":      "// @implements SR_01\n",
 	})
 	got := messages(unknown)
-	if len(got) != 1 || got[0] != "query.sql: its kind is set neither as code nor as no code (tools/annotation/kinds.yaml)" {
+	if len(got) != 1 || got[0] != "query.sql: its kind is set neither as code nor as no code (kinds.yaml)" {
 		t.Errorf("want query.sql reported, got %q", got)
 	}
 	if filesOf(found) != "a.go" {

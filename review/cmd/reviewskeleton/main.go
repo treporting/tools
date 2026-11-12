@@ -12,8 +12,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
-	"github.com/treporting/specs-and-deploy/tools/review/skeleton"
+	"github.com/treporting/tools/review"
+	"github.com/treporting/tools/review/skeleton"
 )
 
 // @implements SR_11@2.1.1, SR_12@1.1.1, SR_13@1.1.1, SR_14@1.1.1, SR_15@1.1.1, SR_17@2.1.1

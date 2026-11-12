@@ -13,8 +13,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
-	"github.com/treporting/specs-and-deploy/tools/uplink/check"
+	"github.com/treporting/tools/review"
+	"github.com/treporting/tools/uplink/check"
 )
 
 // @implements SR_28@1.1.1, SR_108@1.1.1
@@ -38,7 +38,7 @@ func main() {
 		fail(err)
 	}
 	findings, approved, err := check.CheckWithAbove(func(file string) ([]byte, error) {
-		return os.ReadFile(filepath.Join(*root, file))
+		return os.ReadFile(filepath.Join(*root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	}, index, above)
 	if err != nil {
 		fail(err)

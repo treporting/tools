@@ -20,7 +20,7 @@ var licenceFiles = []string{"LICENSE", "LICENSE.md", "LICENSE.txt", "LICENCE", "
 // LicenceIn reads the licence file in dir.
 func LicenceIn(dir string) string {
 	for _, name := range licenceFiles {
-		if data, err := os.ReadFile(filepath.Join(dir, name)); err == nil {
+		if data, err := os.ReadFile(filepath.Join(dir, name)); err == nil { // #nosec G304 -- the path comes from the user of the tool, not from outside
 			return string(data)
 		}
 	}
@@ -202,7 +202,7 @@ func ApkPackages(installed []byte) []Package {
 }
 
 func run(dir, name string, args ...string) (string, error) {
-	cmd := exec.Command(name, args...)
+	cmd := exec.Command(name, args...) // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	cmd.Dir = dir
 	out, err := cmd.Output()
 	if err != nil {

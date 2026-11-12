@@ -14,7 +14,7 @@ import (
 // @verifies SR_50@1.1.1
 func TestCommandNamesWhatFailsAndExitsWithOne(t *testing.T) {
 	bin := filepath.Join(t.TempDir(), "licencecheck")
-	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/licencecheck").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/licencecheck").CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		t.Fatalf("go build: %v\n%s", err, out)
 	}
 	repo := t.TempDir()
@@ -29,7 +29,7 @@ func TestCommandNamesWhatFailsAndExitsWithOne(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	out, err := exec.Command(bin, "-root", repo).CombinedOutput()
+	out, err := exec.Command(bin, "-root", repo).CombinedOutput() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if exit, ok := err.(*exec.ExitError); !ok || exit.ExitCode() != 1 {
 		t.Fatalf("exit: %v\n%s", err, out)
 	}

@@ -65,7 +65,7 @@ func TestHashIsThatOfGitHashObject(t *testing.T) {
 	if err := os.WriteFile(file, content, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	out, err := exec.Command("git", "hash-object", file).Output()
+	out, err := exec.Command("git", "hash-object", file).Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if err != nil {
 		t.Skip("git not there:", err)
 	}

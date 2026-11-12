@@ -26,8 +26,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/treporting/specs-and-deploy/tools/sbom/create"
-	"github.com/treporting/specs-and-deploy/tools/testreport/write"
+	"github.com/treporting/tools/sbom/create"
+	"github.com/treporting/tools/testreport/write"
 )
 
 // list collects a flag that may be given more than once.
@@ -74,7 +74,7 @@ func main() {
 		fail(fmt.Errorf("give each -junit with its -made-by"))
 	}
 
-	testcases, err := os.ReadFile(filepath.Join(*root, *dir, "testcases", file+".yaml"))
+	testcases, err := os.ReadFile(filepath.Join(*root, *dir, "testcases", file+".yaml")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil && !os.IsNotExist(err) {
 		fail(err)
 	}
@@ -86,7 +86,7 @@ func main() {
 	var results []write.Result
 	var originals []create.Original
 	for i, j := range junits {
-		data, err := os.ReadFile(j)
+		data, err := os.ReadFile(j) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
 			fail(err)
 		}
@@ -108,7 +108,7 @@ func main() {
 	name := filepath.ToSlash(filepath.Join(*dir, "testreports", file+".md"))
 	path := filepath.Join(*root, name)
 	documentsPath := filepath.Join(*root, "documents.yaml")
-	documents, err := os.ReadFile(documentsPath)
+	documents, err := os.ReadFile(documentsPath) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		fail(err)
 	}
@@ -122,7 +122,7 @@ func main() {
 	if *store {
 		originals = storeJUnits(*root, filepath.Dir(name), name, *level, *label, head, now, originals)
 	}
-	old, _ := os.ReadFile(path) // a test report that is not there has no rows to keep
+	old, _ := os.ReadFile(path) // #nosec G304 -- the path comes from the user of the tool, not from outside; a test report that is not there has no rows to keep
 	history := append(write.History(old), write.Row(next, date, *label, *ticket, "testreport "+version()))
 
 	md := []byte(write.Markdown(write.Report{
@@ -146,7 +146,7 @@ func main() {
 	if err := os.WriteFile(path, md, 0o600); err != nil {
 		fail(err)
 	}
-	if err := os.WriteFile(documentsPath, create.EntryOf(documents, name, next, create.Hash(md)), 0o600); err != nil {
+	if err := os.WriteFile(documentsPath, create.EntryOf(documents, name, next, create.Hash(md)), 0o600); err != nil { // #nosec G703 -- the path comes from the user of the tool, not from outside
 		fail(err)
 	}
 	fmt.Printf("%s written: %d test cases, %d test procedures, %d results, version %s\n", path, len(cases), len(procedures), len(results), next)
@@ -219,7 +219,7 @@ func runner() string {
 	return "local"
 }
 
-// version answers the version of this tool: the commit of specs-and-deploy it was built from, as Go
+// version answers the version of this tool: the commit of tools it was built from, as Go
 // records it in the build, with -dirty where the working tree had changes; (devel) where Go recorded
 // none, as with go run.
 func version() string {

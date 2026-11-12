@@ -37,7 +37,7 @@ var notOurs = []string{".github/"}
 //
 // @implements SR_18@1.1.1
 func Files(root string) ([]string, error) {
-	out, err := exec.Command("git", "-C", root, "ls-files", "--", "*.yaml", "*.yml").Output()
+	out, err := exec.Command("git", "-C", root, "ls-files", "--", "*.yaml", "*.yml").Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if err != nil {
 		return nil, fmt.Errorf("git ls-files: %w", err)
 	}
@@ -73,7 +73,7 @@ func CheckWithAbove(root, above string, files []string) ([]Finding, error) {
 	var findings []Finding
 	for _, file := range files {
 
-		data, err := os.ReadFile(filepath.Join(root, file))
+		data, err := os.ReadFile(filepath.Join(root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
 			return nil, err
 		}
@@ -135,7 +135,7 @@ func compile(root, name string) (*jsonschema.Schema, error) {
 	if err != nil {
 		return nil, err
 	}
-	f, err := os.Open(path)
+	f, err := os.Open(path) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		return nil, err
 	}

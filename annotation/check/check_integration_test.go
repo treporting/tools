@@ -7,12 +7,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 )
 
 func gitIn(t *testing.T, dir string, args ...string) string {
 	t.Helper()
-	out, err := exec.Command("git", append([]string{"-C", dir}, args...)...).CombinedOutput()
+	out, err := exec.Command("git", append([]string{"-C", dir}, args...)...).CombinedOutput() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if err != nil {
 		t.Fatalf("git %v: %v\n%s", args, err, out)
 	}

@@ -66,7 +66,7 @@ func IndexAt(root string) (*Index, error) {
 		return nil, err
 	}
 	return NewIndex(func(file string) ([]byte, error) {
-		return os.ReadFile(filepath.Join(root, file))
+		return os.ReadFile(filepath.Join(root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	}, strings.Fields(out)), nil
 }
 
@@ -84,7 +84,7 @@ func RepoAt(root string) (*Repo, error) {
 		return nil, err
 	}
 	return &Repo{func(file string) ([]byte, error) {
-		return os.ReadFile(filepath.Join(root, file))
+		return os.ReadFile(filepath.Join(root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	}, index}, nil
 }
 

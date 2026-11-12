@@ -19,7 +19,7 @@ func TestTheFilesOfAHistoryOfGit(t *testing.T) {
 		"loose.yaml":                  "level: r1\n",
 	})
 	for _, args := range [][]string{{"init", "-q"}, {"add", "ours.yaml", ".github", "schemas"}} {
-		if out, err := exec.Command("git", append([]string{"-C", dir}, args...)...).CombinedOutput(); err != nil {
+		if out, err := exec.Command("git", append([]string{"-C", dir}, args...)...).CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 			t.Fatalf("git %v: %v\n%s", args, err, out)
 		}
 	}

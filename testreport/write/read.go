@@ -12,7 +12,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/treporting/specs-and-deploy/tools/annotation/check"
+	"github.com/treporting/tools/annotation/check"
 )
 
 // Files names the file of the test cases and of the test report of each test level, without .yaml
@@ -164,7 +164,7 @@ func ReadProcedures(root string, files []string, module, modRoot string) ([]Proc
 		if len(byFile[file]) == 0 {
 			continue
 		}
-		data, err := os.ReadFile(filepath.Join(root, file))
+		data, err := os.ReadFile(filepath.Join(root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
 			return nil, err
 		}

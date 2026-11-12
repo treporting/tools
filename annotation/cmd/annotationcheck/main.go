@@ -1,7 +1,10 @@
 // Command annotationcheck checks that every id named in @implements, @verifies or @refines is
 // approved in the base commit of the pull request (TOOL_06), and names its version (TOOL_20).
 //
-//	annotationcheck [-root dir] [-base rev]
+//	annotationcheck [-root dir] [-base rev] [-kinds file]
+//
+// -kinds is the list of the kinds of files of the repo; annotation/kinds.yaml below the root where
+// it is not given.
 //
 // Without -base, the base commit is where HEAD branched from main. It prints every id that is
 // missing or not approved there, or names no version, and exits with 1 where there is one.
@@ -15,8 +18,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/treporting/specs-and-deploy/tools/annotation/check"
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/annotation/check"
+	"github.com/treporting/tools/review"
 )
 
 // @implements SR_24@3.1.1, SR_25@2.2.1, SR_27@1.1.1, SR_30@2.2.1, SR_35@1.1.1
@@ -24,21 +27,25 @@ func main() {
 
 	root := flag.String("root", ".", "the root of the repo")
 	base := flag.String("base", "", "the base commit of the pull request; where HEAD branched from main, if empty")
+	kindsFile := flag.String("kinds", "", "the kinds of files of the repo; annotation/kinds.yaml below the root, if empty")
 	flag.Parse()
+	if *kindsFile == "" {
+		*kindsFile = filepath.Join(*root, "annotation", "kinds.yaml")
+	}
 
 	if *base == "" {
-		out, err := exec.Command("git", "-C", *root, "merge-base", "HEAD", "main").Output()
+		out, err := exec.Command("git", "-C", *root, "merge-base", "HEAD", "main").Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		if err != nil {
 			fail(fmt.Errorf("git merge-base HEAD main: %w", err))
 		}
 		*base = strings.TrimSpace(string(out))
 	}
 
-	out, err := exec.Command("git", "-C", *root, "ls-files").Output()
+	out, err := exec.Command("git", "-C", *root, "ls-files").Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if err != nil {
 		fail(err)
 	}
-	kinds, err := check.ReadKinds(filepath.Join(*root, "tools", "annotation", "kinds.yaml"))
+	kinds, err := check.ReadKinds(*kindsFile)
 	if err != nil {
 		fail(err)
 	}

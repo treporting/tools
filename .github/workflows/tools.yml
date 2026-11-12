@@ -1,0 +1,101 @@
+# The checks of this repo on every pull request, made with its own tools against specs-and-deploy
+# as the repo above: its schemas, its rules and its tool requirements (specs-and-deploy#637).
+# approvalcheck follows once it reads the schemas of the repo above (specs-and-deploy#639).
+name: tools
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+#	a new push to the branch of a pull request cancels the run it replaces
+concurrency:
+  group: tools-${{ github.head_ref }}
+  cancel-in-progress: true
+
+#	the revision of specs-and-deploy the checks read as the repo above; raised by a pull request
+env:
+  ABOVE_REF: 1a7f566806f21c37719ef6522ad83f1733f1d634
+
+jobs:
+  reviewcheck:
+    runs-on: ubuntu-latest
+    steps:
+      #	the whole history: a review names the revisions it reviewed
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: reviewcheck
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: go run ./review/cmd/reviewcheck -root . -base "$BASE"
+  schemacheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: treporting/specs-and-deploy
+          ref: ${{ env.ABOVE_REF }}
+          path: .above
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: schemacheck
+        run: go run ./schema/cmd/schemacheck -root . -above .above
+  annotationcheck:
+    runs-on: ubuntu-latest
+    steps:
+      #	the whole history: the requirements are read as they stand in the base commit
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: annotationcheck
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: go run ./annotation/cmd/annotationcheck -root . -base "$BASE"
+  uplinkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: treporting/specs-and-deploy
+          ref: ${{ env.ABOVE_REF }}
+          path: .above
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: uplinkcheck
+        run: go run ./uplink/cmd/uplinkcheck -root . -above .above
+  #	reports and does not fail: a suspect link blocks the baseline, not the pull request (PROC_20)
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: treporting/specs-and-deploy
+          ref: ${{ env.ABOVE_REF }}
+          path: .above
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: linkcheck
+        run: go run ./link/cmd/linkcheck -root . -above .above
+  #	the build steps of every repo, from specs-and-deploy
+  build:
+    uses: treporting/specs-and-deploy/.github/workflows/build.yml@main

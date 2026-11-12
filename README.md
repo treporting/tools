@@ -1,23 +1,24 @@
 # tools
 
 The tools of our work: what checks and supports the requirements, reviews and documents of
-treporting. Tools are code (see [devops.md](../devops.md)): every tool realizes an approved tool
-requirement of [tool-requirements.yaml](../requirements/tool-requirements.yaml). It is written for
+treporting. Tools are code (see [devops.md](https://github.com/treporting/specs-and-deploy/blob/main/devops.md)): every tool realizes an approved tool
+requirement of [tool-requirements.yaml](https://github.com/treporting/specs-and-deploy/blob/main/requirements/tool-requirements.yaml). It is written for
 whoever builds, runs or reviews the tools.
 
 ## Where the tools live
 
-**Decision**: in `tools/` of this repo, specs-and-deploy.
+**Decision**: in a repo of its own, tools, below specs-and-deploy, whose rules, schemas and tool
+requirements it follows (specs-and-deploy#637). The tools are checked against the repo above:
+`-above` names its root, and a schema or an uplink this repo does not hold is found there.
 
-**Why**: the tools check above all the files of this repo - requirements, reviews, schemas - so what
-is checked and what checks lie together. The repo is meant for more than documents already: the
-containers and the system tests come here as well. The checks of the code repos run as a reusable
-workflow in `treporting/.github`, which takes the tool from here (see Open).
+**Why**: one repo held the product and our process with its tools. A level selects the criteria of
+its review, and the tool requirements on r2 would have met the criteria of the system requirements
+of the product. Each repo now has its own levels, criteria and reviews.
 
 **Rejected**:
 
-- a repo of its own - a clean cut, but the CI of every repo would first have to fetch the tool, and
-  it is one repo more
+- `tools/` of specs-and-deploy, as until 2026-11-12 - what is checked and what checks lay
+  together, but the tools shared the levels and the criteria of the product
 - reporter-annotations - it is meant as a tool beside the product, but a check of reviews has
   nothing to do with annotations
 
@@ -109,10 +110,10 @@ author.
 
 ## The component review
 
-**Decision**: everything of the component `review` lies below `tools/review`:
+**Decision**: everything of the component `review` lies below `review/`:
 
 ```
-tools/review/                the component: what its tools share - git, and finding an id in its file
+review/                      the component: what its tools share - git, and finding an id in its file
   check/                     the module review/check: reviewcheck
   skeleton/                  the module review/skeleton: reviewskeleton
   approval/                  the module review/approval: approvalcheck
@@ -127,7 +128,7 @@ program by the last part of its path. An SR names the component, `review`; the m
 
 **Rejected**:
 
-- the commands in `tools/cmd` and the packages beside them - the component would be spread over
+- the commands in `cmd/` and the packages beside them - the component would be spread over
   the tree
 - a folder `lib/` - in Go every package without `main` is a library already
 - commands named `check` and `skeleton` - too general a name for a program
@@ -162,8 +163,8 @@ reports the findings of a result by criterion, in the order of its criteria file
 
 ```bash
 cd tools
-go run ./review/cmd/reviewcheck -root ..        # every result in reviews/results/
-go run ./review/cmd/reviewcheck -root .. -base origin/main   # those changed against main
+go run ./review/cmd/reviewcheck -root ../specs-and-deploy        # every result in reviews/results/
+go run ./review/cmd/reviewcheck -root ../specs-and-deploy -base origin/main   # those changed against main
 go test ./...                            # MT
 go test -tags integration ./...          # SwIT, on a history of git made in the test
 ```
@@ -182,8 +183,8 @@ not found, or where the targets belong to more than one level.
 
 ```bash
 cd tools
-go run ./review/cmd/reviewskeleton -root .. -reviewer "Mathias Fischer" -scope harness harness.md
-go run ./review/cmd/reviewskeleton -root .. -reviewer "Mathias Fischer" -scope sr-11-15 SR_11 SR_12 SR_13
+go run ./review/cmd/reviewskeleton -root ../specs-and-deploy -reviewer "Mathias Fischer" -scope harness harness.md
+go run ./review/cmd/reviewskeleton -root ../specs-and-deploy -reviewer "Mathias Fischer" -scope sr-11-15 SR_11 SR_12 SR_13
 ```
 
 In its head the skeleton names its schema, the type `review` and the level of its criteria file
@@ -210,8 +211,8 @@ the schema of its file, `attributes_for_version_x`; of a document it is the hash
 
 ```bash
 cd tools
-go run ./review/cmd/approvalcheck -root ..              # every approved object
-go run ./review/cmd/approvalcheck -root .. -base main   # the objects in the files changed against main
+go run ./review/cmd/approvalcheck -root ../specs-and-deploy              # every approved object
+go run ./review/cmd/approvalcheck -root ../specs-and-deploy -base main   # the objects in the files changed against main
 ```
 
 With `-base`, it checks the objects in the files changed against that commit - a requirement in its
@@ -229,7 +230,7 @@ and reports each place where one does not match, with the file and the path with
 
 ```bash
 cd tools
-go run ./schema/cmd/schemacheck -root ..
+go run ./schema/cmd/schemacheck -root ../specs-and-deploy
 ```
 
 With `-above`, the root of the repo above, a schema this repo does not hold is taken from there
@@ -250,7 +251,7 @@ pass. The CI runs it on every pull request (SR_23), with the token of the workfl
 
 ```bash
 cd tools
-GITHUB_TOKEN=$(gh auth token) go run ./ruleset/cmd/rulesetcheck -root ..
+GITHUB_TOKEN=$(gh auth token) go run ./ruleset/cmd/rulesetcheck -root ../specs-and-deploy
 ```
 
 The code is the component `ruleset`: the package `ruleset/check` and the command
@@ -271,7 +272,7 @@ neither list is a finding (SR_27), until its kind is set; a YAML that names a sc
 is not read. In a file it reads, an annotation stands first in a line of comment: after spaces, a
 comment mark of one to three signs other than a quote, then `@implements` or `@verifies` - in every
 language, with no list of languages. Why both lists: formats.md, "Where an annotation is read".
-`@refines` it reads in the `$comment` of each schema in [schemas/](../schemas/) (SR_35).
+`@refines` it reads in the `$comment` of each schema in [schemas/](https://github.com/treporting/specs-and-deploy/tree/main/schemas) (SR_35).
 
 **Decision**: a line of comment is told by its start alone, with no knowledge of the strings of a
 language. Its known limit: a line of a string over lines - a raw string of Go, a template of
@@ -295,8 +296,8 @@ The CI runs it on every pull request with the base commit GitHub gives (SR_26, S
 
 ```bash
 cd tools
-go run ./annotation/cmd/annotationcheck -root ..                 # base: where HEAD branched from main
-go run ./annotation/cmd/annotationcheck -root .. -base <commit>
+go run ./annotation/cmd/annotationcheck -root ../specs-and-deploy                 # base: where HEAD branched from main
+go run ./annotation/cmd/annotationcheck -root ../specs-and-deploy -base <commit>
 ```
 
 The code is the component `annotation`: the package `annotation/check` and the command
@@ -318,7 +319,7 @@ The CI runs it on every pull request (SR_29).
 
 ```bash
 cd tools
-go run ./uplink/cmd/uplinkcheck -root ..
+go run ./uplink/cmd/uplinkcheck -root ../specs-and-deploy
 ```
 
 With `-above`, the root of the repo above, an uplink no file of this repo holds is looked up there,
@@ -348,7 +349,7 @@ required check: a suspect link blocks the baseline, not the pull request (PROC_2
 
 ```bash
 cd tools
-go run ./link/cmd/linkcheck -root ..
+go run ./link/cmd/linkcheck -root ../specs-and-deploy
 ```
 
 With `-above`, the root of the repo above, an entry or an id whose object this repo does not hold
@@ -382,7 +383,7 @@ Original data names the files `sbom.md` is written from (SR_101). With `-store` 
 ```bash
 cd tools
 go build -o sbom ./sbom/cmd/sbom
-./sbom -root ../../storages -label 1.2.0 -ticket 343 -image storages:1.2.0
+./sbom -root ../specs-and-deploy/../storages -label 1.2.0 -ticket 343 -image storages:1.2.0
 ```
 
 With `-check` it writes nothing (TOOL_28, SR_66). It compares the packages delivered with the table
@@ -427,7 +428,7 @@ Dockerfile only what it asks for.
 
 **Rejected**: unpacking the layers of `docker save` - the same content, with much more code.
 
-**Decision**: the tool is the version of the commit of specs-and-deploy it was built from, as Go
+**Decision**: the tool is the version of the commit of tools it was built from, as Go
 records it in the build, with `-dirty` where the working tree had changes. A run with `go run`
 records none and shows `(devel)`, so a release builds the tool first.
 
@@ -445,7 +446,7 @@ that fails with its PURL and its licence, and exits with 1 where one fails.
 ```bash
 cd tools
 go build -o licencecheck ./licence/cmd/licencecheck
-./licencecheck -root ../../storages
+./licencecheck -root ../specs-and-deploy/../storages
 ```
 
 An entry of `licences_assessed.yaml`:
@@ -616,11 +617,11 @@ hash of the script: Chrome refuses a script that differs, and the run fails.
 
 The workflow `.github/workflows/pdf.yml` runs it, started by hand: Actions, pdf, Run workflow, with
 the commit or tag. The ZIP is an artifact of the run, to download from there; GitHub keeps it 90
-days, and the ZIP of a tag can be made again. By hand, from `tools/`, with Google Chrome or Chromium
+days, and the ZIP of a tag can be made again. By hand, from the checkout of tools, with Google Chrome or Chromium
 installed:
 
 ```bash
-go run ./pdf/cmd/pdf -root .. -ref T044 -out ..
+go run ./pdf/cmd/pdf -root ../specs-and-deploy -ref T044 -out ..
 ```
 
 ## testreport
@@ -636,7 +637,7 @@ cd tools
 go install gotest.tools/gotestsum@v1.12.3
 gotestsum --junitfile junit-go.xml -- -tags integration ./...
 go build -o testreport ./testreport/cmd/testreport
-./testreport -root .. -dir tools -level r5tc -junit junit-go.xml \
+./testreport -root . -dir . -level r5tc -junit junit-go.xml \
   -made-by "gotestsum --junitfile junit-go.xml -- -tags integration ./..." -runtime "Go $(go env GOVERSION)"
 ```
 
@@ -696,3 +697,4 @@ its own root, and by the names of its describe blocks before its own.
 | 33.1.1 | 2026-11-05 | reviewcheck: -base | #497 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 34.1.1 | 2026-11-05 | testreport: -store | #492 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 35.1.1 | 2026-11-12 | schemacheck, uplinkcheck, linkcheck: -above | #638 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 36.1.1 | 2026-11-12 | Where the tools live: a repo of its own; links and paths from this repo; the numbers of the tickets above name those of specs-and-deploy | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

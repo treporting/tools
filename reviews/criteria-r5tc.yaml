@@ -1,0 +1,38 @@
+# Review criteria of the test cases of the software requirements (r5), for the subsystem test (SwVal).
+# A test case is approved only when it passed every criterion (PROC_13). See reviews/README.md.
+schema: schemas/review-criteria.schema.json
+type: criteria
+level: r5tc
+criteria:
+- object_key: RC_01
+  source: treporting - formats.md, section Test cases
+  object_text: single - it states one case
+  question: Does it state exactly one case?
+- object_key: RC_02
+  source: treporting
+  object_text: decidable - it states what is given and what is expected, so that a run decides passed
+    or failed
+  question: Does it state what is given and what is expected, so that a run decides passed or failed?
+- object_key: RC_03
+  source: REG_ISO29119-4_01, REG_ISO29119-4_02, REG_ISO29119-4_03 - the test design techniques
+  object_text: derived - its design_technique is one of the techniques of REG_ISO29119-4_01 to _03,
+    and the case was derived by it
+  question: Is its design_technique one of the techniques of REG_ISO29119-4_01 to _03, and was the case derived by it?
+- object_key: RC_04
+  source: treporting
+  object_text: targeted - its target_ids name requirements whose verification method holds test, at
+    their current version
+  question: Do its target_ids name requirements whose verification method holds test, at their current version?
+- object_key: RC_05
+  source: treporting - traceability.md, section Tests
+  object_text: relevant - it fails where its requirement is not met
+  question: Does it fail where its requirement is not met?
+- object_key: RC_06
+  source: treporting
+  object_text: covering - the test cases of a requirement together cover it by their technique; where
+    the requirement asks to report something, a case where it is reported and one where it is not
+  question: Do the test cases of the requirement together cover it by their technique?
+- object_key: RC_07
+  source: treporting - PROC_01
+  object_text: English - it is written in English only
+  question: Is it written in English only?

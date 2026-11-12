@@ -1,0 +1,55 @@
+# Review criteria of the software requirements (r5), after ISO/IEC/IEEE 29148.
+# A software requirement is approved only when it passed every criterion (PROC_13). See reviews/README.md.
+schema: schemas/review-criteria.schema.json
+type: criteria
+level: r5
+criteria:
+- object_key: RC_01
+  source: REG_ISO29148_01 - necessary
+  object_text: necessary - it is needed to meet its uplinks
+  question: Is it needed to meet its uplinks?
+- object_key: RC_02
+  source: REG_ISO29148_01 - appropriate; one behaviour at the interface is the rule of r5 of treporting
+  object_text: appropriate - it states one behaviour of its subsystem or tool at its interface, and names
+    no route, no view and no design inside
+  question: Does it state one behaviour at the interface, naming no route, view or design inside?
+- object_key: RC_03
+  source: REG_ISO29148_01 - unambiguous
+  object_text: unambiguous - it can be read one way only
+  question: Can it be read one way only?
+- object_key: RC_04
+  source: REG_ISO29148_01 - singular
+  object_text: singular - it is one behaviour, not several
+  question: Is it one behaviour, not several?
+- object_key: RC_05
+  source: REG_ISO29148_01 - complete
+  object_text: complete - it can be understood without further explanation
+  question: Can it be understood as it stands?
+- object_key: RC_06
+  source: REG_ISO29148_02 - consistent, a characteristic of the set of requirements
+  object_text: consistent - it contradicts no other requirement
+  question: Does it contradict no other requirement?
+- object_key: RC_07
+  source: REG_ISO29148_01 - verifiable
+  object_text: verifiable - a test on the levels of the software can show that it is met, or a
+    demonstration where that is its method
+  question: Can a unit, integration or subsystem test show that it is met - or, where its method is
+    demonstration, a demonstration?
+- object_key: RC_08
+  source: REG_ISO29148_01 - feasible
+  object_text: feasible - it can be met with a reasonable effort
+  question: Can it be met with a reasonable effort?
+- object_key: RC_09
+  source: REG_ISO29148_01 - correct
+  object_text: correct - it states rightly what its uplinks ask for
+  question: Does it state rightly what its uplinks ask for?
+- object_key: RC_10
+  source: treporting - traceable and allocated; REG_ISO29148_03 - rationale
+  object_text: traceable - every uplink exists, and a system requirement it names is allocated to its
+    subsystem (r4); where it names none, it gives its rationale
+  question: Does every uplink exist and, where it is a system requirement, is it allocated to this subsystem - or is there a rationale?
+- object_key: RC_11
+  source: REG_ISO29148_01 - conforming; what to conform to is set by treporting, formats.md
+  object_text: conforming - it follows formats.md - id, component, status and verification method need to
+    be present
+  question: Does it follow formats.md?

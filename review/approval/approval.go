@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 	"gopkg.in/yaml.v3"
 )
 
@@ -61,7 +61,7 @@ type object struct {
 // @implements SR_75@1.1.1, SR_76@1.1.1, SR_77@1.1.1, SR_78@1.1.1, SR_79@2.1.2, SR_80@2.1.3, SR_85@1.1.1
 func Check(root, base string, git Git, index *review.Index) ([]Finding, error) {
 
-	read := func(file string) ([]byte, error) { return os.ReadFile(filepath.Join(root, file)) }
+	read := func(file string) ([]byte, error) { return os.ReadFile(filepath.Join(root, file)) } // #nosec G304 -- the path comes from the user of the tool, not from outside
 
 	requirements, err := approvedRequirements(read, index.Files())
 	if err != nil {
@@ -191,7 +191,7 @@ func lastReviews(root string) (map[string]*result, error) {
 	}
 	last := map[string]*result{}
 	for _, f := range files {
-		data, err := os.ReadFile(f)
+		data, err := os.ReadFile(f) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
 			return nil, err
 		}

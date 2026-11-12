@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
-	"github.com/treporting/specs-and-deploy/tools/review/approval"
+	"github.com/treporting/tools/review"
+	"github.com/treporting/tools/review/approval"
 )
 
 // @implements SR_80@2.1.3

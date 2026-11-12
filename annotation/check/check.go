@@ -11,7 +11,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 	"gopkg.in/yaml.v3"
 )
 
@@ -56,7 +56,7 @@ type Kinds struct {
 // ReadKinds reads the two lists from the file path.
 func ReadKinds(path string) (Kinds, error) {
 	var k Kinds
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(path) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		return k, err
 	}
@@ -112,10 +112,10 @@ func Find(root string, files []string, kinds Kinds) ([]Annotation, []Finding, er
 		case "no code":
 			continue
 		case "unknown":
-			unknown = append(unknown, Finding{Annotation{File: file}, "", "its kind is set neither as code nor as no code (tools/annotation/kinds.yaml)"})
+			unknown = append(unknown, Finding{Annotation{File: file}, "", "its kind is set neither as code nor as no code (kinds.yaml)"})
 			continue
 		}
-		data, err := os.ReadFile(filepath.Join(root, file))
+		data, err := os.ReadFile(filepath.Join(root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
 			return nil, nil, err
 		}
@@ -142,7 +142,7 @@ func Refines(root string, files []string) ([]Annotation, error) {
 		if filepath.Dir(file) != "schemas" || filepath.Ext(file) != ".json" {
 			continue
 		}
-		data, err := os.ReadFile(filepath.Join(root, file))
+		data, err := os.ReadFile(filepath.Join(root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
 			return nil, err
 		}

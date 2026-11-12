@@ -1,9 +1,11 @@
 // Command linkcheck makes the link check (TOOL_16): it compares the version each link, entry of
 // the allocation or of controls, and annotation names with the version its object has.
 //
-//	linkcheck [-root dir] [-above dir]
+//	linkcheck [-root dir] [-above dir] [-kinds file]
 //
 // -above is the root of the repo above, where an object that this repo does not hold is looked up.
+// -kinds is the list of the kinds of files of the repo; annotation/kinds.yaml below the root where it
+// is not given.
 // It reads the files as they stand in the working tree. It prints every one whose object has
 // another x than it names, and exits with 0 all the same: it reports, and a suspect link blocks
 // the baseline, not the pull request (PROC_20). It exits with 2 where it cannot read the repo.
@@ -17,9 +19,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	annotation "github.com/treporting/specs-and-deploy/tools/annotation/check"
-	"github.com/treporting/specs-and-deploy/tools/link/check"
-	"github.com/treporting/specs-and-deploy/tools/review"
+	annotation "github.com/treporting/tools/annotation/check"
+	"github.com/treporting/tools/link/check"
+	"github.com/treporting/tools/review"
 )
 
 // @implements SR_32@1.1.1, SR_33@2.1.1, SR_109@1.1.1
@@ -27,7 +29,11 @@ func main() {
 
 	root := flag.String("root", ".", "the root of the repo")
 	aboveRoot := flag.String("above", "", "the root of the repo above, empty for none")
+	kindsFile := flag.String("kinds", "", "the kinds of files of the repo; annotation/kinds.yaml below the root, if empty")
 	flag.Parse()
+	if *kindsFile == "" {
+		*kindsFile = filepath.Join(*root, "annotation", "kinds.yaml")
+	}
 
 	var above *review.Repo
 	if *aboveRoot != "" {
@@ -39,7 +45,7 @@ func main() {
 	}
 
 	read := func(file string) ([]byte, error) {
-		return os.ReadFile(filepath.Join(*root, file))
+		return os.ReadFile(filepath.Join(*root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	}
 	index, err := review.IndexAt(*root)
 	if err != nil {
@@ -50,11 +56,11 @@ func main() {
 		fail(err)
 	}
 
-	out, err := exec.Command("git", "-C", *root, "ls-files").Output()
+	out, err := exec.Command("git", "-C", *root, "ls-files").Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if err != nil {
 		fail(err)
 	}
-	kinds, err := annotation.ReadKinds(filepath.Join(*root, "tools", "annotation", "kinds.yaml"))
+	kinds, err := annotation.ReadKinds(*kindsFile)
 	if err != nil {
 		fail(err)
 	}

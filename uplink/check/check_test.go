@@ -6,7 +6,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 )
 
 // files holds the files of requirements in memory.

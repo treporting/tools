@@ -1,0 +1,63 @@
+# Review criteria of the documents, after ISO/IEC/IEEE 15289. A document is approved only when it
+# passed every criterion (PROC_13). See reviews/README.md.
+schema: schemas/review-criteria.schema.json
+type: criteria
+level: document
+criteria:
+- object_key: RC_01
+  source: REG_ISO15288_02 - identified; that git gives the date and a documents section the status is
+    the reading of treporting
+  object_text: identified - its date of issue is the date of the commit of its revision, and its status
+    stands in a documents section
+  question: Does a documents section hold its status, and does git give the date of its revision?
+- object_key: RC_02
+  source: treporting
+  object_text: scoped - it states at its beginning what it covers and what it is for
+  question: Does it state at its beginning what it covers and what it is for?
+- object_key: RC_03
+  source: treporting
+  object_text: issued - its issuing organization is the org treporting, which holds its repo
+  question: Is it in a repo of the org treporting?
+- object_key: RC_04
+  source: REG_ISO15289_03 - the generic content of a record
+  object_text: recorded - where it is a record, it carries the date of record, the date recorded and
+    its status
+  question: Where it is a record, does it carry the date of record, the date recorded and its status?
+- object_key: RC_05
+  source: treporting
+  object_text: addressed - it names its audience, where that is not plain from its place
+  question: Is it plain for whom it is written?
+- object_key: RC_06
+  source: treporting
+  object_text: referenced - every reference in it exists and points to what it names
+  question: Does every reference exist and point to what it names?
+- object_key: RC_07
+  source: treporting
+  object_text: termed - it uses the terms as definitions.md defines them
+  question: Does it use the terms as definitions.md defines them?
+- object_key: RC_08
+  source: REG_ISO29148_02 - consistent, a characteristic of a set of requirements, read for
+    the documents
+  object_text: consistent - it contradicts no other document and no requirement
+  question: Does it contradict no other document and no requirement?
+- object_key: RC_09
+  source: treporting - PROC_01
+  object_text: English - it is written in English only
+  question: Is it written in English only?
+- object_key: RC_10
+  source: treporting - PROC_11
+  object_text: free of tickets - it names no ticket, except in its change history; what is open, it
+    states as open
+  question: Does it name no ticket, except in its change history, and state as open what is open?
+- object_key: RC_11
+  source: treporting - PROC_18
+  object_text: decided - every decision in it gives its reason and the alternatives rejected
+  question: Does every decision give its reason and the alternatives rejected?
+- object_key: RC_12
+  source: treporting
+  object_text: readable - its sentences are short, one statement each
+  question: Are its sentences short, one statement each?
+- object_key: RC_13
+  source: treporting - after REG_ISO29148_01, complete, read for the documents
+  object_text: complete - it says all that its scope asks for
+  question: Does it say all that its scope asks for?

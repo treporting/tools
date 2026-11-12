@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/treporting/specs-and-deploy/tools/sbom/create"
+	"github.com/treporting/tools/sbom/create"
 )
 
 const goJUnit = `<?xml version="1.0" encoding="UTF-8"?>

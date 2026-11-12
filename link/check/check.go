@@ -9,8 +9,8 @@ import (
 	"regexp"
 	"strings"
 
-	annotation "github.com/treporting/specs-and-deploy/tools/annotation/check"
-	"github.com/treporting/specs-and-deploy/tools/review"
+	annotation "github.com/treporting/tools/annotation/check"
+	"github.com/treporting/tools/review"
 	"gopkg.in/yaml.v3"
 )
 

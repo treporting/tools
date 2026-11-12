@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
-	"github.com/treporting/specs-and-deploy/tools/review/check"
+	"github.com/treporting/tools/review"
+	"github.com/treporting/tools/review/check"
 )
 
 func gitIn(t *testing.T, dir string, args ...string) {
 	t.Helper()
-	cmd := exec.Command("git", append([]string{"-C", dir}, args...)...)
+	cmd := exec.Command("git", append([]string{"-C", dir}, args...)...) // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	cmd.Env = append(os.Environ(), "GIT_AUTHOR_NAME=Claude Opus 5.5", "GIT_AUTHOR_EMAIL=noreply@anthropic.com",
 		"GIT_COMMITTER_NAME=Mathias Fischer", "GIT_COMMITTER_EMAIL=m@example.org")
 	if out, err := cmd.CombinedOutput(); err != nil {

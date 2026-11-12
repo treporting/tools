@@ -540,7 +540,7 @@ requirements:
   status: approved
   verification_method: [demonstration]
 - object_key: SR_53
-  object_version: '1.1.2'
+  object_version: '2.1.1'
   component: ci
   object_text: 'in build.yml, run golangci-lint v2 with errcheck, govet, staticcheck, gosec and
     ineffassign, configured by .golangci.yml of tools, on every Go module of the repo, and
@@ -548,17 +548,17 @@ requirements:
   source_ids: [TOOL_24@1.1.1]
   priority: 'medium'
   safety: ''
-  status: draft
+  status: approved
   verification_method: [demonstration]
 - object_key: SR_54
-  object_version: '1.1.2'
+  object_version: '2.1.1'
   component: ci
   object_text: 'in build.yml, run eslint, configured by eslint.config.js of tools, on every
     JavaScript package of the repo, and fail on any finding'
   source_ids: [TOOL_24@1.1.1]
   priority: 'medium'
   safety: ''
-  status: draft
+  status: approved
   verification_method: [demonstration]
 - object_key: SR_55
   object_version: '1.2.1'

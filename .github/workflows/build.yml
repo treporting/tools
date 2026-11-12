@@ -1,0 +1,210 @@
+# The build steps of every repo (TOOL_23 to TOOL_26), as one reusable workflow. A repo calls it:
+#
+#	jobs:
+#	  build:
+#	    uses: treporting/tools/.github/workflows/build.yml@main
+#	    with:
+#	      images: |
+#	        storages=Dockerfile
+#
+# build, lint and test fail where a step fails; report reports test coverage and structural debt
+# and fails on nothing, and runs only where the input report is true, as baseline.yml sets it. Where a pull request changes sbom.md, build also checks that it lists the
+# packages delivered, with the images named built at its head (TOOL_28). Each job runs .github/build/steps.sh of tools in the root of the
+# repo; tools itself runs its own, the others that of main. See README.md of tools, section
+# build steps.
+#
+# @implements SR_51@1.1.1, SR_52@1.1.1, SR_53@1.1.1, SR_54@1.1.1, SR_55@1.1.1, SR_56@1.1.1, SR_57@2.1.2, SR_58@2.1.2, SR_67@1.1.1
+name: build
+
+on:
+  workflow_call:
+    inputs:
+      go-version-file:
+        description: the go.mod whose version of Go the steps use
+        type: string
+        default: go.mod
+      images:
+        description: the images of the subsystem, one name=Dockerfile per line, from the root of the repo
+        type: string
+        default: ''
+      report:
+        description: run the job report; baseline.yml sets it, a pull request does not
+        type: boolean
+        default: false
+      above:
+        description: the repo above, such as treporting/specs-and-deploy, whose files the tests read; empty for none
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  #	the root of tools, with the script and the configurations of the linters
+  STEPS: ${{ github.repository == 'treporting/tools' && github.workspace || format('{0}/.build-steps', github.workspace) }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      #	two commits: the merge of a pull request and its base, to see whether it changes sbom.md
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+      - uses: actions/checkout@v7
+        if: github.repository != 'treporting/tools'
+        with:
+          repository: treporting/tools
+          ref: main
+          path: .build-steps
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+          cache-dependency-path: '**/go.sum'
+      - uses: actions/setup-node@v7
+        if: hashFiles('**/package-lock.json') != ''
+        with:
+          node-version: '24.x'
+      - name: build
+        run: '"$STEPS/.github/build/steps.sh" build'
+      - name: sbom.md lists the packages delivered
+        if: github.event_name == 'pull_request'
+        env:
+          IMAGES: ${{ inputs.images }}
+        run: |
+          if git diff --quiet HEAD^1 HEAD -- sbom/sbom.md; then
+            echo "sbom.md not changed"
+            exit 0
+          fi
+          # shellcheck disable=SC2086 # one image per word
+          "$STEPS/.github/build/steps.sh" sbom $IMAGES
+
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        if: github.repository != 'treporting/tools'
+        with:
+          repository: treporting/tools
+          ref: main
+          path: .build-steps
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+          cache-dependency-path: '**/go.sum'
+      - uses: actions/setup-node@v7
+        if: hashFiles('**/package-lock.json') != ''
+        with:
+          node-version: '24.x'
+      #	the linter may bring a newer Go of its own; the build keeps the version of the go.mod
+      #	the release binary, checked against its checksum: go install would build it from its source in
+      #	every run, a minute of the job
+      - name: install golangci-lint
+        env:
+          VERSION: '2.13.1'
+          SHA256: b17bfbc9d4aaa48be7f4f1ce3240bc3d8200c870c072bacf15c26219e2cfb9cc
+        run: |
+          cd "$RUNNER_TEMP"
+          archive="golangci-lint-$VERSION-linux-amd64.tar.gz"
+          curl -fsSLO "https://github.com/golangci/golangci-lint/releases/download/v$VERSION/$archive"
+          echo "$SHA256  $archive" | sha256sum -c -
+          tar -xzf "$archive"
+          echo "$RUNNER_TEMP/golangci-lint-$VERSION-linux-amd64" >> "$GITHUB_PATH"
+      - name: lint
+        run: '"$STEPS/.github/build/steps.sh" lint'
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        if: github.repository != 'treporting/tools'
+        with:
+          repository: treporting/tools
+          ref: main
+          path: .build-steps
+      - uses: actions/checkout@v7
+        if: inputs.above != ''
+        with:
+          repository: ${{ inputs.above }}
+          ref: main
+          path: .above
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+          cache-dependency-path: '**/go.sum'
+      - uses: actions/setup-node@v7
+        if: hashFiles('**/package-lock.json') != ''
+        with:
+          node-version: '24.x'
+      #	Ubuntu 24 forbids unprivileged user namespaces, so Chrome finds no sandbox; allow them, and Chrome
+      #	runs in its sandbox (pdf, SR_68)
+      - name: user namespaces for the sandbox of Chrome
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      #	only in the baseline: the junit.xml of each run, for the test reports (SR_99)
+      - name: install gotestsum
+        if: inputs.report
+        run: go install gotest.tools/gotestsum@v1.12.3
+      - name: test
+        env:
+          JUNIT: ${{ inputs.report && format('{0}/junit', runner.temp) || '' }}
+          ABOVE: ${{ inputs.above != '' && format('{0}/.above', github.workspace) || '' }}
+        run: '"$STEPS/.github/build/steps.sh" test'
+      - uses: actions/upload-artifact@v7
+        if: inputs.report
+        with:
+          name: junit
+          path: ${{ runner.temp }}/junit/
+          if-no-files-found: ignore
+
+  #	reports and fails on nothing; a step fails only where the measuring itself did not happen.
+  #	Only in the baseline: the commit loop does not ask for it (TOOL_26)
+  report:
+    if: inputs.report
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        if: github.repository != 'treporting/tools'
+        with:
+          repository: treporting/tools
+          ref: main
+          path: .build-steps
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+          cache-dependency-path: '**/go.sum'
+      - uses: actions/setup-node@v7
+        if: hashFiles('**/package-lock.json') != ''
+        with:
+          node-version: '24.x'
+      #	the release binary, checked against its checksum: go install would build it from its source in
+      #	every run, a minute of the job
+      - name: install golangci-lint
+        env:
+          VERSION: '2.13.1'
+          SHA256: b17bfbc9d4aaa48be7f4f1ce3240bc3d8200c870c072bacf15c26219e2cfb9cc
+        run: |
+          cd "$RUNNER_TEMP"
+          archive="golangci-lint-$VERSION-linux-amd64.tar.gz"
+          curl -fsSLO "https://github.com/golangci/golangci-lint/releases/download/v$VERSION/$archive"
+          echo "$SHA256  $archive" | sha256sum -c -
+          tar -xzf "$archive"
+          echo "$RUNNER_TEMP/golangci-lint-$VERSION-linux-amd64" >> "$GITHUB_PATH"
+      - name: install deadcode
+        env:
+          GOTOOLCHAIN: auto
+        run: go install golang.org/x/tools/cmd/deadcode@v0.52.0
+      #	Ubuntu 24 forbids unprivileged user namespaces, so Chrome finds no sandbox; allow them, and Chrome
+      #	runs in its sandbox (pdf, SR_68)
+      - name: user namespaces for the sandbox of Chrome
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: test coverage
+        run: '"$STEPS/.github/build/steps.sh" cover'
+      - name: structural debt
+        run: '"$STEPS/.github/build/steps.sh" debt'

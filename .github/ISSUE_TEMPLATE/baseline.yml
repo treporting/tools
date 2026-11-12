@@ -1,0 +1,18 @@
+# The ticket that asks for the baseline of this repo (TOOL_27). It sets no label: whoever may label
+# tickets of the repo starts the run by setting the label baseline. See README.md of tools, section
+# baseline.
+#
+# @implements SR_60@1.1.1
+name: Baseline
+description: Ask for the baseline of this repo - a release or a library - with its label.
+title: Baseline <label>
+projects: [treporting/3]
+body:
+  - type: input
+    id: label
+    attributes:
+      label: Label
+      description: The label of the baseline, such as 1.2.0. It becomes the signed tag.
+      placeholder: 1.2.0
+    validations:
+      required: true

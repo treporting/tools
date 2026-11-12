@@ -1,0 +1,22 @@
+# The structural debt of a Go module (SR_58): what nothing uses, and every function of a cyclomatic
+# complexity of 15 and more. build.yml reports it, with --tests=false, and fails on nothing.
+# @implements SR_58@2.1.2
+version: "2"
+
+run:
+  timeout: 30m
+
+linters:
+  default: none
+  enable:
+    - unused
+    - unparam
+    - gocyclo
+  settings:
+    gocyclo:
+      #	gocyclo names a function whose complexity is above this bound: 14 names 15 and more
+      min-complexity: 14
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

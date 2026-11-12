@@ -1,0 +1,74 @@
+# The documents of a commit or tag as one ZIP of PDFs (TOOL_01), started by hand: Actions, pdf, Run
+# workflow, with the commit or tag. The ZIP is an artifact of the run, to download from there; GitHub
+# keeps it 90 days, and the ZIP of a tag can be made again. The run writes nothing to the repo. A
+# repo calls it as a reusable workflow, with the ref:
+#
+#	on:
+#	  workflow_dispatch:
+#	    inputs:
+#	      ref: {required: true, type: string}
+#	jobs:
+#	  pdf:
+#	    uses: treporting/tools/.github/workflows/pdf.yml@main
+#	    with:
+#	      ref: ${{ inputs.ref }}
+#
+# See README.md of tools, section pdf.
+#
+# @implements SR_74@1.1.1
+name: pdf
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: the commit or tag, such as T044
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      ref:
+        description: the commit or tag, such as T044
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      #	the whole history and the tags: pdf reads the repo at the ref, and the revision of each document
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      #	the tools, beside the repo whose documents they print
+      - uses: actions/checkout@v7
+        with:
+          repository: treporting/tools
+          ref: main
+          path: .tools
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: .tools/go.mod
+          cache-dependency-path: .tools/go.sum
+      #	Ubuntu 24 forbids unprivileged user namespaces, so Chrome finds no sandbox; allow them, and Chrome
+      #	runs in its sandbox
+      - name: user namespaces for the sandbox of Chrome
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: pdf
+        id: pdf
+        working-directory: .tools
+        env:
+          REF: ${{ inputs.ref }}
+        run: |
+          go run ./pdf/cmd/pdf -root .. -ref "$REF" -repo "${GITHUB_REPOSITORY#*/}" -out ..
+          echo "zip=${GITHUB_REPOSITORY#*/}-$REF-documents.zip" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.pdf.outputs.zip }}
+          path: ${{ steps.pdf.outputs.zip }}
+          if-no-files-found: error
+          retention-days: 90

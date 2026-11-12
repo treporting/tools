@@ -511,8 +511,8 @@ with a `go.mod`, a JavaScript package every directory with a `package-lock.json`
 coverage. The script runs by hand too, with go, golangci-lint v2, deadcode and node on the `PATH`:
 
 ```bash
-../specs-and-deploy/.github/build/steps.sh lint
-../specs-and-deploy/.github/build/steps.sh sbom storages=Dockerfile
+../tools/.github/build/steps.sh lint
+../tools/.github/build/steps.sh sbom storages=Dockerfile
 ```
 
 `.github/build` holds the configurations: `.golangci.yml` for the gate, `debt.golangci.yml` for the
@@ -521,13 +521,13 @@ structural debt, and `eslint.config.js`. They lie there, not in the root, becaus
 
 The code is the component `ci`: the workflow and the files of `.github/build`.
 
-**Decision**: the build steps are one reusable workflow, `.github/workflows/build.yml` of
-specs-and-deploy, which every repo calls:
+**Decision**: the build steps are one reusable workflow, `.github/workflows/build.yml` of tools,
+which every repo calls; until 2026-11-12 it lay in specs-and-deploy:
 
 ```yaml
 jobs:
   build:
-    uses: treporting/specs-and-deploy/.github/workflows/build.yml@main
+    uses: treporting/tools/.github/workflows/build.yml@main
     with:
       images: |
         storages=Dockerfile
@@ -540,13 +540,13 @@ jobs:
 from its code.
 
 **Decision**: the linters are configured once, by `.golangci.yml` and `eslint.config.js` of
-specs-and-deploy, for every repo.
+tools, for every repo.
 
 **Why**: every repo is held to the same rules, and a change of them is a change of an SR with its
 review.
 
 **Rejected**: a configuration in each repo - it can drift from repo to repo unnoticed. The cost of
-the decision: an exception for one file of one repo is made here too.
+the decision: an exception is made at its place, as `#nosec` with its reason, not by a path here.
 
 **Decision**: the structural debt is what nothing uses - unused and unparam with `--tests=false`,
 and deadcode - and every function of a cyclomatic complexity of 15 and more (gocyclo). The test
@@ -569,7 +569,10 @@ Prepares the baseline of a repo (TOOL_27; SR_60 to SR_65 in
 [software-requirements.yaml](software-requirements.yaml)). Whoever wants one opens a ticket with the
 template Baseline and names the label in it. Whoever may label tickets of the repo sets the label
 `baseline` on it. The caller of the repo, `.github/workflows/ticket-baseline.yml`, then runs
-`.github/workflows/baseline.yml` of specs-and-deploy:
+`.github/workflows/baseline.yml` of tools. A repo below another names it with `above`, such as
+`treporting/specs-and-deploy`: the steps read its schemas and `levels.yaml`. With `approval-base` the
+approvals are checked only in the files changed since that commit - in tools its first commit, as
+every approval before it has its review in specs-and-deploy:
 
 1. `start`: reads the label from the field Label of the ticket - letters, digits, `.`, `_` and `-`
    only, as it becomes a tag. It fails where the field is empty, or where the branch
@@ -587,7 +590,7 @@ To start it again, take the label `baseline` off the ticket and set it again. Th
 too, in the root of the repo; it writes `sbom/sbom.md` and `documents.yaml` and opens nothing:
 
 ```bash
-../specs-and-deploy/.github/build/steps.sh baseline 1.2.0 343 storages=Dockerfile
+../tools/.github/build/steps.sh baseline 1.2.0 343 storages=Dockerfile
 ```
 
 The code is the component `baseline`: the two workflows, the template, and the step `baseline` of
@@ -619,7 +622,8 @@ Markdown is rendered as GitHub renders it (goldmark with its extension GFM), and
 Chrome (chromedp). A document with a Mermaid diagram loads Mermaid 11.4.1 from jsDelivr, with the
 hash of the script: Chrome refuses a script that differs, and the run fails.
 
-The workflow `.github/workflows/pdf.yml` runs it, started by hand: Actions, pdf, Run workflow, with
+The workflow `.github/workflows/pdf.yml` runs it, a reusable workflow that each repo calls with a
+workflow of its own, started by hand: Actions, pdf, Run workflow, with
 the commit or tag. The ZIP is an artifact of the run, to download from there; GitHub keeps it 90
 days, and the ZIP of a tag can be made again. By hand, from the checkout of tools, with Google Chrome or Chromium
 installed:
@@ -660,7 +664,7 @@ its own root, and by the names of its describe blocks before its own.
 ## Open
 
 - `treporting = 1_tools` - **Checks of the code repos**: not set up yet. They are to call
-  `build.yml` of specs-and-deploy.
+  `build.yml` of tools.
 
 ## Change history
 
@@ -703,3 +707,4 @@ its own root, and by the names of its describe blocks before its own.
 | 35.1.1 | 2026-11-12 | schemacheck, uplinkcheck, linkcheck: -above | #638 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 36.1.1 | 2026-11-12 | Where the tools live: a repo of its own; links and paths from this repo; the numbers of the tickets above name those of specs-and-deploy | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 37.1.1 | 2026-11-12 | approvalcheck: -above | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 38.1.1 | 2026-11-12 | build steps, baseline, pdf: from specs-and-deploy into tools | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

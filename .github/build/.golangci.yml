@@ -1,0 +1,21 @@
+# The linters of the gate of every repo (SR_53). build.yml runs them on every Go module.
+# @implements SR_53@1.1.1
+version: "2"
+
+run:
+  timeout: 30m
+  tests: true
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - gosec
+    - ineffassign
+
+issues:
+  #	0 is no limit: a report cut at 50 per linter looks like a short list
+  max-issues-per-linter: 0
+  max-same-issues: 0

@@ -116,6 +116,8 @@ jobs:
           cache-dependency-path: go.sum
       - name: linkcheck
         run: go run ./link/cmd/linkcheck -root . -above .above
-  #	the build steps of every repo, from specs-and-deploy
+  #	the build steps of every repo, its own
   build:
-    uses: treporting/specs-and-deploy/.github/workflows/build.yml@main
+    uses: ./.github/workflows/build.yml
+    with:
+      above: treporting/specs-and-deploy

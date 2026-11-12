@@ -88,13 +88,9 @@ func TestOriginalYAMLNamesEveryFileStored(t *testing.T) {
 		}
 	}
 
-	// the record keeps to its schema, which the repo above holds: ABOVE names its root; in the CI
-	// STEPS does, the checkout of specs-and-deploy that build.yml makes; else the checkout beside
-	// this one
+	// the record keeps to its schema, which the repo above holds: ABOVE names its root, as build.yml
+	// sets it; else the checkout beside this one
 	above := os.Getenv("ABOVE")
-	if above == "" {
-		above = os.Getenv("STEPS")
-	}
 	if above == "" {
 		above = "../../../specs-and-deploy"
 	}

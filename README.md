@@ -221,6 +221,10 @@ file, a document in its file or its entry in `documents.yaml`. It runs so on eve
 needs all of it. It exits with 1 where an approval does not hold. The code is the package
 `review/approval`, in the component `review`.
 
+With `-above`, the root of the repo above, it takes the schema of a file this repo does not hold from
+there (SR_110). In this repo every approval before its split from specs-and-deploy has its review
+there: without `-base` each of them is reported, so here it runs with `-base`.
+
 ## schemacheck
 
 Checks every YAML file of our own data under version control against the schema it names in its
@@ -698,3 +702,4 @@ its own root, and by the names of its describe blocks before its own.
 | 34.1.1 | 2026-11-05 | testreport: -store | #492 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 35.1.1 | 2026-11-12 | schemacheck, uplinkcheck, linkcheck: -above | #638 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 36.1.1 | 2026-11-12 | Where the tools live: a repo of its own; links and paths from this repo; the numbers of the tickets above name those of specs-and-deploy | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 37.1.1 | 2026-11-12 | approvalcheck: -above | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

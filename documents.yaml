@@ -9,7 +9,7 @@ documents:
   level: r5
   object_version: '36.1.1'
   object_hash: 'fe320ff'
-  status: approved
+  status: draft
   verification_method: [review]
 - name: sbom/sbom.md
   type: document

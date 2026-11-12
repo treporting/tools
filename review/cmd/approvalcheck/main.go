@@ -1,9 +1,10 @@
 // Command approvalcheck checks every approval from the approved objects (TOOL_32, TOOL_33).
 //
-//	approvalcheck [-root dir] [-base commit]
+//	approvalcheck [-root dir] [-base commit] [-above dir]
 //
 // With -base, it checks the objects in the files changed against that commit; without, every
 // approved object. It prints every approval that does not hold and exits with 1 where there is one.
+// With -above, the root of the repo above, it takes a schema this repo does not hold from there.
 package main
 
 import (
@@ -15,10 +16,11 @@ import (
 	"github.com/treporting/tools/review/approval"
 )
 
-// @implements SR_80@2.1.3
+// @implements SR_80@2.1.3, SR_110@1.1.1
 func main() {
 
 	root := flag.String("root", ".", "the root of the repo")
+	above := flag.String("above", "", "the root of the repo above, where a schema this repo does not hold is taken from; empty for none")
 	base := flag.String("base", "", "the base commit of a pull request; empty for every approved object")
 	flag.Parse()
 
@@ -26,7 +28,7 @@ func main() {
 	if err != nil {
 		fail(err)
 	}
-	findings, err := approval.Check(*root, *base, review.ExecGit{Root: *root}, index)
+	findings, err := approval.CheckWithAbove(*root, *above, *base, review.ExecGit{Root: *root}, index)
 	if err != nil {
 		fail(err)
 	}

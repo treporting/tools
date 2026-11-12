@@ -77,6 +77,11 @@ jobs:
             echo "sbom.md not changed"
             exit 0
           fi
+          #	a repo without sbom.md at its head - it never had one, or it took it out - has none to check
+          if [ ! -f sbom/sbom.md ]; then
+            echo "no sbom.md"
+            exit 0
+          fi
           # shellcheck disable=SC2086 # one image per word
           "$STEPS/.github/build/steps.sh" sbom $IMAGES
 

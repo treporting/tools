@@ -7,9 +7,9 @@ documents:
 - name: README.md
   type: explanation
   level: r5
-  object_version: '36.1.1'
-  object_hash: 'fe320ff'
-  status: draft
+  object_version: '37.1.1'
+  object_hash: '5e08cca'
+  status: approved
   verification_method: [review]
 - name: sbom/sbom.md
   type: document

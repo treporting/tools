@@ -1,7 +1,7 @@
 // The rules of eslint for every JavaScript package of every repo (SR_54). build.yml runs eslint with
 // this file on every package.
 //
-// @implements SR_54@1.1.1
+// @implements SR_54@2.1.1
 import js from "@eslint/js";
 import globals from "globals";
 

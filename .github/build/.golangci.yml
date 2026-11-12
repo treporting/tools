@@ -1,5 +1,5 @@
 # The linters of the gate of every repo (SR_53). build.yml runs them on every Go module.
-# @implements SR_53@1.1.1
+# @implements SR_53@2.1.1
 version: "2"
 
 run:

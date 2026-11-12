@@ -543,22 +543,22 @@ requirements:
   object_version: '1.1.2'
   component: ci
   object_text: 'in build.yml, run golangci-lint v2 with errcheck, govet, staticcheck, gosec and
-    ineffassign, configured by .golangci.yml of specs-and-deploy, on every Go module of the repo, and
+    ineffassign, configured by .golangci.yml of tools, on every Go module of the repo, and
     fail on any finding'
   source_ids: [TOOL_24@1.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [demonstration]
 - object_key: SR_54
   object_version: '1.1.2'
   component: ci
-  object_text: 'in build.yml, run eslint, configured by eslint.config.js of specs-and-deploy, on every
+  object_text: 'in build.yml, run eslint, configured by eslint.config.js of tools, on every
     JavaScript package of the repo, and fail on any finding'
   source_ids: [TOOL_24@1.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [demonstration]
 - object_key: SR_55
   object_version: '1.2.1'

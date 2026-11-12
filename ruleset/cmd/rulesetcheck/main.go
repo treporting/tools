@@ -19,7 +19,7 @@ import (
 func main() {
 
 	root := flag.String("root", ".", "the root of the repo")
-	repo := flag.String("repo", "treporting/specs-and-deploy", "the repo on GitHub")
+	repo := flag.String("repo", "treporting/specs-and-deploy-process", "the repo on GitHub")
 	api := flag.String("api", "https://api.github.com", "the API of GitHub")
 	flag.Parse()
 

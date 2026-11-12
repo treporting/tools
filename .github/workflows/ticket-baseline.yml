@@ -1,6 +1,6 @@
 # The baseline of tools, started by the label baseline on one of its tickets (TOOL_27). The work is
 # in baseline.yml; see README.md, section baseline. The approvals are checked against the first
-# commit: every approval before it has its review in specs-and-deploy.
+# commit: every approval before it has its review in specs-and-deploy-process.
 #
 # @implements SR_61@1.1.1
 name: ticket-baseline
@@ -17,6 +17,6 @@ jobs:
     if: github.event.label.name == 'baseline'
     uses: ./.github/workflows/baseline.yml
     with:
-      above: treporting/specs-and-deploy
+      above: treporting/specs-and-deploy-process
       approval-base: d09f08f
     secrets: inherit

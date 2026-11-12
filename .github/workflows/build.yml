@@ -32,7 +32,7 @@ on:
         type: boolean
         default: false
       above:
-        description: the repo above, such as treporting/specs-and-deploy, whose files the tests read; empty for none
+        description: the repo above, such as treporting/specs-and-deploy-process, whose files the tests read; empty for none
         type: string
         default: ''
 

@@ -1,6 +1,6 @@
 # Every Markdown file of this repo, each with its type, its level where it explains one, and a
 # version and a status of its own.
-# Format: formats.md of specs-and-deploy, section Documents
+# Format: formats.md of specs-and-deploy-process, section Documents
 schema: schemas/documents.schema.json
 type: documents
 documents:
@@ -9,7 +9,7 @@ documents:
   level: r5
   object_version: '38.1.1'
   object_hash: '3ed97fc'
-  status: approved
+  status: draft
   verification_method: [review]
 - name: sbom/sbom.md
   type: document

@@ -16,7 +16,7 @@
 # It runs on the head of main as the ticket event names it, github.sha, so every job sees the same
 # commit. It writes with a token of the GitHub App treporting-baseline, so the pull request it opens
 # runs the checks of the repo. See README.md of tools, section baseline, and devops.md of
-# specs-and-deploy, section Baseline.
+# specs-and-deploy-process, section Baseline.
 #
 # @implements SR_61@1.1.1, SR_62@1.1.1, SR_63@1.1.1, SR_64@1.1.1, SR_65@1.1.1, SR_99@2.1.1
 name: baseline
@@ -33,7 +33,7 @@ on:
         type: string
         default: ''
       above:
-        description: the repo above, such as treporting/specs-and-deploy, whose schemas and levels.yaml the steps read; empty for none
+        description: the repo above, such as treporting/specs-and-deploy-process, whose schemas and levels.yaml the steps read; empty for none
         type: string
         default: ''
       approval-base:

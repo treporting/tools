@@ -1,5 +1,5 @@
-# The checks of this repo on every pull request, made with its own tools against specs-and-deploy
-# as the repo above: its schemas, its rules and its tool requirements (specs-and-deploy#637).
+# The checks of this repo on every pull request, made with its own tools against specs-and-deploy-process
+# as the repo above: its schemas, its rules and its tool requirements (specs-and-deploy-process#637).
 name: tools
 
 on:
@@ -14,7 +14,7 @@ concurrency:
   group: tools-${{ github.head_ref }}
   cancel-in-progress: true
 
-#	the revision of specs-and-deploy the checks read as the repo above; raised by a pull request
+#	the revision of specs-and-deploy-process the checks read as the repo above; raised by a pull request
 env:
   ABOVE_REF: 1a7f566806f21c37719ef6522ad83f1733f1d634
 
@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/checkout@v7
         with:
-          repository: treporting/specs-and-deploy
+          repository: treporting/specs-and-deploy-process
           ref: ${{ env.ABOVE_REF }}
           path: .above
       - uses: actions/setup-go@v7
@@ -88,7 +88,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/checkout@v7
         with:
-          repository: treporting/specs-and-deploy
+          repository: treporting/specs-and-deploy-process
           ref: ${{ env.ABOVE_REF }}
           path: .above
       - uses: actions/setup-go@v7
@@ -105,7 +105,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/checkout@v7
         with:
-          repository: treporting/specs-and-deploy
+          repository: treporting/specs-and-deploy-process
           ref: ${{ env.ABOVE_REF }}
           path: .above
       - uses: actions/setup-go@v7
@@ -121,7 +121,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/checkout@v7
         with:
-          repository: treporting/specs-and-deploy
+          repository: treporting/specs-and-deploy-process
           ref: ${{ env.ABOVE_REF }}
           path: .above
       - uses: actions/setup-go@v7
@@ -134,4 +134,4 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
     with:
-      above: treporting/specs-and-deploy
+      above: treporting/specs-and-deploy-process

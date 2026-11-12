@@ -7,9 +7,10 @@ schema: schemas/review-result.schema.json
 type: review
 level: r5
 object_version: '1.1.1'
-status: open
+status: completed
 created_by: Mathias Fischer
 created_at: '2026-11-13T00:16:20+01:00'
+completed_at: '2026-11-13T00:18:02+01:00'
 criteria: reviews/criteria-r5.yaml
 criteria_revision: '525e6de'
 results:

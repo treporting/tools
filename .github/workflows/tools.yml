@@ -49,6 +49,20 @@ jobs:
           cache-dependency-path: go.sum
       - name: schemacheck
         run: go run ./schema/cmd/schemacheck -root . -above .above
+  #	the ruleset of main on GitHub against .github/rulesets/main.json; read only, the token: with it the
+  #	limit of requests to the API is higher
+  rulesetcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: rulesetcheck
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: go run ./ruleset/cmd/rulesetcheck -root . -repo treporting/tools
   annotationcheck:
     runs-on: ubuntu-latest
     steps:

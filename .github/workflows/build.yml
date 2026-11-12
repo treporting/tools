@@ -13,7 +13,7 @@
 # repo; tools itself runs its own, the others that of main. See README.md of tools, section
 # build steps.
 #
-# @implements SR_51@1.1.1, SR_52@1.1.1, SR_53@1.1.1, SR_54@1.1.1, SR_55@1.1.1, SR_56@1.1.1, SR_57@2.1.2, SR_58@2.1.2, SR_67@1.1.1
+# @implements SR_51@1.1.1, SR_52@1.1.1, SR_53@2.1.1, SR_54@2.1.1, SR_55@1.1.1, SR_56@1.1.1, SR_57@2.1.2, SR_58@2.1.2, SR_67@1.1.1
 name: build
 
 on:

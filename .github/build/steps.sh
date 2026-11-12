@@ -67,7 +67,7 @@ eslint_install() {
 		eslint@10.14.0 @eslint/js@10.0.1 globals@17.13.0) || exit 2
 }
 
-#	@implements SR_53@1.1.1, SR_54@1.1.1
+#	@implements SR_53@2.1.1, SR_54@2.1.1
 lint() {
 	for m in $(modules); do
 		run "$m" golangci-lint run -c "$steps/.github/build/.golangci.yml" ./...

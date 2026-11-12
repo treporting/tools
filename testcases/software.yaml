@@ -1,0 +1,1362 @@
+# Test cases of the software requirements of the tools (r5tc). What explains them is in README.md.
+# Format: ../../formats.md, section Test cases
+schema: schemas/test-cases.schema.json
+type: testcases
+level: r5tc
+testcases:
+- object_key: TC_01
+  object_version: '1.1.1'
+  object_text: 'a result that names every criterion of its criteria file once, and no other:
+    reviewcheck reports no criterion for it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_01@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_02
+  object_version: '1.1.1'
+  object_text: 'a result that leaves out a criterion of its criteria file: reviewcheck reports that
+    criterion as left out'
+  design_technique: equivalence partitioning
+  target_ids: [SR_01@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_03
+  object_version: '1.1.1'
+  object_text: 'a result that names a criterion its criteria file does not hold: reviewcheck reports
+    that criterion as not in the file'
+  design_technique: equivalence partitioning
+  target_ids: [SR_01@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_04
+  object_version: '1.1.1'
+  object_text: 'a result with the verdict passed and one criterion failed: reviewcheck reports the
+    verdict'
+  design_technique: decision table testing
+  target_ids: [SR_02@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_05
+  object_version: '1.1.1'
+  object_text: 'a result with the verdict failed and every criterion passed: reviewcheck reports the
+    verdict'
+  design_technique: decision table testing
+  target_ids: [SR_02@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_06
+  object_version: '1.1.1'
+  object_text: 'a result with the verdict passed and every criterion passed: reviewcheck reports no
+    verdict'
+  design_technique: decision table testing
+  target_ids: [SR_02@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_07
+  object_version: '1.1.1'
+  object_text: 'a result with the verdict failed and one criterion failed: reviewcheck reports no
+    verdict'
+  design_technique: decision table testing
+  target_ids: [SR_02@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_08
+  object_version: '1.1.1'
+  object_text: 'a failed criterion without a note: reviewcheck reports the criterion'
+  design_technique: equivalence partitioning
+  target_ids: [SR_03@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_09
+  object_version: '1.1.1'
+  object_text: 'a failed criterion with a note: reviewcheck reports no missing note'
+  design_technique: equivalence partitioning
+  target_ids: [SR_03@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_10
+  object_version: '1.1.1'
+  object_text: 'a result whose revision names no commit of the repo: reviewcheck reports the
+    revision'
+  design_technique: equivalence partitioning
+  target_ids: [SR_04@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_11
+  object_version: '1.1.1'
+  object_text: 'a result whose revision names a commit of the repo: reviewcheck reports no revision'
+  design_technique: equivalence partitioning
+  target_ids: [SR_04@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_12
+  object_version: '1.1.1'
+  object_text: 'the reviewer is the author of the last commit, not a merge, that changed the object
+    reviewed: reviewcheck reports the result'
+  design_technique: equivalence partitioning
+  target_ids: [SR_05@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_13
+  object_version: '1.1.1'
+  object_text: 'the reviewer is a co-author, by a Co-Authored-By line, of the last commit, not a
+    merge, that changed the object reviewed: reviewcheck reports the result'
+  design_technique: equivalence partitioning
+  target_ids: [SR_05@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_14
+  object_version: '1.1.1'
+  object_text: 'the reviewer only merged the commit that changed the object reviewed, and another
+    person wrote it: reviewcheck reports no result'
+  design_technique: equivalence partitioning
+  target_ids: [SR_05@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_15
+  object_version: '1.1.1'
+  object_text: 'the reviewer is the author of a later commit that changed another object of the same
+    file, not the object reviewed: reviewcheck reports no result'
+  design_technique: equivalence partitioning
+  target_ids: [SR_05@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_16
+  object_version: '1.1.1'
+  object_text: 'a result with a criterion todo and the verdict passed: reviewcheck reports the value
+    todo, and the verdict passed, as that criterion did not pass'
+  design_technique: equivalence partitioning
+  target_ids: [SR_06@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_17
+  object_version: '1.1.1'
+  object_text: 'a result with the verdict todo: reviewcheck reports the value of the verdict'
+  design_technique: equivalence partitioning
+  target_ids: [SR_06@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_18
+  object_version: '1.1.1'
+  object_text: 'a result whose criteria and verdict each hold passed or failed: reviewcheck reports
+    no value'
+  design_technique: equivalence partitioning
+  target_ids: [SR_06@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_19
+  object_version: '1.1.1'
+  object_text: 'a review with two results whose criteria revision names a commit that did not change
+    its criteria file: reviewcheck reports the criteria revision once'
+  design_technique: equivalence partitioning
+  target_ids: [SR_07@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_20
+  object_version: '1.1.1'
+  object_text: 'a review whose criteria revision names a commit that changed its criteria file:
+    reviewcheck reports no criteria revision'
+  design_technique: equivalence partitioning
+  target_ids: [SR_07@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_21
+  object_version: '1.1.1'
+  object_text: 'the reviewer is the author of the last commit, not a merge, that changed the
+    document reviewed: reviewcheck reports the result'
+  design_technique: equivalence partitioning
+  target_ids: [SR_08@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_22
+  object_version: '1.1.1'
+  object_text: 'the reviewer merged two pull requests that changed the document reviewed, and
+    another person wrote every line: reviewcheck reports no result'
+  design_technique: equivalence partitioning
+  target_ids: [SR_08@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_23
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton with two ids, the scope sr-objects and a reviewer: it writes one file
+    reviews/results/<yyyymmddThhmmss>_sr-objects.yaml, created_by is the reviewer, and created_at is
+    the time of its name'
+  design_technique: requirements-based testing
+  target_ids: [SR_11@2.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_24
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton with a document: it writes a skeleton whose result names the
+    document'
+  design_technique: requirements-based testing
+  target_ids: [SR_11@2.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_25
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton with ids of the level r5, and a later commit that changed another
+    file: the skeleton names reviews/criteria-r5.yaml, and as criteria revision the last commit that
+    changed that file'
+  design_technique: requirements-based testing
+  target_ids: [SR_12@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_26
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton on a commit: the revision of each result is that commit'
+  design_technique: requirements-based testing
+  target_ids: [SR_13@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_27
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton with two ids: it writes two results, each with every criterion of the
+    criteria file, and each criterion and the verdict todo'
+  design_technique: requirements-based testing
+  target_ids: [SR_14@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_28
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton with an id that no file holds: it writes nothing and reports the id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_15@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_29
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton with a document that is not there: it writes nothing and reports the
+    document'
+  design_technique: equivalence partitioning
+  target_ids: [SR_15@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_30
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton with two ids of different levels: it writes nothing and reports the
+    levels'
+  design_technique: equivalence partitioning
+  target_ids: [SR_15@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_31
+  object_version: '2.1.1'
+  object_text: 'a result with findings on two criteria in the order of the criteria file, one
+    criterion not in it, the verdict and a revision that is no commit, checked twice: reviewcheck
+    reports them in that order in both runs'
+  design_technique: requirements-based testing
+  target_ids: [SR_16@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_32
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton with ids of the level r5: the skeleton has schema
+    schemas/review-result.schema.json, type review and level r5'
+  design_technique: requirements-based testing
+  target_ids: [SR_17@2.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_33
+  object_version: '1.1.1'
+  object_text: 'reviewskeleton: the skeleton has object_version 1.1.1 and status open'
+  design_technique: requirements-based testing
+  target_ids: [SR_83@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_34
+  object_version: '1.1.1'
+  object_text: 'a result with the status completed and no completed_at: reviewcheck reports the
+    result'
+  design_technique: equivalence partitioning
+  target_ids: [SR_84@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_35
+  object_version: '1.1.1'
+  object_text: 'a result with the status completed and a completed_at one second before its
+    created_at: reviewcheck reports the result'
+  design_technique: boundary value analysis
+  target_ids: [SR_84@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_36
+  object_version: '1.1.1'
+  object_text: 'a result with the status completed and a completed_at equal to its created_at:
+    reviewcheck reports no completed_at'
+  design_technique: boundary value analysis
+  target_ids: [SR_84@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_37
+  object_version: '1.1.1'
+  object_text: 'a result with the status open and no completed_at: reviewcheck reports no
+    completed_at'
+  design_technique: equivalence partitioning
+  target_ids: [SR_84@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_38
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose kind has a criteria file, and no review result names
+    it: approvalcheck reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_75@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_39
+  object_version: '1.1.1'
+  object_text: 'an approved document with the verification method review, and no review result names
+    it: approvalcheck reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_75@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_40
+  object_version: '1.1.1'
+  object_text: 'an approved requirement that a completed review result with the verdict passed
+    names: approvalcheck reports no missing review'
+  design_technique: equivalence partitioning
+  target_ids: [SR_75@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_41
+  object_version: '1.1.1'
+  object_text: 'an approved object whose kind has no criteria file, and no review result names it:
+    approvalcheck reports no missing review'
+  design_technique: equivalence partitioning
+  target_ids: [SR_75@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_42
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose last review result, by created_at, failed, and an
+    earlier one passed: approvalcheck reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_76@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_43
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose last review result, by created_at, passed, and an
+    earlier one failed: approvalcheck reports no failed review'
+  design_technique: equivalence partitioning
+  target_ids: [SR_76@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_44
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose object_text changed after the revision of its last
+    review result: approvalcheck reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_77@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_45
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose source_ids alone changed after the revision of its
+    last review result: approvalcheck reports no change of content'
+  design_technique: equivalence partitioning
+  target_ids: [SR_77@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_46
+  object_version: '1.1.1'
+  object_text: 'an approved document whose file changed after the revision of its last review
+    result: approvalcheck reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_77@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_47
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose object_text differs from the first commit in which it
+    was approved with its x: approvalcheck reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_78@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_48
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose source_ids alone differ from the first commit in which
+    it was approved with its x: approvalcheck reports no attribute for x'
+  design_technique: equivalence partitioning
+  target_ids: [SR_78@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_49
+  object_version: '1.1.1'
+  object_text: 'an approved document whose object_hash is not the hash of its file: approvalcheck
+    reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_79@2.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_50
+  object_version: '1.1.1'
+  object_text: 'a completed document whose object_hash is not the hash of its file: approvalcheck
+    reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_79@2.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_51
+  object_version: '1.1.1'
+  object_text: 'an approved document whose object_hash is the hash of its file: approvalcheck
+    reports no hash'
+  design_technique: equivalence partitioning
+  target_ids: [SR_79@2.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_52
+  object_version: '1.1.1'
+  object_text: 'a base commit given, one file of requirements changed against it, and an approved
+    object without a review in an unchanged file: approvalcheck checks the objects of the changed
+    file and reports nothing of the unchanged one'
+  design_technique: equivalence partitioning
+  target_ids: [SR_80@2.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_53
+  object_version: '1.1.1'
+  object_text: 'a base commit given, and only the entry of a document in documents.yaml changed
+    against it: approvalcheck checks that document'
+  design_technique: equivalence partitioning
+  target_ids: [SR_80@2.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_54
+  object_version: '1.1.1'
+  object_text: 'no base commit given: approvalcheck checks every approved object and every completed
+    document'
+  design_technique: equivalence partitioning
+  target_ids: [SR_80@2.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_55
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose last review result passed and has the status open:
+    approvalcheck reports it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_85@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_56
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose last review result passed and has the status
+    completed: approvalcheck reports no open review'
+  design_technique: equivalence partitioning
+  target_ids: [SR_85@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_57
+  object_version: '1.1.1'
+  object_text: 'a file git knows of the type testcases that holds TC_01: the id TC_01 is found in
+    that file'
+  design_technique: equivalence partitioning
+  target_ids: [SR_86@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_58
+  object_version: '1.1.1'
+  object_text: 'a review result that holds RR_01, and a file of criteria without objects: RR_01 is
+    found in no file, and neither file is a file of objects'
+  design_technique: equivalence partitioning
+  target_ids: [SR_86@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_59
+  object_version: '1.1.1'
+  object_text: 'a requirement whose source_ids name an object at another x than it has: linkcheck
+    reports the link'
+  design_technique: equivalence partitioning
+  target_ids: [SR_32@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_60
+  object_version: '1.1.1'
+  object_text: 'a requirement whose source_ids name an object at its x, with another y and z:
+    linkcheck reports no link'
+  design_technique: equivalence partitioning
+  target_ids: [SR_32@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_61
+  object_version: '1.1.1'
+  object_text: 'an element whose allocated names a requirement at another x than it has: linkcheck
+    reports the entry'
+  design_technique: equivalence partitioning
+  target_ids: [SR_32@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_62
+  object_version: '1.1.1'
+  object_text: 'a control whose controls names a user need at another x than it has: linkcheck
+    reports the entry'
+  design_technique: equivalence partitioning
+  target_ids: [SR_32@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_63
+  object_version: '1.1.1'
+  object_text: 'a requirement whose source_ids name a regulatory requirement at another x than the
+    file of its module holds: linkcheck reports the link'
+  design_technique: equivalence partitioning
+  target_ids: [SR_32@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_64
+  object_version: '1.1.1'
+  object_text: 'an @implements whose id names a requirement at another x than it has: linkcheck
+    reports the annotation'
+  design_technique: equivalence partitioning
+  target_ids: [SR_33@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_65
+  object_version: '1.1.1'
+  object_text: 'a @verifies whose id names a requirement at its x, with another z: linkcheck reports
+    no annotation'
+  design_technique: equivalence partitioning
+  target_ids: [SR_33@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_66
+  object_version: '1.1.1'
+  object_text: 'a @refines in the $comment of a schema whose id names an element at another x than
+    it has: linkcheck reports the annotation'
+  design_technique: equivalence partitioning
+  target_ids: [SR_33@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_67
+  object_version: '1.1.1'
+  object_text: 'a test case whose target_ids name a requirement at another x than it has: linkcheck
+    reports the target'
+  design_technique: equivalence partitioning
+  target_ids: [SR_87@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_68
+  object_version: '1.1.1'
+  object_text: 'a test case whose target_ids name a requirement at its x, with another y: linkcheck
+    reports no target'
+  design_technique: equivalence partitioning
+  target_ids: [SR_87@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_69
+  object_version: '2.1.1'
+  object_text: 'an @implements in a file that is code, whose id no object of the base commit holds:
+    annotationcheck reports the id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_24@3.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_70
+  object_version: '2.1.1'
+  object_text: 'a @verifies in a file that is code, whose id a requirement of the base commit holds:
+    annotationcheck reports no id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_24@3.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_71
+  object_version: '2.1.1'
+  object_text: 'an @implements in a file that is no code, whose id no object of the base commit
+    holds: annotationcheck reports no id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_24@3.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_72
+  object_version: '1.1.1'
+  object_text: 'an @implements whose id has the status draft in the base commit: annotationcheck
+    reports the id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_25@2.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_73
+  object_version: '1.1.1'
+  object_text: 'an @implements whose id is approved in the pull request and draft in the base
+    commit: annotationcheck reports the id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_25@2.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_74
+  object_version: '1.1.1'
+  object_text: 'a @refines whose id is approved in the base commit: annotationcheck reports no id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_25@2.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_75
+  object_version: '1.1.1'
+  object_text: 'a file git knows whose kind is set neither as code nor as no code: annotationcheck
+    reports the file'
+  design_technique: equivalence partitioning
+  target_ids: [SR_27@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_76
+  object_version: '1.1.1'
+  object_text: 'a file git knows whose kind is set as code: annotationcheck reports no kind'
+  design_technique: equivalence partitioning
+  target_ids: [SR_27@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_77
+  object_version: '1.1.1'
+  object_text: 'an @implements that names SR_01 without a version: annotationcheck reports the
+    annotation'
+  design_technique: syntax testing
+  target_ids: [SR_30@2.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_78
+  object_version: '1.1.1'
+  object_text: 'a @verifies that names SR_01@1.1, a version without z: annotationcheck reports the
+    annotation'
+  design_technique: syntax testing
+  target_ids: [SR_30@2.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_79
+  object_version: '1.1.1'
+  object_text: 'a @refines that names ARC_22@2.1.1: annotationcheck reports no missing version'
+  design_technique: syntax testing
+  target_ids: [SR_30@2.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_80
+  object_version: '1.1.1'
+  object_text: 'a schema whose $comment holds a @refines with an id not in the requirements of the
+    base commit: annotationcheck reports the id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_35@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_81
+  object_version: '1.1.1'
+  object_text: 'a schema whose $comment holds a @refines with an id in the requirements of the base
+    commit: annotationcheck reports no id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_35@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_82
+  object_version: '1.1.1'
+  object_text: 'a ruleset on GitHub that equals .github/rulesets/main.json in target, enforcement,
+    conditions and rules, with its own id, times, links and bypass_actors: rulesetcheck reports no
+    difference'
+  design_technique: equivalence partitioning
+  target_ids: [SR_21@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_83
+  object_version: '1.1.1'
+  object_text: 'a required check in .github/rulesets/main.json that the ruleset on GitHub lacks:
+    rulesetcheck reports the difference in the rules'
+  design_technique: equivalence partitioning
+  target_ids: [SR_21@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_84
+  object_version: '1.1.1'
+  object_text: 'a rule on GitHub that .github/rulesets/main.json does not hold: rulesetcheck reports
+    the difference in the rules'
+  design_technique: equivalence partitioning
+  target_ids: [SR_21@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_85
+  object_version: '1.1.1'
+  object_text: 'a ruleset on GitHub whose enforcement differs from .github/rulesets/main.json:
+    rulesetcheck reports the difference in the enforcement'
+  design_technique: equivalence partitioning
+  target_ids: [SR_21@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_86
+  object_version: '1.1.1'
+  object_text: 'the ruleset cannot be read from GitHub: rulesetcheck reports it as a finding'
+  design_technique: equivalence partitioning
+  target_ids: [SR_22@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_87
+  object_version: '1.1.1'
+  object_text: 'GitHub has no ruleset with the name in .github/rulesets/main.json: rulesetcheck
+    reports it as a finding'
+  design_technique: equivalence partitioning
+  target_ids: [SR_22@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_88
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose source_ids name an uplink that is approved:
+    uplinkcheck reports no uplink'
+  design_technique: decision table testing
+  target_ids: [SR_28@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_89
+  object_version: '1.1.1'
+  object_text: 'an approved requirement whose source_ids name an uplink with the status draft:
+    uplinkcheck reports the uplink'
+  design_technique: decision table testing
+  target_ids: [SR_28@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_90
+  object_version: '1.1.1'
+  object_text: 'a requirement with the status draft whose source_ids name an uplink with the status
+    draft: uplinkcheck reports no uplink'
+  design_technique: decision table testing
+  target_ids: [SR_28@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_91
+  object_version: '1.1.1'
+  object_text: 'a YAML file of our data that matches the schema its field schema names: schemacheck
+    reports no place'
+  design_technique: equivalence partitioning
+  target_ids: [SR_18@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_92
+  object_version: '2.1.1'
+  object_text: 'a YAML file of our data with two fields whose values its schema does not allow:
+    schemacheck reports each place, with the file and the path within it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_18@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_93
+  object_version: '1.1.1'
+  object_text: 'a YAML file of our data with a field its schema does not know: schemacheck reports
+    the place'
+  design_technique: equivalence partitioning
+  target_ids: [SR_18@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_94
+  object_version: '1.1.1'
+  object_text: 'a workflow of GitHub in .github/ that names no schema: schemacheck reports nothing
+    of it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_18@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_95
+  object_version: '1.1.1'
+  object_text: 'a YAML file of our data that names no schema: schemacheck reports the file'
+  design_technique: equivalence partitioning
+  target_ids: [SR_19@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_96
+  object_version: '1.1.1'
+  object_text: 'a YAML file of our data whose field schema names a schema that is not there:
+    schemacheck reports the file'
+  design_technique: equivalence partitioning
+  target_ids: [SR_19@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_97
+  object_version: '2.1.1'
+  object_text: 'a tag whose documents.yaml names README.md and requirements/tool-requirements.md: pdf
+    writes README.pdf and requirements/tool-requirements.pdf'
+  design_technique: requirements-based testing
+  target_ids: [SR_68@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_98
+  object_version: '1.1.1'
+  object_text: 'a Markdown file that documents.yaml of the tag does not name: pdf writes no PDF of
+    it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_68@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_99
+  object_version: '1.1.1'
+  object_text: 'devops.md at 2.1.1, approved in documents.yaml of the tag, and a later commit that
+    changed another file: the footer of its PDF shows the path, 2.1.1, the last commit that changed
+    devops.md, and approved'
+  design_technique: requirements-based testing
+  target_ids: [SR_71@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_100
+  object_version: '1.1.1'
+  object_text: 'a tag whose documents.yaml names two documents: index.pdf lists both, each with its
+    version, its revision and its status'
+  design_technique: requirements-based testing
+  target_ids: [SR_72@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_101
+  object_version: '1.1.1'
+  object_text: 'pdf run on the tag v1.0.0 of the repo specs-and-deploy: it packs the PDFs and
+    index.pdf in specs-and-deploy-v1.0.0-documents.zip'
+  design_technique: requirements-based testing
+  target_ids: [SR_73@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_102
+  object_version: '1.1.1'
+  object_text: 'a Go module that go list -deps names for the commands: sbom lists it with its
+    version, the licence of its LICENSE file in the module cache, and the PURL
+    pkg:golang/<path>@<version>'
+  design_technique: requirements-based testing
+  target_ids: [SR_36@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_103
+  object_version: '1.1.1'
+  object_text: 'the package of the subsystem itself among what go list -deps names: sbom lists it
+    not as a Go module'
+  design_technique: equivalence partitioning
+  target_ids: [SR_36@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_104
+  object_version: '1.1.1'
+  object_text: 'a package of package-lock.json not marked dev: sbom lists it with its version, its
+    licence and the PURL pkg:npm/<name>@<version>'
+  design_technique: equivalence partitioning
+  target_ids: [SR_37@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_105
+  object_version: '1.1.1'
+  object_text: 'a package of package-lock.json marked dev: sbom does not list it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_37@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_106
+  object_version: '1.1.1'
+  object_text: 'a package of /lib/apk/db/installed in the last stage of an image: sbom lists it with
+    its version, its licence and the PURL pkg:apk/alpine/<name>@<version>'
+  design_technique: equivalence partitioning
+  target_ids: [SR_38@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_107
+  object_version: '1.1.1'
+  object_text: 'a package installed only in an earlier stage of the build of an image: sbom does not
+    list it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_38@1.2.1]
+  status: obsolete
+  verification_method: [review]
+- object_key: TC_108
+  object_version: '2.1.1'
+  object_text: 'sbom run in the repo of a subsystem: it writes sbom.md in the folder sbom/ of the repo'
+  design_technique: requirements-based testing
+  target_ids: [SR_39@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_109
+  object_version: '1.1.1'
+  object_text: 'sbom.md at 2.1.1 in documents.yaml, the baseline v1.2.0 and the ticket 42: sbom adds
+    a row with 3.1.1, the day it runs, v1.2.0, #42 and the tool with its version'
+  design_technique: equivalence partitioning
+  target_ids: [SR_40@3.3.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_110
+  object_version: '1.1.1'
+  object_text: 'no version of sbom.md in documents.yaml: sbom adds a row with the version 1.1.1'
+  design_technique: equivalence partitioning
+  target_ids: [SR_40@3.3.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_111
+  object_version: '2.1.1'
+  object_text: 'three packages: sbom lists them in the section Packages, in one table with the
+    columns PURL, name, version and licence, sorted by PURL'
+  design_technique: requirements-based testing
+  target_ids: [SR_41@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_112
+  object_version: '1.1.1'
+  object_text: 'sbom writes sbom.md: it ends with the section Open, then the section Change history'
+  design_technique: requirements-based testing
+  target_ids: [SR_42@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_113
+  object_version: '1.1.1'
+  object_text: 'a package whose LICENSE file is the MIT licence: sbom names its licence MIT'
+  design_technique: equivalence partitioning
+  target_ids: [SR_43@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_114
+  object_version: '1.1.1'
+  object_text: 'a package with two licences, Apache-2.0 and MIT: sbom names both joined by AND'
+  design_technique: equivalence partitioning
+  target_ids: [SR_43@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_115
+  object_version: '1.1.1'
+  object_text: 'a package whose licence text is not recognized: sbom names its licence unknown'
+  design_technique: equivalence partitioning
+  target_ids: [SR_43@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_116
+  object_version: '1.1.1'
+  object_text: 'commands built with Go 1.23.4: sbom lists the standard library with the version
+    1.23.4, its licence and the PURL pkg:golang/stdlib@1.23.4'
+  design_technique: requirements-based testing
+  target_ids: [SR_44@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_117
+  object_version: '1.1.1'
+  object_text: 'a package whose licence is unknown: sbom lists its PURL in the section Open'
+  design_technique: equivalence partitioning
+  target_ids: [SR_45@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_118
+  object_version: '1.1.1'
+  object_text: 'no package whose licence is unknown: sbom writes <empty> in the section Open'
+  design_technique: equivalence partitioning
+  target_ids: [SR_45@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_119
+  object_version: '1.1.1'
+  object_text: 'the repo specs-and-deploy at the baseline v1.2.0: sbom lists it with the version
+    v1.2.0, the licence of the LICENSE file in its root, and the PURL
+    pkg:github/treporting/specs-and-deploy@v1.2.0'
+  design_technique: requirements-based testing
+  target_ids: [SR_46@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_120
+  object_version: '1.1.1'
+  object_text: 'an entry of sbom.md in documents.yaml: sbom sets its version to that of the new row,
+    its object_hash to git hash-object of sbom.md, its status to completed and its verification
+    method to [generated]'
+  design_technique: equivalence partitioning
+  target_ids: [SR_59@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_121
+  object_version: '1.1.1'
+  object_text: 'no entry of sbom.md in documents.yaml: sbom adds one of type document, with the
+    version, the hash, the status completed and the verification method [generated]'
+  design_technique: equivalence partitioning
+  target_ids: [SR_59@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_122
+  object_version: '1.1.1'
+  object_text: 'sbom -check where the packages equal the table of sbom.md: it passes and writes
+    nothing'
+  design_technique: equivalence partitioning
+  target_ids: [SR_66@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_123
+  object_version: '1.1.1'
+  object_text: 'sbom -check where one package has another version than the table of sbom.md: it
+    fails, names that package, and writes nothing'
+  design_technique: equivalence partitioning
+  target_ids: [SR_66@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_124
+  object_version: '1.1.1'
+  object_text: 'a package with a PURL of the type golang and the licence MIT: licencecheck passes
+    it'
+  design_technique: decision table testing
+  target_ids: [SR_47@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_125
+  object_version: '1.1.1'
+  object_text: 'a package with a PURL of the type npm and the licence GPL-3.0: licencecheck fails on
+    it'
+  design_technique: decision table testing
+  target_ids: [SR_47@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_126
+  object_version: '1.1.1'
+  object_text: 'a package with a PURL of the type github and the licence MIT AND GPL-3.0:
+    licencecheck fails on it'
+  design_technique: decision table testing
+  target_ids: [SR_47@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_127
+  object_version: '1.1.1'
+  object_text: 'a package with a PURL of the type golang and the licence MIT OR GPL-3.0:
+    licencecheck passes it'
+  design_technique: decision table testing
+  target_ids: [SR_47@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_128
+  object_version: '1.1.1'
+  object_text: 'a package with a PURL of the type apk and the licence unknown: licencecheck fails on
+    it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_48@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_129
+  object_version: '1.1.1'
+  object_text: 'a package with a PURL of the type apk and the licence GPL-2.0-only: licencecheck
+    passes it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_48@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_130
+  object_version: '1.1.1'
+  object_text: 'a package unknown in sbom.md whose PURL licences_assessed.yaml names with MIT and a
+    reason: licencecheck takes MIT and passes it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_49@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_131
+  object_version: '1.1.1'
+  object_text: 'a package unknown in sbom.md whose PURL licences_assessed.yaml does not name:
+    licencecheck takes unknown'
+  design_technique: equivalence partitioning
+  target_ids: [SR_49@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_132
+  object_version: '1.1.1'
+  object_text: 'a package that fails: licencecheck names it with its PURL and its licence'
+  design_technique: requirements-based testing
+  target_ids: [SR_50@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_133
+  object_version: '1.1.1'
+  object_text: 'README.md changed in a commit after the tag: pdf run on the tag writes README.pdf with
+    the text of README.md at the tag, not the later one'
+  design_technique: equivalence partitioning
+  target_ids: [SR_68@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_134
+  object_version: '1.1.1'
+  object_text: 'an @implements in a file that is code, whose id is a test case of the base commit:
+    annotationcheck reports no id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_24@3.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_135
+  object_version: '1.1.1'
+  object_text: 'a result with findings on two criteria in the order of the criteria file, one
+    criterion not in it, the verdict and a reviewer who is the author of the object reviewed,
+    checked twice: reviewcheck reports them in that order in both runs'
+  design_technique: requirements-based testing
+  target_ids: [SR_16@1.1.3]
+  status: approved
+  verification_method: [review]
+- object_key: TC_136
+  object_version: '1.2.1'
+  object_text: 'a junit.xml of go test and one of Vitest, a test case in `testcases/`, and a test
+    procedure whose annotation is `@implements` of it: testreport reads the results of
+    both files and links the test procedure to its test case'
+  design_technique: requirements-based testing
+  target_ids: [SR_88@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_137
+  object_version: '2.3.1'
+  object_text: 'any run of the test level r5tc: `testreports/software.md` has the head of a document
+    and the sections Test environment, Original data, Test specification, Test
+    implementation, Test execution, Deviations, Open and Change history, in this order'
+  design_technique: requirements-based testing
+  target_ids: [SR_89@4.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_138
+  object_version: '1.2.1'
+  object_text: 'a run with the label 1.2.0, tests of Go and of Vitest on Node.js: Test environment
+    lists the label, the commit, the date, the operating system, the runner, and Go,
+    Node.js and Vitest each with its version'
+  design_technique: requirements-based testing
+  target_ids: [SR_90@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_139
+  object_version: '2.2.1'
+  object_text: 'two junit.xml given, testreport run without -store: Original data lists both with
+    the command that made them and Stored At `-`; testreport copies neither'
+  design_technique: equivalence partitioning
+  target_ids: [SR_91@2.1.1, SR_104@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_140
+  object_version: '1.2.1'
+  object_text: 'a test case with the target SR_03@1.1.3: Test specification lists it with
+    SR_03@1.1.3, its key with its version, its text and its status'
+  design_technique: requirements-based testing
+  target_ids: [SR_92@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_141
+  object_version: '1.2.1'
+  object_text: 'a test procedure with `@implements` of a test case, and one with only `@verifies` of
+    a requirement: Test implementation lists the first with the requirement of its test
+    case, the second with its requirement and the column Test case empty'
+  design_technique: equivalence partitioning
+  target_ids: [SR_93@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_142
+  object_version: '1.2.1'
+  object_text: 'a test procedure in a junit.xml and one not in any: Test execution lists only the
+    first, with its verdict'
+  design_technique: equivalence partitioning
+  target_ids: [SR_94@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_143
+  object_version: '2.1.1'
+  object_text: 'results passed, failed and skipped, and an approved test case without a test
+    procedure: Deviations lists the failed and the skipped one; Open holds the row of the test
+    case, with its requirement and the status approved, and `-` as test procedure and as its status'
+  design_technique: equivalence partitioning
+  target_ids: [SR_95@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_144
+  object_version: '1.3.1'
+  object_text: 'every result passed, and every test case and test procedure with a result:
+    Deviations and Open each hold `<empty>`'
+  design_technique: boundary value analysis
+  target_ids: [SR_95@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_145
+  object_version: '2.1.1'
+  object_text: 'the label 1.2.0, the ticket 438, and the test report at 3.1.1 in `documents.yaml`:
+    the new row of the Change history has the Version 4.1.1, the day of the run, Change
+    1.2.0, Reason #438 and By testreport with its version'
+  design_technique: equivalence partitioning
+  target_ids: [SR_96@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_146
+  object_version: '2.1.1'
+  object_text: 'no label, no ticket, and no entry of the test report in `documents.yaml`: the new
+    row has the Version 1.1.1, the day of the run, and Change and Reason empty'
+  design_technique: equivalence partitioning
+  target_ids: [SR_96@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_147
+  object_version: '1.2.1'
+  object_text: 'a label without a ticket: testreport fails and writes nothing'
+  design_technique: equivalence partitioning
+  target_ids: [SR_97@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_148
+  object_version: '2.1.1'
+  object_text: 'no entry of the test report in `documents.yaml`: testreport adds one of type
+    `document` with the version of its new row, the hash of the test report written, the
+    status `completed` and the verification method `[generated]`'
+  design_technique: equivalence partitioning
+  target_ids: [SR_98@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_149
+  object_version: '1.2.1'
+  object_text: 'a go.mod in tools/, a package-lock.json in the root and the image docker.io/nginx:1.30,
+    sbom run without -store: Original data lists three files, each with the command that made it
+    and Stored At `-`; sbom writes nothing into sbom/ but sbom.md'
+  design_technique: equivalence partitioning
+  target_ids: [SR_101@2.1.1, SR_102@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_150
+  object_version: '1.2.1'
+  object_text: 'the same repo, sbom run with -store at 2026-11-05 10:00:00: it writes into sbom/
+    `20261105T100000_golist-tools.txt`, `20261105T100000_root-package-lock.json` and
+    `20261105T100000_apk-docker.io-nginx-1.30.txt`, and Original data names each with Stored At
+    `./sbom/<file>`'
+  design_technique: equivalence partitioning
+  target_ids: [SR_101@2.1.1, SR_102@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_151
+  object_version: '1.1.1'
+  object_text: 'sbom run with -store at 2026-11-05 10:00:00: `sbom/20261105T100000.yaml` names every
+    file of original data written, each with the command that made it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_102@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_152
+  object_version: '1.1.1'
+  object_text: 'two review results, one unchanged since the base commit and breaking a rule, one added
+    after it and breaking none, reviewcheck run with -base: it checks only the one added and reports
+    nothing'
+  design_technique: equivalence partitioning
+  target_ids: [SR_103@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_153
+  object_version: '1.1.1'
+  object_text: 'the same two review results, reviewcheck run without -base: it checks both and reports
+    the rule the unchanged one breaks'
+  design_technique: equivalence partitioning
+  target_ids: [SR_103@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_154
+  object_version: '1.1.1'
+  object_text: 'junit-go.xml and junit-vitest.xml given, test level r5tc, -dir tools, testreport run
+    with -store at 2026-11-05 10:00:00: it copies them into tools/testreports/ as
+    `20261105T100000_r5tc-junit-go.xml` and `20261105T100000_r5tc-junit-vitest.xml`, and Original
+    data names each with Stored At `./tools/testreports/<file>`'
+  design_technique: equivalence partitioning
+  target_ids: [SR_91@2.1.1, SR_104@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_155
+  object_version: '1.1.1'
+  object_text: 'the same run with -store: `tools/testreports/20261105T100000_r5tc.yaml` names both
+    files copied, each with the command that made it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_104@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_156
+  object_version: '1.1.1'
+  object_text: 'go list answers the module gopkg.in/yaml.v3 v3.0.1 in the directory
+    `/home/u/go/pkg/mod/gopkg.in/yaml.v3@v3.0.1`, the module cache `/home/u/go/pkg/mod`; sbom
+    run with -store: the stored golist file names `$GOMODCACHE/gopkg.in/yaml.v3@v3.0.1`, and
+    holds no `/home/u`'
+  design_technique: equivalence partitioning
+  target_ids: [SR_105@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_157
+  object_version: '1.1.1'
+  object_text: 'a document naming `SR_01@1.1.3` in a table and `a@1.com` in its text, made into a
+    page as GitHub shows it: `a@1.com` is a link to mailto:, `SR_01@1.1.3` is text and no link'
+  design_technique: equivalence partitioning
+  target_ids: [SR_69@1.1.2]
+  status: approved
+  verification_method: [review]
+- object_key: TC_158
+  object_version: '1.1.1'
+  object_text: 'a test procedure without a test result that implements an approved test case: Open
+    holds the row of the test case, with its requirement and the status approved, and the test
+    procedure with the status `no test result`'
+  design_technique: equivalence partitioning
+  target_ids: [SR_95@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_159
+  object_version: '1.1.1'
+  object_text: 'an obsolete test case without a test procedure: Open holds its row, with the status
+    obsolete'
+  design_technique: equivalence partitioning
+  target_ids: [SR_95@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_160
+  object_version: '1.1.1'
+  object_text: 'sbom run: the sections of sbom.md are Original data, Packages, Open and Change
+    history, in this order'
+  design_technique: requirements-based testing
+  target_ids: [SR_41@2.1.1, SR_101@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_161
+  object_version: '1.2.1'
+  object_text: 'a run of the test level r5tc, levels.yaml naming r5tc the subsystem test (SwVal):
+    the title of the test report is `Test report for subsystem test (SwVal)`, and its head names
+    neither r5tc nor r5'
+  design_technique: equivalence partitioning
+  target_ids: [SR_89@4.1.1, SR_106@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_162
+  object_version: '1.1.1'
+  object_text: 'a run without -levels, `<root>/levels.yaml` naming r5tc: testreport reads it; the
+    same run with -levels naming another levels.yaml: testreport reads that one'
+  design_technique: equivalence partitioning
+  target_ids: [SR_106@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_163
+  object_version: '1.1.1'
+  object_text: 'a run of the test level r5tc, levels.yaml naming no r5tc: testreport exits with an
+    error that names r5tc, and writes no test report'
+  design_technique: equivalence partitioning
+  target_ids: [SR_106@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_164
+  object_version: '1.1.1'
+  object_text: 'a file names a schema that only the repo above holds, and does not match it: schemacheck
+    with the repo above reports the place where it does not match'
+  design_technique: equivalence partitioning
+  target_ids: [SR_107@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_165
+  object_version: '1.1.1'
+  object_text: 'a file names a schema that only the repo above holds: schemacheck without the repo
+    above reports the schema as not there'
+  design_technique: equivalence partitioning
+  target_ids: [SR_107@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_166
+  object_version: '1.1.1'
+  object_text: 'an approved requirement names an uplink approved in the repo above, and one draft
+    there: uplinkcheck with the repo above reports the draft one only'
+  design_technique: equivalence partitioning
+  target_ids: [SR_108@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_167
+  object_version: '1.1.1'
+  object_text: 'an approved requirement names an uplink that only the repo above holds: uplinkcheck
+    without the repo above reports that no file holds it'
+  design_technique: equivalence partitioning
+  target_ids: [SR_108@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_168
+  object_version: '1.1.1'
+  object_text: 'a link names an object of the repo above with another x than it has: linkcheck with
+    the repo above reports the link; without it, the link is not compared'
+  design_technique: equivalence partitioning
+  target_ids: [SR_109@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_169
+  object_version: '1.1.1'
+  object_text: 'an annotation names an object of the repo above with another x than it has: linkcheck
+    with the repo above reports the annotation'
+  design_technique: equivalence partitioning
+  target_ids: [SR_109@1.1.1]
+  status: approved
+  verification_method: [review]

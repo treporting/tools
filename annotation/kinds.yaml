@@ -1,0 +1,27 @@
+# The kinds of files git knows: code, read for annotations, and no code, never read. A file of a
+# kind on neither list is a finding (SR_27). See formats.md, section Annotations.
+schema: schemas/kinds.schema.json
+type: kinds
+whitelist:
+- '*.go'
+- '*.js'
+- '*.jsx'
+- '*.ts'
+- '*.tsx'
+- '*.sh'
+- Dockerfile
+- '*.yml'
+- '*.yaml'
+blacklist:
+- '*.md'
+- '*.txt'
+- '*.log'
+- '*.json'
+- '*.png'
+- '*.jpg'
+- '*.jpeg'
+- '*.pdf'
+- LICENSE
+- go.mod
+- go.sum
+- .gitignore

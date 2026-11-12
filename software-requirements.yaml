@@ -1,0 +1,1141 @@
+# Software requirements of the tools (r5). What explains them is in README.md.
+# Format: ../formats.md
+schema: schemas/software-requirements.schema.json
+type: requirements
+level: r5
+documents: [tools/README.md]
+requirements:
+- object_key: SR_01
+  object_version: '1.1.3'
+  component: review
+  object_text: report a criterion of the criteria file that a result of a review leaves out, and a
+    criterion the result names that the file does not hold
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_02
+  object_version: '1.1.3'
+  component: review
+  object_text: report a verdict passed where a criterion failed, and a verdict failed where every
+    criterion passed
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_03
+  object_version: '1.1.3'
+  component: review
+  object_text: report a failed criterion that carries no note
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_04
+  object_version: '1.1.3'
+  component: review
+  object_text: report a revision reviewed that names no commit
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_05
+  object_version: '2.1.1'
+  component: review
+  object_text: report a result whose reviewer is the author or a co-author of the last commit, not a
+    merge, that changed the object reviewed
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_06
+  object_version: '1.1.3'
+  component: review
+  object_text: where a criterion or the verdict of a result holds a value other than passed or failed,
+    report it; count such a criterion as not passed
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_07
+  object_version: '1.1.3'
+  component: review
+  object_text: where the criteria revision of a review names no commit that changed its criteria file,
+    report it once for the review, as the criteria the review followed cannot be traced
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_08
+  object_version: '1.1.1'
+  component: review
+  object_text: report a result whose reviewer is the author or a co-author of the last commit, not a
+    merge, that changed the document reviewed
+  source_ids: [TOOL_11@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_09
+  object_version: '2.2.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, check every review result the pull
+    request adds or changes against its base commit, and fail where a result breaks a rule; a pull
+    request whose check failed cannot be merged
+  source_ids: [TOOL_12@1.2.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_10
+  object_version: '1.1.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, run the tests of the tools on the
+    levels MT and SwIT, and fail where one fails; a pull request whose tests failed cannot be merged
+  source_ids: [TOOL_12@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: obsolete
+  verification_method: [demonstration]
+- object_key: SR_11
+  object_version: '2.1.3'
+  component: review
+  object_text: |-
+    create the skeleton of a review result for the ids or documents given, where:
+    - the file lies in reviews/results/ and is named <yyyymmddThhmmss>_<scope>.yaml
+    - the field created_by is the reviewer given
+    - the field created_at is the time it is made, the same as in its name
+  source_ids: [TOOL_04@3.2.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_12
+  object_version: '1.1.3'
+  component: review
+  object_text: take the criteria file of the level of what is to be reviewed, and as criteria revision
+    the last commit that changed that file
+  source_ids: [TOOL_04@3.2.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_13
+  object_version: '1.1.3'
+  component: review
+  object_text: name as revision of each the commit the skeleton is made on
+  source_ids: [TOOL_04@3.2.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_14
+  object_version: '1.1.3'
+  component: review
+  object_text: write one result per id or document, with every criterion of the criteria file, and set
+    each criterion and the verdict to todo
+  source_ids: [TOOL_04@3.2.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_15
+  object_version: '1.1.3'
+  component: review
+  object_text: write nothing, and report it, where an id or document is not found, or where they belong
+    to more than one level
+  source_ids: [TOOL_04@3.2.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_16
+  object_version: '1.1.3'
+  component: review
+  object_text: report the findings of a result in the same order in every run - by criterion in the
+    order of the criteria file, criteria not in it by their id, then the verdict, the revision and
+    the reviewer
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_17
+  object_version: '2.1.3'
+  component: review
+  object_text: |-
+    create the skeleton of a review result where:
+    - the field schema names the used schema from the root of the repo.
+    - the field type is review and
+    - the field level is the level of its criteria file
+  source_ids: [TOOL_04@3.2.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_18
+  object_version: '1.1.1'
+  component: schema
+  object_text: check every YAML file of our own data under version control against the schema its
+    field schema names, and report each place where it does not match - the file and the path within
+    it; a YAML whose form another owns, such as a workflow of GitHub in .github/, is not our data
+  source_ids: [TOOL_05@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_19
+  object_version: '1.1.1'
+  component: schema
+  object_text: report a YAML file that names no schema, or a schema that is not there
+  source_ids: [TOOL_05@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_20
+  object_version: '1.1.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, check every YAML file against its
+    schema, and fail where one does not match; a pull request whose check failed cannot be merged
+  source_ids: [TOOL_05@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_21
+  object_version: '1.1.1'
+  component: ruleset
+  object_text: read the ruleset of main from GitHub, found by the name in .github/rulesets/main.json, and
+    report each difference to that file in its target, enforcement, conditions and rules; leave out
+    what GitHub sets itself - id, times, links - and bypass_actors, which cannot be read without the
+    rights of an admin
+  source_ids: [TOOL_13@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_22
+  object_version: '1.1.1'
+  component: ruleset
+  object_text: report it as a finding where the ruleset cannot be read from GitHub, or no ruleset has
+    the name in the file, rather than pass
+  source_ids: [TOOL_13@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_23
+  object_version: '1.1.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, check the ruleset of main against
+    .github/rulesets/main.json, and fail where they differ; a pull request whose check failed cannot be
+    merged
+  source_ids: [TOOL_13@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_24
+  object_version: '3.1.1'
+  component: annotation
+  object_text: find every @implements and @verifies in the files of the repo git knows and which are code
+    (PROC_05), and report an id that no object of the base commit of the pull request holds
+  source_ids: [TOOL_06@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_25
+  object_version: '2.2.1'
+  component: annotation
+  object_text: report an id named in @implements, @verifies or @refines that is in the base commit,
+    but not approved there
+  source_ids: [TOOL_06@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_26
+  object_version: '1.2.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, check the annotations against the
+    base commit, and fail where one names an id that is missing or not approved there; a pull request
+    whose check failed cannot be merged
+  source_ids: [TOOL_06@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_27
+  object_version: '1.2.1'
+  component: annotation
+  object_text: report a file git knows whose kind is set neither as code nor as no code, rather than
+    read it or pass it
+  source_ids: [TOOL_06@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_28
+  object_version: '1.1.1'
+  component: uplink
+  object_text: report an approved requirement that names an uplink in its source_ids that is not
+    approved
+  source_ids: [TOOL_09@3.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_29
+  object_version: '1.1.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, check the uplinks of the approved
+    requirements, and fail where one is not approved; a pull request whose check failed cannot be
+    merged
+  source_ids: [TOOL_09@3.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_30
+  object_version: '2.2.1'
+  component: annotation
+  object_text: report an `@implements`, `@verifies` or `@refines` that does not name the version of its id,
+    as `ID@x.y.z`
+  source_ids: [TOOL_20@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_31
+  object_version: '1.2.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, fail where an annotation names no
+    version; a pull request whose check failed cannot be merged
+  source_ids: [TOOL_20@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_32
+  object_version: '1.1.1'
+  component: link
+  object_text: report every link in `source_ids`, entry of `allocated` and entry of `controls` whose
+    object has another x than the version it names
+  source_ids: [TOOL_16@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_33
+  object_version: '2.1.1'
+  component: link
+  object_text: report every `@implements`, `@verifies` and `@refines` whose id has another x than the
+    version it names
+  source_ids: [TOOL_16@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_34
+  object_version: '1.1.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, make the link check in a job of its
+    own and show its report in the log, without failing
+  source_ids: [TOOL_16@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_35
+  object_version: '1.1.1'
+  component: annotation
+  object_text: find every `@refines` in the `$comment` of each schema in schemas/, and report an id that
+    is not in the requirements of the base commit of the pull request
+  source_ids: [TOOL_06@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_36
+  object_version: '2.1.1'
+  component: sbom
+  object_text: list in sbom.md every Go module that `go list -deps` names for the commands of the
+    subsystem at its baseline, except the package of the subsystem, with its version, the licence of
+    its LICENSE file in the module cache, and its PURL `pkg:golang/<path>@<version>`
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_37
+  object_version: '2.1.1'
+  component: sbom
+  object_text: list in sbom.md every package of `package-lock.json` of the subsystem at its baseline
+    that is not marked `dev`, except the package of the subsystem, with its version, its licence, and
+    its PURL `pkg:npm/<name>@<version>`
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_38
+  object_version: '1.2.1'
+  component: sbom
+  object_text: list in sbom.md every package of `/lib/apk/db/installed` in the last stage of each image
+    of the subsystem at its baseline, with its version, its licence, and its PURL
+    `pkg:apk/alpine/<name>@<version>`
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_39
+  object_version: '2.1.1'
+  component: sbom
+  object_text: write sbom.md in the folder sbom/ of the repo of the subsystem
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_40
+  object_version: '3.3.1'
+  component: sbom
+  object_text: 'add to the Change history of sbom.md a row with: - Version: the version of sbom.md in
+    `documents.yaml` with x raised by one, `1.1.1` where it has none, - Date: the day it runs, -
+    Change: the label of its baseline, - Reason: the ticket given, as `#<number>`, - By: the tool with
+    its version'
+  source_ids: [TOOL_21@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_41
+  object_version: '2.1.1'
+  component: sbom
+  object_text: list the packages in sbom.md in a section Packages, in one table with the columns PURL,
+    name, version and licence, sorted by PURL
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_42
+  object_version: '1.2.1'
+  component: sbom
+  object_text: end sbom.md with the sections Open and Change history
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_43
+  object_version: '1.1.1'
+  component: sbom
+  object_text: name the licence of a package by its SPDX identifier, several joined by AND, and one not
+    recognized as unknown
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_44
+  object_version: '1.1.1'
+  component: sbom
+  object_text: list in sbom.md the standard library of the Go the commands of the subsystem are built
+    with, with its version, its licence, and its PURL `pkg:golang/stdlib@<version>`
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_45
+  object_version: '1.1.1'
+  component: sbom
+  object_text: list in the section Open of sbom.md every package whose licence is unknown, and `<empty>`
+    where there is none
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_46
+  object_version: '1.1.1'
+  component: sbom
+  object_text: list in sbom.md the package of the subsystem itself, with the label of its baseline as
+    its version, the licence of the LICENSE file in the root of its repo, and its PURL
+    `pkg:github/treporting/<repo>@<label>`
+  source_ids: [TOOL_21@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_47
+  object_version: '1.1.1'
+  component: licence
+  object_text: 'fail on every package in sbom.md with a PURL of the type golang, npm or github whose
+    licence is not one of: Apache-2.0, MIT, BSD-2-Clause, BSD-3-Clause, ISC, Zlib, 0BSD, MPL-2.0; of
+    licences joined by AND each must be one of them, of licences joined by OR one'
+  source_ids: [TOOL_22@1.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_48
+  object_version: '1.1.1'
+  component: licence
+  object_text: fail on every package in sbom.md with a PURL of the type apk whose licence is unknown
+  source_ids: [TOOL_22@1.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_49
+  object_version: '1.1.1'
+  component: licence
+  object_text: take for a package whose PURL is in licences_assessed.yaml in the root of the repo of
+    the subsystem the licence named there in place of the one in sbom.md; each entry names a PURL, a
+    licence and a reason
+  source_ids: [TOOL_22@1.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_50
+  object_version: '1.1.1'
+  component: licence
+  object_text: name every package that fails with its PURL and its licence
+  source_ids: [TOOL_22@1.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_51
+  object_version: '1.1.2'
+  component: ci
+  object_text: 'in build.yml, build every Go module of the repo - every directory with a go.mod - and
+    fail where one does not build'
+  source_ids: [TOOL_23@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_52
+  object_version: '1.1.2'
+  component: ci
+  object_text: 'in build.yml, install with `npm ci` and build with `npm run build` every JavaScript package
+    of the repo - every directory with a package-lock.json - and fail where one does not build'
+  source_ids: [TOOL_23@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_53
+  object_version: '1.1.2'
+  component: ci
+  object_text: 'in build.yml, run golangci-lint v2 with errcheck, govet, staticcheck, gosec and
+    ineffassign, configured by .golangci.yml of specs-and-deploy, on every Go module of the repo, and
+    fail on any finding'
+  source_ids: [TOOL_24@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_54
+  object_version: '1.1.2'
+  component: ci
+  object_text: 'in build.yml, run eslint, configured by eslint.config.js of specs-and-deploy, on every
+    JavaScript package of the repo, and fail on any finding'
+  source_ids: [TOOL_24@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_55
+  object_version: '1.2.1'
+  component: ci
+  object_text: 'in build.yml, run `go test -race` on every Go module, once without and once with the build
+    tag integration, and fail where a test fails'
+  source_ids: [TOOL_12@1.2.4, TOOL_25@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_56
+  object_version: '1.1.2'
+  component: ci
+  object_text: 'in build.yml, run `npm test` on every JavaScript package, and fail where a test fails'
+  source_ids: [TOOL_25@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_57
+  object_version: '2.1.2'
+  component: ci
+  object_text: 'in build.yml, only where baseline.yml calls it, report the test coverage of every Go
+    module, measured with `-coverpkg=./...` over all its tests, and of every JavaScript package,
+    without failing'
+  source_ids: [TOOL_26@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_58
+  object_version: '2.1.2'
+  component: ci
+  object_text: 'in build.yml, only where baseline.yml calls it, report as structural debt of every Go
+    module what nothing uses - unused and unparam with `--tests=false`, and deadcode - and every
+    function of a cyclomatic complexity of 15 and more (gocyclo), without failing'
+  source_ids: [TOOL_26@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_59
+  object_version: '2.1.1'
+  component: sbom
+  object_text: set the entry of sbom.md in `documents.yaml` of the repo to the version of its new row in
+    the Change history, its `object_hash` to `git hash-object` of the sbom.md written, its status to
+    `completed` and its verification method to `[generated]`; add the entry, of type `document`, where
+    there is none
+  source_ids: [TOOL_21@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_60
+  object_version: '1.1.1'
+  component: baseline
+  object_text: 'provide the ticket template Baseline with the field Label; it sets no label on the
+    ticket'
+  source_ids: [TOOL_27@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_61
+  object_version: '1.1.1'
+  component: baseline
+  object_text: 'start baseline.yml when the label `baseline` is set on a ticket of the repo, with
+    the label of the baseline from the field Label; fail where it is empty'
+  source_ids: [TOOL_27@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_62
+  object_version: '1.1.1'
+  component: baseline
+  object_text: 'fail where the branch `<ticket number>-baseline-<label>` or the tag `<label>`
+    exists, or another run of baseline.yml of the repo is in progress'
+  source_ids: [TOOL_27@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_63
+  object_version: '1.1.1'
+  component: baseline
+  object_text: 'run on the head of main the jobs build, lint, test and report of build.yml, then
+    sbom with the label, the ticket and the images the caller names, built at that head, then
+    licencecheck'
+  source_ids: [TOOL_27@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_64
+  object_version: '1.1.1'
+  component: baseline
+  object_text: 'where every step passes, push the branch `<ticket number>-baseline-<label>` with
+    sbom.md and documents.yaml in one commit, and open a pull request with a token of the GitHub
+    App, naming the ticket, the label, the commit of main it ran on, and the command for the signed
+    tag'
+  source_ids: [TOOL_27@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_65
+  object_version: '1.1.1'
+  component: baseline
+  object_text: 'name the result in the ticket, as a comment: the pull request, or the step that
+    failed'
+  source_ids: [TOOL_27@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_66
+  object_version: '1.1.1'
+  component: sbom
+  object_text: 'with `-check`, compare the packages it would list with the table of sbom.md, write
+    nothing, and fail naming each package that differs'
+  source_ids: [TOOL_28@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_67
+  object_version: '1.1.1'
+  component: ci
+  object_text: 'in build.yml, run sbom with `-check` where the pull request changes sbom.md, with
+    the images the caller names'
+  source_ids: [TOOL_28@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_68
+  object_version: '1.1.1'
+  component: pdf
+  object_text: 'write one PDF for every document that documents.yaml of the commit or tag names,
+    from its Markdown at that commit or tag, named after its path with `.pdf`'
+  source_ids: [TOOL_01@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_69
+  object_version: '1.1.2'
+  component: pdf
+  object_text: 'render headings, lists, tables, code, links and Mermaid diagrams of a document as
+    GitHub shows them'
+  source_ids: [TOOL_01@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [inspection, test]
+- object_key: SR_70
+  object_version: '1.1.1'
+  component: pdf
+  object_text: 'set on every page the title of the document and the name of the repo in the header,
+    the date of the commit or tag and "page x of y" in the footer, and margins of 2 cm at top and
+    bottom'
+  source_ids: [TOOL_31@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [inspection]
+- object_key: SR_71
+  object_version: '1.1.1'
+  component: pdf
+  object_text: 'show in the footer the path, the version, the revision and the status of the
+    document, such as "devops.md · 2.1.1 · a1b2c3d · approved": version and status from
+    documents.yaml of the commit or tag, the revision the last commit up to it that changed the
+    file'
+  source_ids: [TOOL_02@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_72
+  object_version: '1.1.1'
+  component: pdf
+  object_text: 'write index.pdf that lists every document with its version, its revision and its
+    status'
+  source_ids: [TOOL_30@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_73
+  object_version: '1.1.1'
+  component: pdf
+  object_text: 'pack the PDFs and index.pdf in one ZIP named `<repo>-<commit or tag>-documents.zip`'
+  source_ids: [TOOL_01@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_74
+  object_version: '1.1.1'
+  component: ci
+  object_text: 'in pdf.yml, started by hand with a commit or tag: check it out, run pdf, and keep
+    the ZIP as artifact of the run; fail where the commit or tag does not exist'
+  source_ids: [TOOL_01@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_75
+  object_version: '1.1.2'
+  component: review
+  object_text: report an approved object that needs a review - its kind has a criteria file in
+    `reviews/`, a document has the verification method `review` - and that no review result names
+  source_ids: [TOOL_32@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_76
+  object_version: '1.1.2'
+  component: review
+  object_text: report an approved object that needs a review, where the last review result that names
+    it, by its `created_at`, has the verdict failed
+  source_ids: [TOOL_32@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_77
+  object_version: '1.1.2'
+  component: review
+  object_text: report an approved object that needs a review, where its content x counts in the
+    revision of the last review result that names it is not its content x counts now - for a
+    requirement the attributes its schema names for x, for a document the hash of its file
+  source_ids: [TOOL_32@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_78
+  object_version: '1.1.2'
+  component: review
+  object_text: report an approved requirement whose attributes its schema names for x are not those
+    of the first commit in which it was approved with its x
+  source_ids: [TOOL_33@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_79
+  object_version: '2.1.2'
+  component: review
+  object_text: report an approved or completed document whose `object_hash` is not the hash of its
+    file
+  source_ids: [TOOL_33@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_80
+  object_version: '2.1.3'
+  component: review
+  object_text: where a base commit is given, check only the objects in the files changed against it -
+    a requirement in its file, a document in its file or its entry in `documents.yaml`; where none is
+    given, check every approved object and completed document
+  source_ids: [TOOL_32@2.1.2, TOOL_33@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_81
+  object_version: '1.1.3'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, check the approvals of the objects
+    in the files it changes against its base commit, and fail where one is reported; a pull request
+    whose check failed cannot be merged
+  source_ids: [TOOL_32@2.1.2, TOOL_33@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_82
+  object_version: '2.1.3'
+  component: baseline
+  object_text: in baseline.yml, after licencecheck, check the approvals of every approved object and
+    completed document of the head of main, and fail where one is reported
+  source_ids: [TOOL_32@2.1.2, TOOL_33@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_83
+  object_version: '1.1.2'
+  component: review
+  object_text: create the skeleton of a review result with the field object_version 1.1.1 and the field
+    status open
+  source_ids: [TOOL_04@3.2.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_84
+  object_version: '1.1.2'
+  component: review
+  object_text: report a result whose status is completed and that has no completed_at, or a completed_at
+    before its created_at
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_85
+  object_version: '1.1.1'
+  component: review
+  object_text: report an approved object that needs a review, where the last review result that names
+    it has the status open
+  source_ids: [TOOL_32@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_86
+  object_version: '2.1.1'
+  component: review
+  object_text: find an id in every YAML file git knows that holds objects
+  source_ids: [TOOL_04@3.2.2, TOOL_32@2.1.3, TOOL_33@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_87
+  object_version: '1.1.1'
+  component: link
+  object_text: report every link in `target_ids` whose object has another x than the version it names
+  source_ids: [TOOL_16@1.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_88
+  object_version: '2.1.1'
+  component: testreport
+  object_text: read the result of each test procedure from the junit.xml given, one or more, and of
+    the test level given the test cases from `testcases/` and the test procedures with
+    their `@implements` and `@verifies` from the annotations
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_89
+  object_version: '4.1.1'
+  component: testreport
+  object_text: write the test report of the test level given as `testreports/<test level>.md` with
+    the head of a document and the sections Test environment, Original data, Test
+    specification, Test implementation, Test execution, Deviations, Open and Change
+    history, in this order; the title `Test report for <name> (<abbreviation>)` and the text of the
+    head name the test level by its name and its abbreviation, not by its key, such as `Test report
+    for subsystem test (SwVal)` for r5tc
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_90
+  object_version: '1.2.1'
+  component: testreport
+  object_text: list in Test environment the label of the baseline, the commit, the date, the operating
+    system, the runner, and each runtime and test runner the tests ran with, with its version
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_91
+  object_version: '2.1.1'
+  component: testreport
+  object_text: list in Original data every junit.xml given, in a table with the columns File, Made
+    by and Stored At - the command that made it, and where -store stored it, as
+    `./<folder>/<file>` from the root of the repo, or `-`
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_92
+  object_version: '1.2.1'
+  component: testreport
+  object_text: list in Test specification every test case, in a table with the columns Requirement,
+    Test case, Text and Status, the requirement from its `target_ids`
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_93
+  object_version: '1.2.1'
+  component: testreport
+  object_text: list in Test implementation every test procedure, in a table with the columns
+    Requirement, Test case, Test procedure and File - the requirement of its test case, or
+    of its `@verifies` where it implements none, and the column Test case empty then
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_94
+  object_version: '1.2.1'
+  component: testreport
+  object_text: list in Test execution every test procedure that ran, in a table with the columns
+    Requirement, Test case, Test procedure and Verdict
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_95
+  object_version: '2.1.1'
+  component: testreport
+  object_text: list in Deviations every test result whose verdict is not passed; list in Open every
+    test case and test procedure without a test result, in a table with the columns Requirement,
+    Test case, Test case status, Test procedure and Test procedure status - the status of a test
+    procedure `no test result`, and `-` for a test case without a test procedure; `<empty>` where
+    there is none
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_96
+  object_version: '2.1.1'
+  component: testreport
+  object_text: 'add to the Change history of the test report a row with: - Version: the version of
+    the test report in `documents.yaml` with x raised by one, `1.1.1` where it has none,
+    - Date: the day it runs, - Change: the label given, - Reason: the ticket given, as
+    `#<number>`, - By: the tool with its version; Change and Reason empty where no label
+    is given'
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_97
+  object_version: '1.2.1'
+  component: testreport
+  object_text: fail where a label is given without a ticket
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_98
+  object_version: '2.1.1'
+  component: testreport
+  object_text: set the entry of the test report in `documents.yaml` of the repo to the version of
+    its new row in the Change history, its `object_hash` to `git hash-object` of the test
+    report written, its status to `completed` and its verification method to
+    `[generated]`; add the entry, of type `document`, where there is none
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_99
+  object_version: '2.1.1'
+  component: baseline
+  object_text: in baseline.yml, after the job test, write the test report of each test level from
+    the junit.xml of that job with the label and the ticket, and push them in the commit
+    of sbom.md
+  source_ids: [TOOL_27@2.2.1, TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_100
+  object_version: '1.1.1'
+  component: ci
+  object_text: in .github/workflows/tools.yml, cancel the run of a pull request where a new push to its
+    branch starts another
+  source_ids: [TOOL_12@1.2.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [demonstration]
+- object_key: SR_101
+  object_version: '2.1.1'
+  component: sbom
+  object_text: list in sbom.md, in a section Original data before the section Packages, every file of
+    original data it is written from, in a table with the columns File, Made by and Stored At - the
+    command that made it, and where it is stored, as `./sbom/<file>`, or `-`
+  source_ids: [TOOL_21@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_102
+  object_version: '1.1.1'
+  component: sbom
+  object_text: with -store, write each file of original data into the folder sbom/ of the repo as
+    `<ts>_golist-<dir>.txt`, `<ts>_<dir>-package-lock.json` and `<ts>_apk-<image>.txt`, and name
+    them in `sbom/<ts>.yaml` - `<ts>` the time of the run as yyyymmddThhmmss, `<dir>` the directory
+    from the root of the repo or `root`, with `/` and `:` as `-`
+  source_ids: [TOOL_21@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_103
+  object_version: '1.1.1'
+  component: review
+  object_text: with -base, check only the review results that differ between the base commit and HEAD;
+    without it, every one
+  source_ids: [TOOL_03@3.3.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_104
+  object_version: '1.1.1'
+  component: testreport
+  object_text: with -store, copy each junit.xml given into the folder testreports/ of the test
+    report as `<ts>_<test level>-<file>`, and name them in `testreports/<ts>_<test level>.yaml` -
+    `<ts>` the time of the run as yyyymmddThhmmss, `<file>` the name of the junit.xml
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_105
+  object_version: '1.1.1'
+  component: sbom
+  object_text: with -store, write the output of go list with the module cache of Go, as `go env
+    GOMODCACHE` names it, replaced by `$GOMODCACHE`
+  source_ids: [TOOL_21@2.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_106
+  object_version: '1.1.1'
+  component: testreport
+  object_text: read the name and the abbreviation of the test level from levels.yaml, at the path
+    -levels gives, or `<root>/levels.yaml` where none is given; exit with an error where it names
+    no such test level
+  source_ids: [TOOL_34@2.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_107
+  object_version: '1.1.1'
+  component: schema
+  object_text: with the repo above given, take a schema that the repo itself does not hold from the
+    repo above; without it, report the schema as missing, as SR_19 does
+  source_ids: [TOOL_05@1.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_108
+  object_version: '1.1.1'
+  component: uplink
+  object_text: with the repo above given, look up an uplink that the repo itself does not hold in the
+    repo above, and check there that it is approved
+  source_ids: [TOOL_09@3.2.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_109
+  object_version: '1.1.1'
+  component: link
+  object_text: with the repo above given, compare a link or an annotation whose object the repo itself
+    does not hold with its object in the repo above
+  source_ids: [TOOL_16@1.1.2]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]

@@ -1366,7 +1366,7 @@ testcases:
     the repo above answers the same findings as with the schema in the repo itself'
   design_technique: equivalence partitioning
   target_ids: [SR_110@1.1.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_171
   object_version: '1.1.1'
@@ -1374,5 +1374,5 @@ testcases:
     the repo above stops with an error that names the schema'
   design_technique: equivalence partitioning
   target_ids: [SR_110@1.1.1]
-  status: draft
+  status: approved
   verification_method: [review]

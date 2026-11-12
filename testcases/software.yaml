@@ -1360,3 +1360,19 @@ testcases:
   target_ids: [SR_109@1.1.1]
   status: approved
   verification_method: [review]
+- object_key: TC_170
+  object_version: '1.1.1'
+  object_text: 'the schema of a file of requirements lies only in the repo above: approvalcheck with
+    the repo above answers the same findings as with the schema in the repo itself'
+  design_technique: equivalence partitioning
+  target_ids: [SR_110@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_171
+  object_version: '1.1.1'
+  object_text: 'the schema of a file of requirements lies only in the repo above: approvalcheck without
+    the repo above stops with an error that names the schema'
+  design_technique: equivalence partitioning
+  target_ids: [SR_110@1.1.1]
+  status: approved
+  verification_method: [review]

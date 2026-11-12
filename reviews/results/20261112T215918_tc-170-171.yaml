@@ -1,0 +1,38 @@
+# Review of TC_170, TC_171 against the criteria of the level r5tc.
+# Made with reviewskeleton; a proposal of Claude Code - the reviewer decides.
+# Format: ../../formats.md, section Reviews.
+schema: schemas/review-result.schema.json
+type: review
+level: r5tc
+object_version: '1.1.1'
+status: completed
+created_by: Mathias Fischer
+created_at: '2026-11-12T21:59:18+01:00'
+completed_at: '2026-11-12T22:00:21+01:00'
+criteria: reviews/criteria-r5tc.yaml
+criteria_revision: '525e6de'
+results:
+- object_key: RR_01
+  target_ids: [TC_170]
+  revision: 'e560ed2'
+  criteria:
+    RC_01: passed
+    RC_02: passed
+    RC_03: passed
+    RC_04: passed
+    RC_05: passed
+    RC_06: passed
+    RC_07: passed
+  verdict: passed
+- object_key: RR_02
+  target_ids: [TC_171]
+  revision: 'e560ed2'
+  criteria:
+    RC_01: passed
+    RC_02: passed
+    RC_03: passed
+    RC_04: passed
+    RC_05: passed
+    RC_06: passed
+    RC_07: passed
+  verdict: passed

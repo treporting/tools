@@ -1,14 +1,14 @@
 # Every Markdown file of this repo, each with its type, its level where it explains one, and a
 # version and a status of its own.
-# Format: formats.md of specs-and-deploy, section Documents
+# Format: formats.md of specs-and-deploy-process, section Documents
 schema: schemas/documents.schema.json
 type: documents
 documents:
 - name: README.md
   type: explanation
   level: r5
-  object_version: '38.1.1'
-  object_hash: '3ed97fc'
+  object_version: '39.1.1'
+  object_hash: '2b83007'
   status: approved
   verification_method: [review]
 - name: sbom/sbom.md

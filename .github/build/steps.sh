@@ -15,9 +15,9 @@
 # with 1 where the licences do not fit. Where JUNIT names a directory, test writes the junit.xml of
 # each run there, and baseline writes the test report of each test level from them.
 #
-# ABOVE names the root of the repo above - specs-and-deploy for the tools: baseline takes the schemas
+# ABOVE names the root of the repo above - specs-and-deploy-process for the tools: baseline takes the schemas
 # and levels.yaml from there. APPROVAL_BASE, where set, is the commit baseline checks the approvals
-# against: in tools, the first commit, as every approval before it has its review in specs-and-deploy.
+# against: in tools, the first commit, as every approval before it has its review in specs-and-deploy-process.
 #
 # It needs go, golangci-lint v2 and deadcode on the PATH, gotestsum where JUNIT is set, and node with
 # npm where there is a JavaScript package.

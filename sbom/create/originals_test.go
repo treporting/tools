@@ -89,10 +89,13 @@ func TestOriginalYAMLNamesEveryFileStored(t *testing.T) {
 	}
 
 	// the record keeps to its schema, which the repo above holds: ABOVE names its root, as build.yml
-	// sets it; else the checkout beside this one
+	// sets it; else the checkout beside this one, by its name since the rename or before it
 	above := os.Getenv("ABOVE")
 	if above == "" {
-		above = "../../../specs-and-deploy"
+		above = "../../../specs-and-deploy-process"
+		if _, err := os.Stat(above); err != nil {
+			above = "../../../specs-and-deploy"
+		}
 	}
 	schema, err := os.ReadFile(filepath.Join(above, "schemas", "original-data.schema.json")) // #nosec G304 G703 -- the root of the repo above, set by whoever runs the test
 	if err != nil {

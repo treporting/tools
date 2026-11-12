@@ -30,7 +30,7 @@ var compared = []string{"target", "enforcement", "conditions"}
 // Client reads a repo of GitHub through its API.
 type Client struct {
 	API   string // such as https://api.github.com
-	Repo  string // such as treporting/specs-and-deploy
+	Repo  string // such as treporting/specs-and-deploy-process
 	Token string // may be empty; with it the limit of requests is higher
 	HTTP  *http.Client
 }

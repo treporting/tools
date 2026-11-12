@@ -1,14 +1,14 @@
 # tools
 
 The tools of our work: what checks and supports the requirements, reviews and documents of
-treporting. Tools are code (see [devops.md](https://github.com/treporting/specs-and-deploy/blob/main/devops.md)): every tool realizes an approved tool
-requirement of [tool-requirements.yaml](https://github.com/treporting/specs-and-deploy/blob/main/requirements/tool-requirements.yaml). It is written for
+treporting. Tools are code (see [devops.md](https://github.com/treporting/specs-and-deploy-process/blob/main/devops.md)): every tool realizes an approved tool
+requirement of [tool-requirements.yaml](https://github.com/treporting/specs-and-deploy-process/blob/main/requirements/tool-requirements.yaml). It is written for
 whoever builds, runs or reviews the tools.
 
 ## Where the tools live
 
-**Decision**: in a repo of its own, tools, below specs-and-deploy, whose rules, schemas and tool
-requirements it follows (specs-and-deploy#637). The tools are checked against the repo above:
+**Decision**: in a repo of its own, tools, below specs-and-deploy-process, whose rules, schemas and tool
+requirements it follows (specs-and-deploy-process#637). The tools are checked against the repo above:
 `-above` names its root, and a schema or an uplink this repo does not hold is found there.
 
 **Why**: one repo held the product and our process with its tools. A level selects the criteria of
@@ -17,7 +17,7 @@ of the product. Each repo now has its own levels, criteria and reviews.
 
 **Rejected**:
 
-- `tools/` of specs-and-deploy, as until 2026-11-12 - what is checked and what checks lay
+- `tools/` of specs-and-deploy-process, as until 2026-11-12 - what is checked and what checks lay
   together, but the tools shared the levels and the criteria of the product
 - reporter-annotations - it is meant as a tool beside the product, but a check of reviews has
   nothing to do with annotations
@@ -163,8 +163,8 @@ reports the findings of a result by criterion, in the order of its criteria file
 
 ```bash
 cd tools
-go run ./review/cmd/reviewcheck -root ../specs-and-deploy        # every result in reviews/results/
-go run ./review/cmd/reviewcheck -root ../specs-and-deploy -base origin/main   # those changed against main
+go run ./review/cmd/reviewcheck -root ../specs-and-deploy-process        # every result in reviews/results/
+go run ./review/cmd/reviewcheck -root ../specs-and-deploy-process -base origin/main   # those changed against main
 go test ./...                            # MT
 go test -tags integration ./...          # SwIT, on a history of git made in the test
 ```
@@ -183,8 +183,8 @@ not found, or where the targets belong to more than one level.
 
 ```bash
 cd tools
-go run ./review/cmd/reviewskeleton -root ../specs-and-deploy -reviewer "Mathias Fischer" -scope harness harness.md
-go run ./review/cmd/reviewskeleton -root ../specs-and-deploy -reviewer "Mathias Fischer" -scope sr-11-15 SR_11 SR_12 SR_13
+go run ./review/cmd/reviewskeleton -root ../specs-and-deploy-process -reviewer "Mathias Fischer" -scope harness harness.md
+go run ./review/cmd/reviewskeleton -root ../specs-and-deploy-process -reviewer "Mathias Fischer" -scope sr-11-15 SR_11 SR_12 SR_13
 ```
 
 In its head the skeleton names its schema, the type `review` and the level of its criteria file
@@ -211,8 +211,8 @@ the schema of its file, `attributes_for_version_x`; of a document it is the hash
 
 ```bash
 cd tools
-go run ./review/cmd/approvalcheck -root ../specs-and-deploy              # every approved object
-go run ./review/cmd/approvalcheck -root ../specs-and-deploy -base main   # the objects in the files changed against main
+go run ./review/cmd/approvalcheck -root ../specs-and-deploy-process              # every approved object
+go run ./review/cmd/approvalcheck -root ../specs-and-deploy-process -base main   # the objects in the files changed against main
 ```
 
 With `-base`, it checks the objects in the files changed against that commit - a requirement in its
@@ -222,7 +222,7 @@ needs all of it. It exits with 1 where an approval does not hold. The code is th
 `review/approval`, in the component `review`.
 
 With `-above`, the root of the repo above, it takes the schema of a file this repo does not hold from
-there (SR_110). In this repo every approval before its split from specs-and-deploy has its review
+there (SR_110). In this repo every approval before its split from specs-and-deploy-process has its review
 there: without `-base` each of them is reported, so here it runs with `-base`.
 
 ## schemacheck
@@ -234,7 +234,7 @@ and reports each place where one does not match, with the file and the path with
 
 ```bash
 cd tools
-go run ./schema/cmd/schemacheck -root ../specs-and-deploy
+go run ./schema/cmd/schemacheck -root ../specs-and-deploy-process
 ```
 
 With `-above`, the root of the repo above, a schema this repo does not hold is taken from there
@@ -255,7 +255,7 @@ pass. The CI runs it on every pull request (SR_23), with the token of the workfl
 
 ```bash
 cd tools
-GITHUB_TOKEN=$(gh auth token) go run ./ruleset/cmd/rulesetcheck -root ../specs-and-deploy
+GITHUB_TOKEN=$(gh auth token) go run ./ruleset/cmd/rulesetcheck -root ../specs-and-deploy-process
 ```
 
 The code is the component `ruleset`: the package `ruleset/check` and the command
@@ -276,7 +276,7 @@ neither list is a finding (SR_27), until its kind is set; a YAML that names a sc
 is not read. In a file it reads, an annotation stands first in a line of comment: after spaces, a
 comment mark of one to three signs other than a quote, then `@implements` or `@verifies` - in every
 language, with no list of languages. Why both lists: formats.md, "Where an annotation is read".
-`@refines` it reads in the `$comment` of each schema in [schemas/](https://github.com/treporting/specs-and-deploy/tree/main/schemas) (SR_35).
+`@refines` it reads in the `$comment` of each schema in [schemas/](https://github.com/treporting/specs-and-deploy-process/tree/main/schemas) (SR_35).
 
 **Decision**: a line of comment is told by its start alone, with no knowledge of the strings of a
 language. Its known limit: a line of a string over lines - a raw string of Go, a template of
@@ -300,8 +300,8 @@ The CI runs it on every pull request with the base commit GitHub gives (SR_26, S
 
 ```bash
 cd tools
-go run ./annotation/cmd/annotationcheck -root ../specs-and-deploy                 # base: where HEAD branched from main
-go run ./annotation/cmd/annotationcheck -root ../specs-and-deploy -base <commit>
+go run ./annotation/cmd/annotationcheck -root ../specs-and-deploy-process                 # base: where HEAD branched from main
+go run ./annotation/cmd/annotationcheck -root ../specs-and-deploy-process -base <commit>
 ```
 
 The code is the component `annotation`: the package `annotation/check` and the command
@@ -323,7 +323,7 @@ The CI runs it on every pull request (SR_29).
 
 ```bash
 cd tools
-go run ./uplink/cmd/uplinkcheck -root ../specs-and-deploy
+go run ./uplink/cmd/uplinkcheck -root ../specs-and-deploy-process
 ```
 
 With `-above`, the root of the repo above, an uplink no file of this repo holds is looked up there,
@@ -353,7 +353,7 @@ required check: a suspect link blocks the baseline, not the pull request (PROC_2
 
 ```bash
 cd tools
-go run ./link/cmd/linkcheck -root ../specs-and-deploy
+go run ./link/cmd/linkcheck -root ../specs-and-deploy-process
 ```
 
 With `-above`, the root of the repo above, an entry or an id whose object this repo does not hold
@@ -387,7 +387,7 @@ Original data names the files `sbom.md` is written from (SR_101). With `-store` 
 ```bash
 cd tools
 go build -o sbom ./sbom/cmd/sbom
-./sbom -root ../specs-and-deploy/../storages -label 1.2.0 -ticket 343 -image storages:1.2.0
+./sbom -root ../specs-and-deploy-process/../storages -label 1.2.0 -ticket 343 -image storages:1.2.0
 ```
 
 With `-check` it writes nothing (TOOL_28, SR_66). It compares the packages delivered with the table
@@ -450,7 +450,7 @@ that fails with its PURL and its licence, and exits with 1 where one fails.
 ```bash
 cd tools
 go build -o licencecheck ./licence/cmd/licencecheck
-./licencecheck -root ../specs-and-deploy/../storages
+./licencecheck -root ../specs-and-deploy-process/../storages
 ```
 
 An entry of `licences_assessed.yaml`:
@@ -488,7 +488,7 @@ the PURL because a licence can change from one version to the next.
 **Rejected**:
 
 - the PURL without its version - an update would keep an assessment made for another text
-- a list in specs-and-deploy for every subsystem - the packages differ per subsystem, and so does
+- a list in specs-and-deploy-process for every subsystem - the packages differ per subsystem, and so does
   its baseline
 - the name `licences_whitelist.yaml` - the file allows no licence; it names the licence of a
   package
@@ -522,7 +522,7 @@ structural debt, and `eslint.config.js`. They lie there, not in the root, becaus
 The code is the component `ci`: the workflow and the files of `.github/build`.
 
 **Decision**: the build steps are one reusable workflow, `.github/workflows/build.yml` of tools,
-which every repo calls; until 2026-11-12 it lay in specs-and-deploy:
+which every repo calls; until 2026-11-12 it lay in specs-and-deploy-process:
 
 ```yaml
 jobs:
@@ -570,9 +570,9 @@ Prepares the baseline of a repo (TOOL_27; SR_60 to SR_65 in
 template Baseline and names the label in it. Whoever may label tickets of the repo sets the label
 `baseline` on it. The caller of the repo, `.github/workflows/ticket-baseline.yml`, then runs
 `.github/workflows/baseline.yml` of tools. A repo below another names it with `above`, such as
-`treporting/specs-and-deploy`: the steps read its schemas and `levels.yaml`. With `approval-base` the
+`treporting/specs-and-deploy-process`: the steps read its schemas and `levels.yaml`. With `approval-base` the
 approvals are checked only in the files changed since that commit - in tools its first commit, as
-every approval before it has its review in specs-and-deploy:
+every approval before it has its review in specs-and-deploy-process:
 
 1. `start`: reads the label from the field Label of the ticket - letters, digits, `.`, `_` and `-`
    only, as it becomes a tag. It fails where the field is empty, or where the branch
@@ -629,7 +629,7 @@ days, and the ZIP of a tag can be made again. By hand, from the checkout of tool
 installed:
 
 ```bash
-go run ./pdf/cmd/pdf -root ../specs-and-deploy -ref T044 -out ..
+go run ./pdf/cmd/pdf -root ../specs-and-deploy-process -ref T044 -out ..
 ```
 
 ## testreport
@@ -708,3 +708,4 @@ its own root, and by the names of its describe blocks before its own.
 | 36.1.1 | 2026-11-12 | Where the tools live: a repo of its own; links and paths from this repo; the numbers of the tickets above name those of specs-and-deploy | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 37.1.1 | 2026-11-12 | approvalcheck: -above | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 38.1.1 | 2026-11-12 | build steps, baseline, pdf: from specs-and-deploy into tools | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 39.1.1 | 2026-11-13 | specs-and-deploy is named specs-and-deploy-process | specs-and-deploy-process#641 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

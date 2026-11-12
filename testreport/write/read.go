@@ -164,7 +164,7 @@ func ReadProcedures(root string, files []string, module, modRoot string) ([]Proc
 		if len(byFile[file]) == 0 {
 			continue
 		}
-		data, err := os.ReadFile(filepath.Join(root, file))
+		data, err := os.ReadFile(filepath.Join(root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
 			return nil, err
 		}

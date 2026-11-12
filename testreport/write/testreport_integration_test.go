@@ -19,7 +19,7 @@ const levelsYAML = "levels:\n- key: r5tc\n  name: subsystem test\n  abbreviation
 func testreportRun(t *testing.T, levels string, args ...string) (string, []byte, error) {
 	t.Helper()
 	bin := filepath.Join(t.TempDir(), "testreport")
-	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/testreport").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/testreport").CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		t.Fatalf("go build: %v\n%s", err, out)
 	}
 	repo := t.TempDir()
@@ -36,7 +36,7 @@ func testreportRun(t *testing.T, levels string, args ...string) (string, []byte,
 		}
 	}
 	for _, git := range [][]string{{"init", "-q"}, {"add", "."}, {"-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "a"}} {
-		if out, err := exec.Command("git", append([]string{"-C", repo}, git...)...).CombinedOutput(); err != nil {
+		if out, err := exec.Command("git", append([]string{"-C", repo}, git...)...).CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 			t.Fatalf("git %v: %v\n%s", git, err, out)
 		}
 	}
@@ -51,7 +51,7 @@ func testreportRun(t *testing.T, levels string, args ...string) (string, []byte,
 	all := append([]string{"-root", repo, "-dir", "tools", "-level", "r5tc",
 		"-junit", goXML, "-made-by", "gotestsum --junitfile junit-go.xml -- ./...",
 		"-junit", vitestXML, "-made-by", "vitest run --reporter=junit"}, args...)
-	out, err := exec.Command(bin, all...).CombinedOutput()
+	out, err := exec.Command(bin, all...).CombinedOutput() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	return repo, out, err
 }
 
@@ -77,7 +77,7 @@ func testreportIn(t *testing.T, args ...string) (string, []string) {
 // head answers the test report of the repo up to its first section.
 func head(t *testing.T, repo string) string {
 	t.Helper()
-	md, err := os.ReadFile(filepath.Join(repo, "tools", "testreports", "software.md"))
+	md, err := os.ReadFile(filepath.Join(repo, "tools", "testreports", "software.md")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -143,11 +143,11 @@ func TestCommandWithStoreCopiesEachJUnit(t *testing.T) {
 	if !ok || len(ts) != len("20261105T100000") || names[1] != ts+"_r5tc-junit-vitest.xml" || names[2] != ts+"_r5tc.yaml" || names[3] != "software.md" {
 		t.Fatalf("tools/testreports/ holds %v", names)
 	}
-	copied, err := os.ReadFile(filepath.Join(repo, "tools", "testreports", names[0]))
+	copied, err := os.ReadFile(filepath.Join(repo, "tools", "testreports", names[0])) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil || string(copied) != goJUnit {
 		t.Errorf("the copy of junit-go.xml: %v", err)
 	}
-	md, err := os.ReadFile(filepath.Join(repo, "tools", "testreports", "software.md"))
+	md, err := os.ReadFile(filepath.Join(repo, "tools", "testreports", "software.md")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -159,7 +159,7 @@ func TestCommandWithStoreCopiesEachJUnit(t *testing.T) {
 			t.Errorf("Original data has no %q:\n%s", want, md)
 		}
 	}
-	record, err := os.ReadFile(filepath.Join(repo, "tools", "testreports", names[2]))
+	record, err := os.ReadFile(filepath.Join(repo, "tools", "testreports", names[2])) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}

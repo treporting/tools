@@ -72,7 +72,7 @@ func main() {
 		fail(fmt.Errorf("-ticket is missing"))
 	}
 	documentsPath := filepath.Join(*root, "documents.yaml")
-	documents, err := os.ReadFile(documentsPath)
+	documents, err := os.ReadFile(documentsPath) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		fail(err)
 	}
@@ -84,7 +84,7 @@ func main() {
 	packages, originals := delivered(*root, *repo, *label, named)
 
 	now := time.Now()
-	old, _ := os.ReadFile(path) // an sbom.md that is not there has no rows to keep
+	old, _ := os.ReadFile(path) // #nosec G304 -- the path comes from the user of the tool, not from outside; an sbom.md that is not there has no rows to keep
 	history := append(create.History(old), create.Row(next, now.Format("2006-01-02"), *label, *ticket, "sbom "+version()))
 
 	if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
@@ -97,7 +97,7 @@ func main() {
 	if err := os.WriteFile(path, md, 0o600); err != nil {
 		fail(err)
 	}
-	if err := os.WriteFile(documentsPath, create.Entry(documents, next, create.Hash(md)), 0o600); err != nil {
+	if err := os.WriteFile(documentsPath, create.Entry(documents, next, create.Hash(md)), 0o600); err != nil { // #nosec G703 -- the path comes from the user of the tool, not from outside
 		fail(err)
 	}
 	fmt.Printf("%s written: %d packages, version %s\n", path, len(packages), next)
@@ -109,7 +109,7 @@ func main() {
 //
 // @implements SR_66@1.1.1
 func checkSbom(path, root, repo string, named []string) {
-	md, err := os.ReadFile(path)
+	md, err := os.ReadFile(path) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		fail(err)
 	}
@@ -227,7 +227,7 @@ func npmPackages(root string, _ []string) ([]create.Package, []create.Original) 
 	var packages []create.Package
 	var originals []create.Original
 	for _, dir := range dirs {
-		lock, err := os.ReadFile(filepath.Join(dir, "package-lock.json"))
+		lock, err := os.ReadFile(filepath.Join(dir, "package-lock.json")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
 			fail(err)
 		}

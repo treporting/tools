@@ -38,7 +38,7 @@ func main() {
 		fail(err)
 	}
 	findings, approved, err := check.CheckWithAbove(func(file string) ([]byte, error) {
-		return os.ReadFile(filepath.Join(*root, file))
+		return os.ReadFile(filepath.Join(*root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	}, index, above)
 	if err != nil {
 		fail(err)

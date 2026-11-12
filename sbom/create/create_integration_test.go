@@ -48,7 +48,7 @@ func TestGoEnvNamesTheVersionOfGo(t *testing.T) {
 // @implements TC_108@2.1.1
 func TestCommandWritesSbomMDInTheRootAndKeepsTheHistory(t *testing.T) {
 	bin := filepath.Join(t.TempDir(), "sbom")
-	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/sbom").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/sbom").CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		t.Fatalf("go build: %v\n%s", err, out)
 	}
 	repo := filepath.Join(t.TempDir(), "viewer-trace")
@@ -66,11 +66,11 @@ func TestCommandWritesSbomMDInTheRootAndKeepsTheHistory(t *testing.T) {
 	}
 
 	for _, label := range []string{"1.0.0", "1.1.0"} {
-		if out, err := exec.Command(bin, "-root", repo, "-label", label, "-ticket", "343").CombinedOutput(); err != nil {
+		if out, err := exec.Command(bin, "-root", repo, "-label", label, "-ticket", "343").CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 			t.Fatalf("sbom: %v\n%s", err, out)
 		}
 	}
-	md, err := os.ReadFile(filepath.Join(repo, Name))
+	md, err := os.ReadFile(filepath.Join(repo, Name)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +79,7 @@ func TestCommandWritesSbomMDInTheRootAndKeepsTheHistory(t *testing.T) {
 		!strings.HasPrefix(rows[1], "| 2.1.1 | ") || !strings.Contains(rows[1], " | 1.1.0 | #343 | sbom ") {
 		t.Errorf("rows %q", rows)
 	}
-	documents, err := os.ReadFile(filepath.Join(repo, "documents.yaml"))
+	documents, err := os.ReadFile(filepath.Join(repo, "documents.yaml")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -94,7 +94,7 @@ func TestCommandWritesSbomMDInTheRootAndKeepsTheHistory(t *testing.T) {
 // @implements TC_122@1.1.1, TC_123@1.1.1
 func TestCheckFailsWhereSbomMDDoesNotListWhatIsDelivered(t *testing.T) {
 	bin := filepath.Join(t.TempDir(), "sbom")
-	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/sbom").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/sbom").CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		t.Fatalf("go build: %v\n%s", err, out)
 	}
 	repo := filepath.Join(t.TempDir(), "viewer-trace")
@@ -106,18 +106,18 @@ func TestCheckFailsWhereSbomMDDoesNotListWhatIsDelivered(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if out, err := exec.Command(bin, "-root", repo, "-label", "1.0.0", "-ticket", "343").CombinedOutput(); err != nil {
+	if out, err := exec.Command(bin, "-root", repo, "-label", "1.0.0", "-ticket", "343").CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		t.Fatalf("sbom: %v\n%s", err, out)
 	}
-	written, err := os.ReadFile(filepath.Join(repo, Name))
+	written, err := os.ReadFile(filepath.Join(repo, Name)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if out, err := exec.Command(bin, "-root", repo, "-check").CombinedOutput(); err != nil {
+	if out, err := exec.Command(bin, "-root", repo, "-check").CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		t.Errorf("check of the sbom.md just written: %v\n%s", err, out)
 	}
-	after, err := os.ReadFile(filepath.Join(repo, Name))
+	after, err := os.ReadFile(filepath.Join(repo, Name)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil || string(after) != string(written) {
 		t.Errorf("check wrote sbom.md: %v", err)
 	}
@@ -126,7 +126,7 @@ func TestCheckFailsWhereSbomMDDoesNotListWhatIsDelivered(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(repo, "package-lock.json"), []byte(changed), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	out, err := exec.Command(bin, "-root", repo, "-check").CombinedOutput()
+	out, err := exec.Command(bin, "-root", repo, "-check").CombinedOutput() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if exit, ok := err.(*exec.ExitError); !ok || exit.ExitCode() != 1 || !strings.Contains(string(out), "delivered is") {
 		t.Errorf("check of a changed lock: %v\n%s", err, out)
 	}
@@ -137,7 +137,7 @@ func TestCheckFailsWhereSbomMDDoesNotListWhatIsDelivered(t *testing.T) {
 func sbomIn(t *testing.T, args ...string) (string, []string) {
 	t.Helper()
 	bin := filepath.Join(t.TempDir(), "sbom")
-	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/sbom").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o", bin, "../cmd/sbom").CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		t.Fatalf("go build: %v\n%s", err, out)
 	}
 	repo := filepath.Join(t.TempDir(), "viewer-trace")
@@ -150,11 +150,11 @@ func sbomIn(t *testing.T, args ...string) (string, []string) {
 		}
 	}
 	for _, git := range [][]string{{"init", "-q"}, {"add", "."}, {"-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "a"}} {
-		if out, err := exec.Command("git", append([]string{"-C", repo}, git...)...).CombinedOutput(); err != nil {
+		if out, err := exec.Command("git", append([]string{"-C", repo}, git...)...).CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 			t.Fatalf("git %v: %v\n%s", git, err, out)
 		}
 	}
-	if out, err := exec.Command(bin, append([]string{"-root", repo, "-label", "1.0.0", "-ticket", "343"}, args...)...).CombinedOutput(); err != nil {
+	if out, err := exec.Command(bin, append([]string{"-root", repo, "-label", "1.0.0", "-ticket", "343"}, args...)...).CombinedOutput(); err != nil { // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		t.Fatalf("sbom: %v\n%s", err, out)
 	}
 	entries, err := os.ReadDir(filepath.Join(repo, Folder))
@@ -174,7 +174,7 @@ func TestCommandWithoutStoreWritesOnlySbomMD(t *testing.T) {
 	if len(names) != 1 || names[0] != "sbom.md" {
 		t.Errorf("sbom/ holds %v", names)
 	}
-	md, err := os.ReadFile(filepath.Join(repo, Name))
+	md, err := os.ReadFile(filepath.Join(repo, Name)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -194,14 +194,14 @@ func TestCommandWithStoreWritesTheOriginalsAndTheirRecord(t *testing.T) {
 	if !ok || len(ts) != len("20261105T100000") || record != ts+".yaml" || names[2] != "sbom.md" {
 		t.Fatalf("sbom/ holds %v", names)
 	}
-	md, err := os.ReadFile(filepath.Join(repo, Name))
+	md, err := os.ReadFile(filepath.Join(repo, Name)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !strings.Contains(string(md), "| root-package-lock.json | `npm install` | ./sbom/"+lockName+" |") {
 		t.Errorf("Original data:\n%s", md)
 	}
-	data, err := os.ReadFile(filepath.Join(repo, Folder, record))
+	data, err := os.ReadFile(filepath.Join(repo, Folder, record)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}

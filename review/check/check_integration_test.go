@@ -15,7 +15,7 @@ import (
 // gitIn runs git in dir and answers its output.
 func gitIn(t *testing.T, dir string, args ...string) string {
 	t.Helper()
-	cmd := exec.Command("git", append([]string{"-C", dir}, args...)...)
+	cmd := exec.Command("git", append([]string{"-C", dir}, args...)...) // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	cmd.Env = append(os.Environ(), "GIT_AUTHOR_NAME=Mathias Fischer", "GIT_AUTHOR_EMAIL=m@example.org",
 		"GIT_COMMITTER_NAME=Mathias Fischer", "GIT_COMMITTER_EMAIL=m@example.org")
 	out, err := cmd.CombinedOutput()

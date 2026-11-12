@@ -11,7 +11,7 @@ type ExecGit struct {
 }
 
 func (g ExecGit) run(args ...string) (string, error) {
-	out, err := exec.Command("git", append([]string{"-C", g.Root}, args...)...).Output()
+	out, err := exec.Command("git", append([]string{"-C", g.Root}, args...)...).Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	return string(out), err
 }
 

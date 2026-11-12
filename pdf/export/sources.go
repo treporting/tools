@@ -128,7 +128,7 @@ func (p *Printer) Print(htmlPage, header, footer string) ([]byte, error) {
 
 // git runs git in dir and answers its output.
 func git(dir string, args ...string) (string, error) {
-	cmd := exec.Command("git", args...)
+	cmd := exec.Command("git", args...) // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	cmd.Dir = dir
 	out, err := cmd.Output()
 	if err != nil {

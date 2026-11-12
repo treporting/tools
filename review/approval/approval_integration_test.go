@@ -15,7 +15,7 @@ import (
 // gitIn runs git in dir and answers its output.
 func gitIn(t *testing.T, dir string, args ...string) string {
 	t.Helper()
-	cmd := exec.Command("git", append([]string{"-C", dir}, args...)...)
+	cmd := exec.Command("git", append([]string{"-C", dir}, args...)...) // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	cmd.Env = append(os.Environ(), "GIT_AUTHOR_NAME=Mathias Fischer", "GIT_AUTHOR_EMAIL=m@example.org",
 		"GIT_COMMITTER_NAME=Mathias Fischer", "GIT_COMMITTER_EMAIL=m@example.org")
 	out, err := cmd.CombinedOutput()
@@ -30,7 +30,7 @@ func write(t *testing.T, root, path, content string) {
 	if err := os.MkdirAll(filepath.Join(root, filepath.Dir(path)), 0o750); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(root, path), []byte(content), 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(root, path), []byte(content), 0o600); err != nil { // #nosec G703 -- the path comes from the user of the tool, not from outside
 		t.Fatal(err)
 	}
 }
@@ -182,7 +182,7 @@ func TestACompletedDocumentHasItsHash(t *testing.T) {
 
 	root, _ := history(t)
 	write(t, root, "sbom.md", "# SBOM\n")
-	data, err := os.ReadFile(filepath.Join(root, "documents.yaml"))
+	data, err := os.ReadFile(filepath.Join(root, "documents.yaml")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -215,7 +215,7 @@ func TestADocumentWithoutAReview(t *testing.T) {
 
 	root, _ := history(t)
 	write(t, root, "b.md", "# B\n")
-	data, err := os.ReadFile(filepath.Join(root, "documents.yaml"))
+	data, err := os.ReadFile(filepath.Join(root, "documents.yaml")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -278,7 +278,7 @@ func TestOnlyTheEntryOfADocumentChanged(t *testing.T) {
 
 	root, _ := history(t)
 	base := gitIn(t, root, "rev-parse", "--short", "HEAD")
-	data, err := os.ReadFile(filepath.Join(root, "documents.yaml"))
+	data, err := os.ReadFile(filepath.Join(root, "documents.yaml")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}

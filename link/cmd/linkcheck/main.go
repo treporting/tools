@@ -45,7 +45,7 @@ func main() {
 	}
 
 	read := func(file string) ([]byte, error) {
-		return os.ReadFile(filepath.Join(*root, file))
+		return os.ReadFile(filepath.Join(*root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	}
 	index, err := review.IndexAt(*root)
 	if err != nil {
@@ -56,7 +56,7 @@ func main() {
 		fail(err)
 	}
 
-	out, err := exec.Command("git", "-C", *root, "ls-files").Output()
+	out, err := exec.Command("git", "-C", *root, "ls-files").Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if err != nil {
 		fail(err)
 	}

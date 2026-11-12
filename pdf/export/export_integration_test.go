@@ -16,7 +16,7 @@ func repo(t *testing.T) (dir, readme, other string) {
 	t.Helper()
 	dir = t.TempDir()
 	git := func(args ...string) string {
-		cmd := exec.Command("git", args...)
+		cmd := exec.Command("git", args...) // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		cmd.Dir = dir
 		cmd.Env = append(os.Environ(), "GIT_AUTHOR_NAME=t", "GIT_AUTHOR_EMAIL=t@t", "GIT_COMMITTER_NAME=t",
 			"GIT_COMMITTER_EMAIL=t@t", "GIT_COMMITTER_DATE=2026-11-01T12:00:00Z", "GIT_AUTHOR_DATE=2026-11-01T12:00:00Z")

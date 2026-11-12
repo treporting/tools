@@ -34,14 +34,14 @@ func main() {
 	}
 
 	if *base == "" {
-		out, err := exec.Command("git", "-C", *root, "merge-base", "HEAD", "main").Output()
+		out, err := exec.Command("git", "-C", *root, "merge-base", "HEAD", "main").Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 		if err != nil {
 			fail(fmt.Errorf("git merge-base HEAD main: %w", err))
 		}
 		*base = strings.TrimSpace(string(out))
 	}
 
-	out, err := exec.Command("git", "-C", *root, "ls-files").Output()
+	out, err := exec.Command("git", "-C", *root, "ls-files").Output() // #nosec G204 -- git or a command the user of the tool names, not input from outside
 	if err != nil {
 		fail(err)
 	}

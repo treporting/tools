@@ -98,14 +98,14 @@ func TestOriginalYAMLNamesEveryFileStored(t *testing.T) {
 	if above == "" {
 		above = "../../../specs-and-deploy"
 	}
-	schema, err := os.ReadFile(filepath.Join(above, "schemas", "original-data.schema.json"))
+	schema, err := os.ReadFile(filepath.Join(above, "schemas", "original-data.schema.json")) // #nosec G304 G703 -- the root of the repo above, set by whoever runs the test
 	if err != nil {
 		t.Fatal(err)
 	}
 	if err := os.MkdirAll(filepath.Join(root, "schemas"), 0o750); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(root, "schemas", "original-data.schema.json"), schema, 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(root, "schemas", "original-data.schema.json"), schema, 0o600); err != nil { // #nosec G703 -- the path comes from the user of the tool, not from outside
 		t.Fatal(err)
 	}
 	if err := os.WriteFile(filepath.Join(root, "sbom", "20261105T100000.yaml"), record, 0o600); err != nil {
@@ -125,7 +125,7 @@ func TestStoredGoListNamesNoLocalPath(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	data, err := os.ReadFile(filepath.Join(root, "sbom", "20261105T100000_golist-tools.txt"))
+	data, err := os.ReadFile(filepath.Join(root, "sbom", "20261105T100000_golist-tools.txt")) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		t.Fatal(err)
 	}

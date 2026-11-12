@@ -85,7 +85,7 @@ type Git interface {
 // @implements SR_01@1.1.1, SR_02@1.1.1, SR_03@1.1.1, SR_04@1.1.1, SR_05@2.1.1, SR_06@1.1.1, SR_07@1.1.1, SR_08@1.1.1, SR_16@1.1.1, SR_84@1.1.1
 func Check(root, path string, git Git, index *review.Index) ([]Finding, error) {
 
-	data, err := os.ReadFile(filepath.Join(root, path))
+	data, err := os.ReadFile(filepath.Join(root, path)) // #nosec G304 -- the path comes from the user of the tool, not from outside
 	if err != nil {
 		return nil, err
 	}

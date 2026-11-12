@@ -290,3 +290,53 @@ func TestOnlyTheEntryOfADocumentChanged(t *testing.T) {
 		t.Errorf("the entry of a.md changed against the base, and a.md is not checked:\n%s", got)
 	}
 }
+
+// moveSchemas moves the schemas of root into a repo above of their own, and answers its root.
+func moveSchemas(t *testing.T, root string) string {
+	t.Helper()
+	above := t.TempDir()
+	if err := os.Rename(filepath.Join(root, "schemas"), filepath.Join(above, "schemas")); err != nil {
+		t.Fatal(err)
+	}
+	return above
+}
+
+// @implements TC_170@1.1.1
+func TestASchemaIsTakenFromTheRepoAbove(t *testing.T) {
+
+	root, _ := history(t)
+	want := messages(t, root, "")
+	above := moveSchemas(t, root)
+
+	index, err := review.IndexAt(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	findings, err := CheckWithAbove(root, above, "", review.ExecGit{Root: root}, index)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var lines []string
+	for _, f := range findings {
+		lines = append(lines, f.String())
+	}
+	if got := strings.Join(lines, "\n"); got != want {
+		t.Errorf("with the repo above:\n%s\nwant, as with the schema in the repo itself:\n%s", got, want)
+	}
+}
+
+// @implements TC_171@1.1.1
+func TestWithoutTheRepoAboveTheSchemaIsMissing(t *testing.T) {
+
+	root, _ := history(t)
+	moveSchemas(t, root)
+
+	index, err := review.IndexAt(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = Check(root, "", review.ExecGit{Root: root}, index)
+	if err == nil || !strings.Contains(err.Error(), "schemas/tool.schema.json") {
+		t.Errorf("error %v, want one that names schemas/tool.schema.json", err)
+	}
+}

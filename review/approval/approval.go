@@ -60,10 +60,25 @@ type object struct {
 //
 // @implements SR_75@1.1.1, SR_76@1.1.1, SR_77@1.1.1, SR_78@1.1.1, SR_79@2.1.2, SR_80@2.1.3, SR_85@1.1.1
 func Check(root, base string, git Git, index *review.Index) ([]Finding, error) {
+	return CheckWithAbove(root, "", base, git, index)
+}
+
+// CheckWithAbove is Check, and takes the schema of a file that root does not hold from above, the
+// root of the repo above, where it is not empty.
+//
+// @implements SR_110@1.1.1
+func CheckWithAbove(root, above, base string, git Git, index *review.Index) ([]Finding, error) {
 
 	read := func(file string) ([]byte, error) { return os.ReadFile(filepath.Join(root, file)) } // #nosec G304 -- the path comes from the user of the tool, not from outside
+	readSchema := func(file string) ([]byte, error) {
+		data, err := read(file)
+		if errors.Is(err, fs.ErrNotExist) && above != "" {
+			return os.ReadFile(filepath.Join(above, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
+		}
+		return data, err
+	}
 
-	requirements, err := approvedRequirements(read, index.Files())
+	requirements, err := approvedRequirements(read, readSchema, index.Files())
 	if err != nil {
 		return nil, err
 	}
@@ -226,7 +241,7 @@ func lastReviews(root string) (map[string]*result, error) {
 
 // approvedRequirements answers the approved objects of the files that hold requirements, in the
 // order of the files and of the objects in them.
-func approvedRequirements(read review.Read, files []string) ([]object, error) {
+func approvedRequirements(read, readSchema review.Read, files []string) ([]object, error) {
 
 	var objects []object
 	for _, file := range files {
@@ -241,7 +256,7 @@ func approvedRequirements(read review.Read, files []string) ([]object, error) {
 		if err := yaml.Unmarshal(data, &head); err != nil {
 			return nil, fmt.Errorf("%s: %w", file, err)
 		}
-		x, err := attributesForX(read, head.Schema)
+		x, err := attributesForX(readSchema, head.Schema)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", file, err)
 		}

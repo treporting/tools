@@ -12,7 +12,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/treporting/specs-and-deploy/tools/annotation/check"
+	"github.com/treporting/tools/annotation/check"
 )
 
 // Files names the file of the test cases and of the test report of each test level, without .yaml

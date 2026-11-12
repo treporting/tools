@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
-	"github.com/treporting/specs-and-deploy/tools/review/check"
+	"github.com/treporting/tools/review"
+	"github.com/treporting/tools/review/check"
 )
 
 // @implements SR_01@1.1.1, SR_02@1.1.1, SR_03@1.1.1, SR_04@1.1.1, SR_05@2.1.1, SR_06@1.1.1, SR_07@1.1.1, SR_08@1.1.1, SR_103@1.1.1

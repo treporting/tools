@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/treporting/specs-and-deploy/tools/schema/check"
+	"github.com/treporting/tools/schema/check"
 )
 
 // originals answers the original data of a repo in root with a go.mod in tools/, a
@@ -88,8 +88,17 @@ func TestOriginalYAMLNamesEveryFileStored(t *testing.T) {
 		}
 	}
 
-	// the record keeps to its schema
-	schema, err := os.ReadFile("../../../schemas/original-data.schema.json")
+	// the record keeps to its schema, which the repo above holds: ABOVE names its root; in the CI
+	// STEPS does, the checkout of specs-and-deploy that build.yml makes; else the checkout beside
+	// this one
+	above := os.Getenv("ABOVE")
+	if above == "" {
+		above = os.Getenv("STEPS")
+	}
+	if above == "" {
+		above = "../../../specs-and-deploy"
+	}
+	schema, err := os.ReadFile(filepath.Join(above, "schemas", "original-data.schema.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

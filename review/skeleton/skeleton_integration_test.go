@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
-	"github.com/treporting/specs-and-deploy/tools/review/check"
+	"github.com/treporting/tools/review"
+	"github.com/treporting/tools/review/check"
 )
 
 func gitIn(t *testing.T, dir string, args ...string) {

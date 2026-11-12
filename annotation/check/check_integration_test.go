@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 )
 
 func gitIn(t *testing.T, dir string, args ...string) string {

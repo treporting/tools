@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/treporting/specs-and-deploy/tools/schema/check"
+	"github.com/treporting/tools/schema/check"
 )
 
 // @implements SR_18@1.1.1, SR_19@1.1.1, SR_107@1.1.1

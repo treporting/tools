@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 )
 
 // fakeGit is a history of one commit and its parent, kept in memory.

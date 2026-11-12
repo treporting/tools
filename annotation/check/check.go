@@ -11,7 +11,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 	"gopkg.in/yaml.v3"
 )
 
@@ -112,7 +112,7 @@ func Find(root string, files []string, kinds Kinds) ([]Annotation, []Finding, er
 		case "no code":
 			continue
 		case "unknown":
-			unknown = append(unknown, Finding{Annotation{File: file}, "", "its kind is set neither as code nor as no code (tools/annotation/kinds.yaml)"})
+			unknown = append(unknown, Finding{Annotation{File: file}, "", "its kind is set neither as code nor as no code (kinds.yaml)"})
 			continue
 		}
 		data, err := os.ReadFile(filepath.Join(root, file))

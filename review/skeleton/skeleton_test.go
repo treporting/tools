@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 )
 
 // fakeGit is a history of two commits kept in memory: c1 changed the criteria, c2 is HEAD.

@@ -26,8 +26,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/treporting/specs-and-deploy/tools/sbom/create"
-	"github.com/treporting/specs-and-deploy/tools/testreport/write"
+	"github.com/treporting/tools/sbom/create"
+	"github.com/treporting/tools/testreport/write"
 )
 
 // list collects a flag that may be given more than once.
@@ -219,7 +219,7 @@ func runner() string {
 	return "local"
 }
 
-// version answers the version of this tool: the commit of specs-and-deploy it was built from, as Go
+// version answers the version of this tool: the commit of tools it was built from, as Go
 // records it in the build, with -dirty where the working tree had changes; (devel) where Go recorded
 // none, as with go run.
 func version() string {

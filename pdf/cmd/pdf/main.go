@@ -16,7 +16,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/treporting/specs-and-deploy/tools/pdf/export"
+	"github.com/treporting/tools/pdf/export"
 )
 
 func main() {

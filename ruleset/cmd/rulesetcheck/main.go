@@ -12,7 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/treporting/specs-and-deploy/tools/ruleset/check"
+	"github.com/treporting/tools/ruleset/check"
 )
 
 // @implements SR_21@1.1.1, SR_22@1.1.1

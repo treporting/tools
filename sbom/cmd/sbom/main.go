@@ -27,7 +27,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/treporting/specs-and-deploy/tools/sbom/create"
+	"github.com/treporting/tools/sbom/create"
 )
 
 // images collects the flag -image, which may be given more than once.
@@ -256,7 +256,7 @@ func apkPackages(_ string, named []string) ([]create.Package, []create.Original)
 	return packages, originals
 }
 
-// version answers the version of this tool: the commit of specs-and-deploy it was built from, as Go
+// version answers the version of this tool: the commit of tools it was built from, as Go
 // records it in the build, with -dirty where the working tree had changes; (devel) where Go recorded
 // none, as with go run.
 func version() string {

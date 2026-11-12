@@ -13,8 +13,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
-	"github.com/treporting/specs-and-deploy/tools/uplink/check"
+	"github.com/treporting/tools/review"
+	"github.com/treporting/tools/uplink/check"
 )
 
 // @implements SR_28@1.1.1, SR_108@1.1.1

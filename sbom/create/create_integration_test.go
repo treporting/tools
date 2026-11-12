@@ -29,7 +29,7 @@ func TestGoListOfTheTools(t *testing.T) {
 	if p := modules["golang.org/x/text"]; p.Licence != "BSD-3-Clause" {
 		t.Errorf("x/text: %+v", p)
 	}
-	if _, ok := modules["github.com/treporting/specs-and-deploy/tools"]; ok {
+	if _, ok := modules["github.com/treporting/tools"]; ok {
 		t.Error("the module of the subsystem is listed")
 	}
 }

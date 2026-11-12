@@ -15,7 +15,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/treporting/specs-and-deploy/tools/licence/check"
+	"github.com/treporting/tools/licence/check"
 )
 
 // @implements SR_50@1.1.1

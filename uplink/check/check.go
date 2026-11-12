@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/treporting/specs-and-deploy/tools/review"
+	"github.com/treporting/tools/review"
 	"gopkg.in/yaml.v3"
 )
 

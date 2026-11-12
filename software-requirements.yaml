@@ -1139,3 +1139,13 @@ requirements:
   safety: ''
   status: approved
   verification_method: [test]
+- object_key: SR_110
+  object_version: '1.1.1'
+  component: review
+  object_text: with the repo above given, take the schema of a file that the repo itself does not hold
+    from the repo above, to find the attributes that count for x
+  source_ids: [TOOL_33@2.2.1]
+  priority: 'medium'
+  safety: ''
+  status: draft
+  verification_method: [test]

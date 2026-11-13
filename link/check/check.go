@@ -29,7 +29,7 @@ func (f Finding) String() string {
 }
 
 // fields are the fields of an object that name other objects with their version: the uplinks,
-// the targets of a test case, the allocation (r4) and the down-link of a control to its user needs.
+// the targets of a test case, the allocation and the down-link of a control to its user needs.
 var fields = []string{"source_ids", "target_ids", "allocated", "controls"}
 
 // Links reads every file of objects and answers each entry of source_ids, target_ids, allocated

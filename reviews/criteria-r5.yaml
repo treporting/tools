@@ -46,7 +46,7 @@ criteria:
 - object_key: RC_10
   source: treporting - traceable and allocated; REG_ISO29148_03 - rationale
   object_text: traceable - every uplink exists, and a system requirement it names is allocated to its
-    subsystem (r4); where it names none, it gives its rationale
+    subsystem; where it names none, it gives its rationale
   question: Does every uplink exist and, where it is a system requirement, is it allocated to this subsystem - or is there a rationale?
 - object_key: RC_11
   source: REG_ISO29148_01 - conforming; what to conform to is set by treporting, formats.md

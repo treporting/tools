@@ -11,3 +11,15 @@ documents:
   object_hash: '2b83007'
   status: approved
   verification_method: [review]
+- name: sbom/sbom.md
+  type: document
+  object_version: '1.1.1'
+  object_hash: '60440d5'
+  status: completed
+  verification_method: [generated]
+- name: testreports/software.md
+  type: document
+  object_version: '1.1.1'
+  object_hash: 'f218792'
+  status: completed
+  verification_method: [generated]

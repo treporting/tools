@@ -519,7 +519,8 @@ coverage. The script runs by hand too, with go, golangci-lint v2, deadcode and n
 structural debt, and `eslint.config.js`. They lie there, not in the root, because a YAML file outside
 `.github` is our data and names a schema.
 
-The code is the component `ci`: the workflow and the files of `.github/build`.
+The code is the component `ci`: the workflow and the files of `.github/build` but `baseline.sh`.
+The helpers `steps.sh` shares with `baseline.sh` lie in `common.sh`.
 
 **Decision**: the build steps are one reusable workflow, `.github/workflows/build.yml` of tools,
 which every repo calls; until 2026-11-12 it lay in specs-and-deploy-process:
@@ -578,7 +579,7 @@ every approval before it has its review in specs-and-deploy-process:
    only, as it becomes a tag. It fails where the field is empty, or where the branch
    `<ticket number>-baseline-<label>`, the tag `<label>` or another run of the caller exists.
 2. `build`: the jobs of `build.yml` on the head of `main` as the ticket event names it.
-3. `sbom`: `steps.sh baseline <label> <ticket number> [name=Dockerfile]...` builds the images,
+3. `sbom`: `baseline.sh <label> <ticket number> [name=Dockerfile]...` builds the images,
    writes `sbom.md` and its entry in `documents.yaml`, checks the licences, and checks the
    approvals of every approved object (approvalcheck, SR_82). Where it passes, it
    pushes the branch with one commit and opens the pull request, with a token of the GitHub App
@@ -590,11 +591,10 @@ To start it again, take the label `baseline` off the ticket and set it again. Th
 too, in the root of the repo; it writes `sbom/sbom.md` and `documents.yaml` and opens nothing:
 
 ```bash
-../tools/.github/build/steps.sh baseline 1.2.0 343 storages=Dockerfile
+../tools/.github/build/baseline.sh 1.2.0 343 storages=Dockerfile
 ```
 
-The code is the component `baseline`: the two workflows, the template, and the step `baseline` of
-`steps.sh`.
+The code is the component `baseline`: the two workflows, the template, and `.github/build/baseline.sh`.
 
 **Decision**: every job of a run checks out `github.sha`, the head of `main` when the label was set.
 
@@ -709,3 +709,4 @@ its own root, and by the names of its describe blocks before its own.
 | 37.1.1 | 2026-11-12 | approvalcheck: -above | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 38.1.1 | 2026-11-12 | build steps, baseline, pdf: from specs-and-deploy into tools | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 39.1.1 | 2026-11-13 | specs-and-deploy is named specs-and-deploy-process | specs-and-deploy-process#641 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 40.1.1 | 2026-11-15 | baseline: `baseline.sh` of its own, the shared helpers in `common.sh` | #12 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

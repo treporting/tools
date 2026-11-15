@@ -159,7 +159,7 @@ jobs:
           APPROVAL_BASE: ${{ inputs.approval-base }}
         run: |
           # shellcheck disable=SC2086 # one image per word
-          "$STEPS/.github/build/steps.sh" baseline "$LABEL" "$TICKET" $IMAGES
+          "$STEPS/.github/build/baseline.sh" "$LABEL" "$TICKET" $IMAGES
       - name: the pull request
         id: pr
         env:

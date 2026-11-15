@@ -25,6 +25,8 @@ type SBOM struct {
 	Repo     string     // the repo of the subsystem, such as storages
 	Packages []Package  // every package it delivers, its own among them
 	Original []Original // every file of original data it is written from
+	Tools    string     // the tag of the baseline of the tools it is made with; empty for none
+	Above    string     // the tag of the baseline of the repo above it is made with; empty for none
 	History  []string   // the rows of the Change history, the new one last
 }
 
@@ -83,13 +85,14 @@ func History(sbomMD []byte) []string {
 	return rows
 }
 
-// Markdown answers sbom.md: the sections Original data, Packages - the table of the packages sorted
-// by PURL -, Open and Change history.
+// Markdown answers sbom.md: the sections Original data, Made with, Packages - the table of the
+// packages sorted by PURL -, Open and Change history.
 //
 // @implements SR_41@2.1.1
 // @implements SR_42@1.2.1
 // @implements SR_45@1.1.1
 // @implements SR_101@2.1.1
+// @implements SR_113@1.1.1
 func Markdown(s SBOM) string {
 	packages := append([]Package(nil), s.Packages...)
 	sort.Slice(packages, func(i, j int) bool { return packages[i].PURL < packages[j].PURL })
@@ -107,6 +110,19 @@ func Markdown(s SBOM) string {
 	}
 	for _, o := range s.Original {
 		b.WriteString("| " + cell(o.File) + " | `" + cell(o.MadeBy) + "` | " + cell(o.StoredAt) + " |\n")
+	}
+	b.WriteString("\n## Made with\n\n")
+	if s.Tools == "" && s.Above == "" {
+		b.WriteString("`<empty>`\n")
+	} else {
+		b.WriteString("**Table made with** - the baselines sbom.md is made with\n\n")
+		b.WriteString("| Baseline of | Tag |\n|---|---|\n")
+	}
+	if s.Tools != "" {
+		b.WriteString("| tools | " + cell(s.Tools) + " |\n")
+	}
+	if s.Above != "" {
+		b.WriteString("| the repo above | " + cell(s.Above) + " |\n")
 	}
 	b.WriteString("\n## Packages\n\n")
 	b.WriteString("**Table packages** - every package " + s.Repo + " delivers\n\n")

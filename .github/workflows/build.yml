@@ -10,10 +10,11 @@
 # build, lint and test fail where a step fails; report reports test coverage and structural debt
 # and fails on nothing, and runs only where the input report is true, as baseline.yml sets it. Where a pull request changes sbom.md, build also checks that it lists the
 # packages delivered, with the images named built at its head (TOOL_28). Each job runs .github/build/steps.sh of tools in the root of the
-# repo; tools itself runs its own, the others that of main. See README.md of tools, section
-# build steps.
+# repo; tools itself runs its own, the others that of tools-ref - main, or in a baseline the tag
+# of the baseline of tools (SR_112). See README.md of tools, section build steps.
 #
 # @implements SR_51@1.1.1, SR_52@1.1.1, SR_53@2.1.1, SR_54@2.1.1, SR_55@1.1.1, SR_56@1.1.1, SR_57@2.1.2, SR_58@2.1.2, SR_67@1.1.1
+# @implements SR_112@1.1.1
 name: build
 
 on:
@@ -35,6 +36,14 @@ on:
         description: the repo above, such as treporting/specs-and-deploy-process, whose files the tests read; empty for none
         type: string
         default: ''
+      tools-ref:
+        description: the ref of tools the steps run from; baseline.yml sets the tag of its baseline
+        type: string
+        default: main
+      above-ref:
+        description: the ref of the repo above the tests read; baseline.yml sets the tag of its baseline
+        type: string
+        default: main
 
 permissions:
   contents: read
@@ -56,7 +65,7 @@ jobs:
         if: github.repository != 'treporting/tools'
         with:
           repository: treporting/tools
-          ref: main
+          ref: ${{ inputs.tools-ref }}
           path: .build-steps
       - uses: actions/setup-go@v7
         with:
@@ -94,7 +103,7 @@ jobs:
         if: github.repository != 'treporting/tools'
         with:
           repository: treporting/tools
-          ref: main
+          ref: ${{ inputs.tools-ref }}
           path: .build-steps
       - uses: actions/setup-go@v7
         with:
@@ -130,13 +139,13 @@ jobs:
         if: github.repository != 'treporting/tools'
         with:
           repository: treporting/tools
-          ref: main
+          ref: ${{ inputs.tools-ref }}
           path: .build-steps
       - uses: actions/checkout@v7
         if: inputs.above != ''
         with:
           repository: ${{ inputs.above }}
-          ref: main
+          ref: ${{ inputs.above-ref }}
           path: .above
       - uses: actions/setup-go@v7
         with:
@@ -178,7 +187,7 @@ jobs:
         if: github.repository != 'treporting/tools'
         with:
           repository: treporting/tools
-          ref: main
+          ref: ${{ inputs.tools-ref }}
           path: .build-steps
       - uses: actions/setup-go@v7
         with:

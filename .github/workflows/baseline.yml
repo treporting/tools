@@ -7,18 +7,24 @@
 #	jobs:
 #	  baseline:
 #	    if: github.event.label.name == 'baseline'
-#	    uses: treporting/tools/.github/workflows/baseline.yml@main
+#	    uses: treporting/tools/.github/workflows/baseline.yml@T046.0
 #	    with:
+#	      tools-ref: T046.0
+#	      above: treporting/specs-and-deploy-process
+#	      above-ref: T046
 #	      images: |
 #	        storages=Dockerfile
 #	    secrets: inherit
 #
 # It runs on the head of main as the ticket event names it, github.sha, so every job sees the same
-# commit. It writes with a token of the GitHub App treporting-baseline, so the pull request it opens
+# commit. It runs with the tools and the repo above at the tags of their baselines: tools-ref names
+# the tag the caller names after the @ as well, as uses takes no expression; build.yml runs from the
+# same commit as this file (SR_111, SR_112). In tools, the tools are the head itself. It writes with a token of the GitHub App treporting-baseline, so the pull request it opens
 # runs the checks of the repo. See README.md of tools, section baseline, and devops.md of
 # specs-and-deploy-process, section Baseline.
 #
-# @implements SR_61@1.1.1, SR_62@1.1.1, SR_63@1.1.1, SR_64@1.1.1, SR_65@1.1.1, SR_99@2.1.1
+# @implements SR_61@1.1.2, SR_62@1.1.2, SR_63@1.1.2, SR_64@1.1.2, SR_65@1.1.2, SR_99@2.1.2
+# @implements SR_111@1.1.1, SR_112@1.1.1
 name: baseline
 
 on:
@@ -38,6 +44,14 @@ on:
         default: ''
       approval-base:
         description: the commit the approvals are checked against; empty for every approved object
+        type: string
+        default: ''
+      tools-ref:
+        description: the tag of the baseline of tools the steps run from, the same as after the @ of uses; empty in tools
+        type: string
+        default: ''
+      above-ref:
+        description: the tag of the baseline of the repo above; empty where above is empty
         type: string
         default: ''
     secrets:
@@ -97,15 +111,50 @@ jobs:
             echo "another run of $path is in progress"
             exit 1
           fi
+      #	SR_111: the tools and the repo above at tags of their baselines
+      - name: the tags of the tools and of the repo above
+        env:
+          TOOLS_REF: ${{ inputs.tools-ref }}
+          ABOVE: ${{ inputs.above }}
+          ABOVE_REF: ${{ inputs.above-ref }}
+        run: |
+          #	tag <repo> <ref> <input>: fail where ref names no tag of repo
+          tag() {
+            if [ -z "$2" ]; then
+              echo "the input $3 is empty: it names the tag of the baseline of $1"
+              exit 1
+            fi
+            if ! git ls-remote --exit-code --tags "https://github.com/$1.git" "refs/tags/$2" >/dev/null; then
+              echo "the input $3 \"$2\" names no tag of $1"
+              exit 1
+            fi
+          }
+          if [ "$GITHUB_REPOSITORY" = treporting/tools ]; then
+            if [ -n "$TOOLS_REF" ]; then
+              echo "the input tools-ref is set: in tools, the tools are the head itself"
+              exit 1
+            fi
+          else
+            tag treporting/tools "$TOOLS_REF" tools-ref
+          fi
+          if [ -n "$ABOVE" ]; then
+            tag "$ABOVE" "$ABOVE_REF" above-ref
+          elif [ -n "$ABOVE_REF" ]; then
+            echo "the input above-ref is set, but above is empty"
+            exit 1
+          fi
 
-  #	SR_63: the loop for every release or library, up to the report
+  #	SR_63: the loop for every release or library, up to the report; SR_112: from the same commit
+  #	of tools as this file, with the tools and the repo above at their tags
   build:
     needs: start
-    uses: treporting/tools/.github/workflows/build.yml@main
+    uses: ./.github/workflows/build.yml
     with:
       go-version-file: ${{ inputs.go-version-file }}
       report: true
       above: ${{ inputs.above }}
+      tools-ref: ${{ inputs.tools-ref }}
+      above-ref: ${{ inputs.above-ref }}
 
   #	SR_63, SR_64: sbom and the check of the licences; the pull request where every step passed
   sbom:
@@ -131,13 +180,13 @@ jobs:
         if: github.repository != 'treporting/tools'
         with:
           repository: treporting/tools
-          ref: main
+          ref: ${{ inputs.tools-ref }}
           path: .build-steps
       - uses: actions/checkout@v7
         if: inputs.above != ''
         with:
           repository: ${{ inputs.above }}
-          ref: main
+          ref: ${{ inputs.above-ref }}
           path: .above
       - uses: actions/setup-go@v7
         with:
@@ -157,6 +206,8 @@ jobs:
           IMAGES: ${{ inputs.images }}
           ABOVE: ${{ inputs.above != '' && format('{0}/.above', github.workspace) || '' }}
           APPROVAL_BASE: ${{ inputs.approval-base }}
+          TOOLS_TAG: ${{ inputs.tools-ref }}
+          ABOVE_TAG: ${{ inputs.above-ref }}
         run: |
           # shellcheck disable=SC2086 # one image per word
           "$STEPS/.github/build/baseline.sh" "$LABEL" "$TICKET" $IMAGES

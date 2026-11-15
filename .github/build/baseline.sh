@@ -11,6 +11,8 @@
 # ABOVE names the root of the repo above - specs-and-deploy-process for the tools: baseline takes the schemas
 # and levels.yaml from there. APPROVAL_BASE, where set, is the commit baseline checks the approvals
 # against: in tools, the first commit, as every approval before it has its review in specs-and-deploy-process.
+# TOOLS_TAG and ABOVE_TAG, where set, are the tags of the baselines of the tools and of the repo
+# above it runs with; sbom names them in sbom.md (SR_113).
 #
 # It needs go and docker on the PATH.
 set -uo pipefail
@@ -29,7 +31,8 @@ baseline() {
 	bin_approval="$(tool review/cmd/approvalcheck)"
 	bin_testreport="$(tool testreport/cmd/testreport)"
 	build_images "$@"
-	run . "$bin_sbom" -label "$label" -ticket "$ticket" ${image_flags[@]+"${image_flags[@]}"}
+	run . "$bin_sbom" -label "$label" -ticket "$ticket" ${TOOLS_TAG:+-tools "$TOOLS_TAG"} \
+		${ABOVE_TAG:+-above "$ABOVE_TAG"} ${image_flags[@]+"${image_flags[@]}"}
 	[ "$failed" = 0 ] || return
 	run . "$bin_licence" -root .
 	#	every approved object of the head, after the licences - or those changed since APPROVAL_BASE

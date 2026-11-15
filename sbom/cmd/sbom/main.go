@@ -1,6 +1,6 @@
 // Command sbom creates the SBOM of a subsystem as sbom.md in the folder sbom/ of its repo (TOOL_21).
 //
-//	sbom -label x.y.z -ticket number [-store] [-root dir] [-repo name] [-image name]...
+//	sbom -label x.y.z -ticket number [-tools tag] [-above tag] [-store] [-root dir] [-repo name] [-image name]...
 //	sbom -check [-root dir] [-repo name] [-image name]...
 //
 // It runs in the repo checked out at the baseline the label names. It lists the package of the
@@ -12,6 +12,9 @@
 // file of original data it read: the output of go list, each package-lock.json, the Alpine packages
 // of each image. With -store it writes them into sbom/ as <ts>_<file>, and names them in
 // sbom/<ts>.yaml; the output of go list with its module cache as $GOMODCACHE.
+//
+// With -tools and -above it names the tags of the baselines of the tools and of the repo above it
+// is made with in sbom.md, in the table made with (SR_113).
 //
 // With -check it writes nothing: it compares the packages with the table of sbom.md, and exits with
 // 1 where they differ (TOOL_28).
@@ -39,6 +42,7 @@ func (i *images) Set(v string) error { *i = append(*i, v); return nil }
 // @implements SR_39@2.1.1
 // @implements SR_59@2.1.1
 // @implements SR_101@1.1.1, SR_102@1.1.1, SR_105@1.1.1
+// @implements SR_113@1.1.1
 func main() {
 
 	root := flag.String("root", ".", "the root of the repo of the subsystem")
@@ -46,6 +50,8 @@ func main() {
 	ticket := flag.String("ticket", "", "the number of the ticket of the baseline, such as 343")
 	repo := flag.String("repo", "", "the name of the repo; the name of the directory of root where empty")
 	check := flag.Bool("check", false, "compare the packages with the table of sbom.md, and write nothing")
+	tools := flag.String("tools", "", "the tag of the baseline of the tools sbom.md is made with")
+	above := flag.String("above", "", "the tag of the baseline of the repo above sbom.md is made with")
 	store := flag.Bool("store", false, "store the original data in sbom/, named in sbom/<ts>.yaml")
 	var named images
 	flag.Var(&named, "image", "an image of the subsystem, built at the baseline; may be given more than once")
@@ -93,7 +99,7 @@ func main() {
 	if *store && len(originals) > 0 {
 		originals = storeOriginals(*root, *label, now, originals)
 	}
-	md := []byte(create.Markdown(create.SBOM{Repo: *repo, Packages: packages, Original: originals, History: history}))
+	md := []byte(create.Markdown(create.SBOM{Repo: *repo, Packages: packages, Original: originals, Tools: *tools, Above: *above, History: history}))
 	if err := os.WriteFile(path, md, 0o600); err != nil {
 		fail(err)
 	}

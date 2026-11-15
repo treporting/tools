@@ -1280,12 +1280,12 @@ testcases:
   status: approved
   verification_method: [review]
 - object_key: TC_160
-  object_version: '1.1.1'
-  object_text: 'sbom run: the sections of sbom.md are Original data, Packages, Open and Change
-    history, in this order'
+  object_version: '2.1.1'
+  object_text: 'sbom run: the sections of sbom.md are Original data, Made with, Packages, Open and
+    Change history, in this order'
   design_technique: requirements-based testing
-  target_ids: [SR_41@2.1.1, SR_101@2.1.1]
-  status: approved
+  target_ids: [SR_41@2.1.1, SR_101@2.1.1, SR_113@1.1.1]
+  status: review
   verification_method: [review]
 - object_key: TC_161
   object_version: '1.2.1'

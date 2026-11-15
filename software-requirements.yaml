@@ -614,64 +614,64 @@ requirements:
   status: approved
   verification_method: [test]
 - object_key: SR_60
-  object_version: '1.1.1'
+  object_version: '1.1.2'
   component: baseline
   object_text: 'provide the ticket template Baseline with the field Label; it sets no label on the
     ticket'
-  source_ids: [TOOL_27@2.2.1]
+  source_ids: [TOOL_27@3.1.1]
   priority: 'medium'
   safety: ''
   status: approved
   verification_method: [demonstration]
 - object_key: SR_61
-  object_version: '1.1.1'
+  object_version: '1.1.2'
   component: baseline
   object_text: 'start baseline.yml when the label `baseline` is set on a ticket of the repo, with
     the label of the baseline from the field Label; fail where it is empty'
-  source_ids: [TOOL_27@2.2.1]
+  source_ids: [TOOL_27@3.1.1]
   priority: 'medium'
   safety: ''
   status: approved
   verification_method: [demonstration]
 - object_key: SR_62
-  object_version: '1.1.1'
+  object_version: '1.1.2'
   component: baseline
   object_text: 'fail where the branch `<ticket number>-baseline-<label>` or the tag `<label>`
     exists, or another run of baseline.yml of the repo is in progress'
-  source_ids: [TOOL_27@2.2.1]
+  source_ids: [TOOL_27@3.1.1]
   priority: 'medium'
   safety: ''
   status: approved
   verification_method: [demonstration]
 - object_key: SR_63
-  object_version: '1.1.1'
+  object_version: '1.1.2'
   component: baseline
   object_text: 'run on the head of main the jobs build, lint, test and report of build.yml, then
     sbom with the label, the ticket and the images the caller names, built at that head, then
     licencecheck'
-  source_ids: [TOOL_27@2.2.1]
+  source_ids: [TOOL_27@3.1.1]
   priority: 'medium'
   safety: ''
   status: approved
   verification_method: [demonstration]
 - object_key: SR_64
-  object_version: '1.1.1'
+  object_version: '1.1.2'
   component: baseline
   object_text: 'where every step passes, push the branch `<ticket number>-baseline-<label>` with
     sbom.md and documents.yaml in one commit, and open a pull request with a token of the GitHub
     App, naming the ticket, the label, the commit of main it ran on, and the command for the signed
     tag'
-  source_ids: [TOOL_27@2.2.1]
+  source_ids: [TOOL_27@3.1.1]
   priority: 'medium'
   safety: ''
   status: approved
   verification_method: [demonstration]
 - object_key: SR_65
-  object_version: '1.1.1'
+  object_version: '1.1.2'
   component: baseline
   object_text: 'name the result in the ticket, as a comment: the pull request, or the step that
     failed'
-  source_ids: [TOOL_27@2.2.1]
+  source_ids: [TOOL_27@3.1.1]
   priority: 'medium'
   safety: ''
   status: approved
@@ -1024,12 +1024,12 @@ requirements:
   status: approved
   verification_method: [test]
 - object_key: SR_99
-  object_version: '2.1.1'
+  object_version: '2.1.2'
   component: baseline
   object_text: in baseline.yml, after the job test, write the test report of each test level from
     the junit.xml of that job with the label and the ticket, and push them in the commit
     of sbom.md
-  source_ids: [TOOL_27@2.2.1, TOOL_34@2.1.1]
+  source_ids: [TOOL_27@3.1.1, TOOL_34@2.1.1]
   priority: 'medium'
   safety: ''
   status: approved
@@ -1148,4 +1148,35 @@ requirements:
   priority: 'medium'
   safety: ''
   status: approved
+  verification_method: [test]
+- object_key: SR_111
+  object_version: '1.1.1'
+  component: baseline
+  object_text: 'in baseline.yml, check out the tools at the input `tools-ref` and the repo above at
+    the input `above-ref`, and fail where one names no tag of its repo; in tools, the tools are the
+    head itself and only `above-ref` applies'
+  source_ids: [TOOL_27@3.1.1]
+  priority: 'medium'
+  safety: ''
+  status: review
+  verification_method: [demonstration]
+- object_key: SR_112
+  object_version: '1.1.1'
+  component: baseline
+  object_text: in baseline.yml, run the jobs of build.yml at the same tag as baseline.yml itself,
+    not at `main`
+  source_ids: [TOOL_27@3.1.1]
+  priority: 'medium'
+  safety: ''
+  status: review
+  verification_method: [demonstration]
+- object_key: SR_113
+  object_version: '1.1.1'
+  component: sbom
+  object_text: 'with `-tools <tag>` and `-above <tag>`, name both in sbom.md, in a table made with;
+    with `-check`, compare the packages only'
+  source_ids: [TOOL_27@3.1.1]
+  priority: 'medium'
+  safety: ''
+  status: review
   verification_method: [test]

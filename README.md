@@ -384,6 +384,10 @@ needs a `documents.yaml`. A package whose licence is unknown is listed in Open (
 Original data names the files `sbom.md` is written from (SR_101). With `-store` they are kept in
 `sbom/`, beside `sbom.md`, and named in `sbom/<ts>.yaml` (SR_102).
 
+Made with names, with `-tools` and `-above`, the tags of the baselines of the tools and of the repo
+above `sbom.md` is made with, and is `<empty>` without them (SR_113). `-check` compares the packages
+only.
+
 ```bash
 cd tools
 go build -o sbom ./sbom/cmd/sbom
@@ -573,14 +577,31 @@ template Baseline and names the label in it. Whoever may label tickets of the re
 `.github/workflows/baseline.yml` of tools. A repo below another names it with `above`, such as
 `treporting/specs-and-deploy-process`: the steps read its schemas and `levels.yaml`. With `approval-base` the
 approvals are checked only in the files changed since that commit - in tools its first commit, as
-every approval before it has its review in specs-and-deploy-process:
+every approval before it has its review in specs-and-deploy-process.
+
+The tools and the repo above come at the tags of their baselines (TOOL_27, SR_111 to SR_113): the
+caller names the tag of tools after the `@` of `uses` and once more as `tools-ref`, as `uses` takes no
+expression, and the tag of the repo above as `above-ref`. In tools, the tools are the head itself and
+`tools-ref` stays empty. A pull request raises the tags before a baseline:
+
+```yaml
+    uses: treporting/tools/.github/workflows/baseline.yml@T046.0
+    with:
+      tools-ref: T046.0
+      above: treporting/specs-and-deploy-process
+      above-ref: T046
+    secrets: inherit
+```
 
 1. `start`: reads the label from the field Label of the ticket - letters, digits, `.`, `_` and `-`
    only, as it becomes a tag. It fails where the field is empty, or where the branch
-   `<ticket number>-baseline-<label>`, the tag `<label>` or another run of the caller exists.
-2. `build`: the jobs of `build.yml` on the head of `main` as the ticket event names it.
+   `<ticket number>-baseline-<label>`, the tag `<label>` or another run of the caller exists, or
+   where `tools-ref` or `above-ref` names no tag of its repo.
+2. `build`: the jobs of `build.yml` on the head of `main` as the ticket event names it, from the same
+   commit of tools as `baseline.yml`, with the tools and the repo above at their tags.
 3. `sbom`: `baseline.sh <label> <ticket number> [name=Dockerfile]...` builds the images,
-   writes `sbom.md` and its entry in `documents.yaml`, checks the licences, and checks the
+   writes `sbom.md` with both tags in its table made with, and its entry in `documents.yaml`,
+   checks the licences, and checks the
    approvals of every approved object (approvalcheck, SR_82). Where it passes, it
    pushes the branch with one commit and opens the pull request, with a token of the GitHub App
    `treporting-baseline` (devops.md, section Baseline).
@@ -591,8 +612,11 @@ To start it again, take the label `baseline` off the ticket and set it again. Th
 too, in the root of the repo; it writes `sbom/sbom.md` and `documents.yaml` and opens nothing:
 
 ```bash
-../tools/.github/build/baseline.sh 1.2.0 343 storages=Dockerfile
+TOOLS_TAG=T046.0 ABOVE_TAG=T046 ../tools/.github/build/baseline.sh 1.2.0 343 storages=Dockerfile
 ```
+
+By hand, the tools and the repo above are the checkouts it runs from; `TOOLS_TAG` and `ABOVE_TAG` only
+name them in sbom.md, so they are checked out at these tags first.
 
 The code is the component `baseline`: the two workflows, the template, and `.github/build/baseline.sh`.
 
@@ -710,3 +734,4 @@ its own root, and by the names of its describe blocks before its own.
 | 38.1.1 | 2026-11-12 | build steps, baseline, pdf: from specs-and-deploy into tools | specs-and-deploy#639 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 39.1.1 | 2026-11-13 | specs-and-deploy is named specs-and-deploy-process | specs-and-deploy-process#641 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 40.1.1 | 2026-11-15 | baseline: `baseline.sh` of its own, the shared helpers in `common.sh` | #12 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 41.1.1 | 2026-11-15 | baseline: the tools and the repo above at the tags of their baselines, named in sbom.md | #18 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

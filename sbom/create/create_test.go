@@ -67,7 +67,7 @@ func TestEndsWithOpenAndChangeHistory(t *testing.T) {
 	}
 }
 
-// @implements TC_160@1.1.1
+// @implements TC_160@2.1.1
 func TestSectionsInOrder(t *testing.T) {
 	md := Markdown(SBOM{Repo: "storages", Original: originals("/r")})
 	var sections []string
@@ -76,7 +76,7 @@ func TestSectionsInOrder(t *testing.T) {
 			sections = append(sections, heading)
 		}
 	}
-	if strings.Join(sections, ", ") != "Original data, Packages, Open, Change history" {
+	if strings.Join(sections, ", ") != "Original data, Made with, Packages, Open, Change history" {
 		t.Errorf("sections %v:\n%s", sections, md)
 	}
 	if !strings.HasPrefix(md, "# Software Bill of Materials (SBOM)\n") {
@@ -121,5 +121,26 @@ func TestOnceKeepsTheFirstOfEachPURL(t *testing.T) {
 	got := Once([]Package{a, b, a})
 	if len(got) != 2 || got[0] != a || got[1] != b {
 		t.Errorf("got %+v", got)
+	}
+}
+
+// @implements TC_172@1.1.1
+func TestMadeWithNamesBothTagsBeforePackages(t *testing.T) {
+	md := Markdown(SBOM{Repo: "storages", Tools: "T046.0", Above: "T046"})
+	want := "## Made with\n\n**Table made with** - the baselines sbom.md is made with\n\n" +
+		"| Baseline of | Tag |\n|---|---|\n| tools | T046.0 |\n| the repo above | T046 |\n\n## Packages\n"
+	if !strings.Contains(md, want) {
+		t.Errorf("table made with not found before the section Packages in\n%s", md)
+	}
+}
+
+// @implements TC_173@1.1.1
+func TestMadeWithIsEmptyWithoutTags(t *testing.T) {
+	md := Markdown(SBOM{Repo: "storages"})
+	if !strings.Contains(md, "## Made with\n\n`<empty>`\n\n## Packages\n") {
+		t.Errorf("section Made with not empty in\n%s", md)
+	}
+	if strings.Contains(md, "| Baseline of |") {
+		t.Errorf("a table made with without tags:\n%s", md)
 	}
 }

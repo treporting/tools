@@ -64,3 +64,15 @@ func TestDifferNamesEachPackageThatDiffers(t *testing.T) {
 		t.Errorf("names a package that fits:\n%s", got)
 	}
 }
+
+// @implements TC_174@1.1.1
+func TestCheckComparesThePackagesOnly(t *testing.T) {
+	md := Markdown(SBOM{Repo: "storages", Packages: listed, Tools: "T001.0", Above: "T001",
+		History: []string{"| 1.1.1 | 2026-11-01 | 1.2.0 | #343 | sbom a1b2c3d |"}})
+	if got := Differ(listed, Table([]byte(md))); len(got) != 0 {
+		t.Errorf("the table made with counts: %q", got)
+	}
+	if got := Label([]byte(md)); got != "1.2.0" {
+		t.Errorf("label: got %q", got)
+	}
+}

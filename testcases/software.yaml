@@ -1280,11 +1280,11 @@ testcases:
   status: approved
   verification_method: [review]
 - object_key: TC_160
-  object_version: '1.1.1'
-  object_text: 'sbom run: the sections of sbom.md are Original data, Packages, Open and Change
-    history, in this order'
+  object_version: '2.1.1'
+  object_text: 'sbom run: the sections of sbom.md are Original data, Made with, Packages, Open and
+    Change history, in this order'
   design_technique: requirements-based testing
-  target_ids: [SR_41@2.1.1, SR_101@2.1.1]
+  target_ids: [SR_41@2.1.1, SR_101@2.1.1, SR_113@1.1.1]
   status: approved
   verification_method: [review]
 - object_key: TC_161
@@ -1374,5 +1374,28 @@ testcases:
     the repo above stops with an error that names the schema'
   design_technique: equivalence partitioning
   target_ids: [SR_110@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_172
+  object_version: '1.1.1'
+  object_text: 'sbom with -tools T046.0 and -above T046: sbom.md names both tags, in the table made
+    with, before the section Packages'
+  design_technique: equivalence partitioning
+  target_ids: [SR_113@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_173
+  object_version: '1.1.1'
+  object_text: 'sbom without -tools and -above: the section Made with of sbom.md is empty'
+  design_technique: boundary value analysis
+  target_ids: [SR_113@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_174
+  object_version: '1.1.1'
+  object_text: 'sbom -check of an sbom.md whose table made with names other tags than the run: it
+    passes where the packages fit'
+  design_technique: equivalence partitioning
+  target_ids: [SR_113@1.1.1]
   status: approved
   verification_method: [review]

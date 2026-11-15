@@ -1285,7 +1285,7 @@ testcases:
     Change history, in this order'
   design_technique: requirements-based testing
   target_ids: [SR_41@2.1.1, SR_101@2.1.1, SR_113@1.1.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_161
   object_version: '1.2.1'

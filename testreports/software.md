@@ -5,11 +5,11 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 
 ## Test environment
 
-- Label: T046.1
-- Commit: dc56473
-- Date: 2026-11-15
-- Operating system: darwin/amd64
-- Runner: local
+- Label: T047.0
+- Commit: ee21d8c
+- Date: 2026-11-16
+- Operating system: linux/amd64
+- Runner: GitHub Actions 1000007027
 - Go go1.25.14
 
 ## Original data
@@ -182,7 +182,7 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_69@1.1.2 | TC_157@1.1.1 | a document naming `SR_01@1.1.3` in a table and `a@1.com` in its text, made into a page as GitHub shows it: `a@1.com` is a link to mailto:, `SR_01@1.1.3` is text and no link | approved |
 | SR_95@2.1.1 | TC_158@1.1.1 | a test procedure without a test result that implements an approved test case: Open holds the row of the test case, with its requirement and the status approved, and the test procedure with the status `no test result` | approved |
 | SR_95@2.1.1 | TC_159@1.1.1 | an obsolete test case without a test procedure: Open holds its row, with the status obsolete | approved |
-| SR_41@2.1.1, SR_101@2.1.1 | TC_160@1.1.1 | sbom run: the sections of sbom.md are Original data, Packages, Open and Change history, in this order | approved |
+| SR_41@2.1.1, SR_101@2.1.1, SR_113@1.1.1 | TC_160@2.1.1 | sbom run: the sections of sbom.md are Original data, Made with, Packages, Open and Change history, in this order | approved |
 | SR_89@4.1.1, SR_106@1.1.1 | TC_161@1.2.1 | a run of the test level r5tc, levels.yaml naming r5tc the subsystem test (SwVal): the title of the test report is `Test report for subsystem test (SwVal)`, and its head names neither r5tc nor r5 | approved |
 | SR_106@1.1.1 | TC_162@1.1.1 | a run without -levels, `<root>/levels.yaml` naming r5tc: testreport reads it; the same run with -levels naming another levels.yaml: testreport reads that one | approved |
 | SR_106@1.1.1 | TC_163@1.1.1 | a run of the test level r5tc, levels.yaml naming no r5tc: testreport exits with an error that names r5tc, and writes no test report | approved |
@@ -194,6 +194,9 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_109@1.1.1 | TC_169@1.1.1 | an annotation names an object of the repo above with another x than it has: linkcheck with the repo above reports the annotation | approved |
 | SR_110@1.1.1 | TC_170@1.1.1 | the schema of a file of requirements lies only in the repo above: approvalcheck with the repo above answers the same findings as with the schema in the repo itself | approved |
 | SR_110@1.1.1 | TC_171@1.1.1 | the schema of a file of requirements lies only in the repo above: approvalcheck without the repo above stops with an error that names the schema | approved |
+| SR_113@1.1.1 | TC_172@1.1.1 | sbom with -tools T046.0 and -above T046: sbom.md names both tags, in the table made with, before the section Packages | approved |
+| SR_113@1.1.1 | TC_173@1.1.1 | sbom without -tools and -above: the section Made with of sbom.md is empty | approved |
+| SR_113@1.1.1 | TC_174@1.1.1 | sbom -check of an sbom.md whose table made with names other tags than the run: it passes where the packages fit | approved |
 
 ## Test implementation
 
@@ -337,6 +340,7 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_66@1.1.1 |  | TestTableAsSbomMDListsIt | sbom/create/check_test.go |
 | SR_66@1.1.1 |  | TestLabelOfTheLastRow | sbom/create/check_test.go |
 | SR_66@1.1.1 | TC_123@1.1.1 | TestDifferNamesEachPackageThatDiffers | sbom/create/check_test.go |
+| SR_113@1.1.1 | TC_174@1.1.1 | TestCheckComparesThePackagesOnly | sbom/create/check_test.go |
 | SR_36@2.1.1 |  | TestGoListOfTheTools | sbom/create/create_integration_test.go |
 | SR_44@1.1.1 |  | TestGoEnvNamesTheVersionOfGo | sbom/create/create_integration_test.go |
 | SR_39@2.1.1 | TC_108@2.1.1 | TestCommandWritesSbomMDInTheRootAndKeepsTheHistory | sbom/create/create_integration_test.go |
@@ -350,10 +354,12 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_40@3.3.1 |  | TestHistoryKeepsTheRowsOfTheChangeHistoryOnly | sbom/create/create_test.go |
 | SR_41@2.1.1 | TC_111@2.1.1 | TestOneTableSortedByPURL | sbom/create/create_test.go |
 | SR_42@1.2.1 | TC_112@1.1.1 | TestEndsWithOpenAndChangeHistory | sbom/create/create_test.go |
-| SR_41@2.1.1, SR_101@2.1.1 | TC_160@1.1.1 | TestSectionsInOrder | sbom/create/create_test.go |
+| SR_41@2.1.1, SR_101@2.1.1, SR_113@1.1.1 | TC_160@2.1.1 | TestSectionsInOrder | sbom/create/create_test.go |
 | SR_45@1.1.1 | TC_117@1.1.1 | TestOpenListsEveryPackageOfUnknownLicence | sbom/create/create_test.go |
 | SR_45@1.1.1 | TC_118@1.1.1 | TestOpenIsEmptyWhereEveryLicenceIsKnown | sbom/create/create_test.go |
 | SR_41@1.2.1 |  | TestAValueDoesNotBreakTheTable | sbom/create/create_test.go |
+| SR_113@1.1.1 | TC_172@1.1.1 | TestMadeWithNamesBothTagsBeforePackages | sbom/create/create_test.go |
+| SR_113@1.1.1 | TC_173@1.1.1 | TestMadeWithIsEmptyWithoutTags | sbom/create/create_test.go |
 | SR_40@3.3.1 | TC_109@1.1.1 | TestVersionOfSbomMD | sbom/create/documents_test.go |
 | SR_40@3.3.1 | TC_109@1.1.1 | TestNextRaisesX | sbom/create/documents_test.go |
 | SR_40@3.3.1 | TC_110@1.1.1 | TestNextRaisesX | sbom/create/documents_test.go |
@@ -558,6 +564,7 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_66@1.1.1 |  | TestTableAsSbomMDListsIt | passed |
 | SR_66@1.1.1 |  | TestLabelOfTheLastRow | passed |
 | SR_66@1.1.1 | TC_123@1.1.1 | TestDifferNamesEachPackageThatDiffers | passed |
+| SR_113@1.1.1 | TC_174@1.1.1 | TestCheckComparesThePackagesOnly | passed |
 | SR_36@2.1.1 |  | TestGoListOfTheTools | passed |
 | SR_44@1.1.1 |  | TestGoEnvNamesTheVersionOfGo | passed |
 | SR_39@2.1.1 | TC_108@2.1.1 | TestCommandWritesSbomMDInTheRootAndKeepsTheHistory | passed |
@@ -571,10 +578,12 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_40@3.3.1 |  | TestHistoryKeepsTheRowsOfTheChangeHistoryOnly | passed |
 | SR_41@2.1.1 | TC_111@2.1.1 | TestOneTableSortedByPURL | passed |
 | SR_42@1.2.1 | TC_112@1.1.1 | TestEndsWithOpenAndChangeHistory | passed |
-| SR_41@2.1.1, SR_101@2.1.1 | TC_160@1.1.1 | TestSectionsInOrder | passed |
+| SR_41@2.1.1, SR_101@2.1.1, SR_113@1.1.1 | TC_160@2.1.1 | TestSectionsInOrder | passed |
 | SR_45@1.1.1 | TC_117@1.1.1 | TestOpenListsEveryPackageOfUnknownLicence | passed |
 | SR_45@1.1.1 | TC_118@1.1.1 | TestOpenIsEmptyWhereEveryLicenceIsKnown | passed |
 | SR_41@1.2.1 |  | TestAValueDoesNotBreakTheTable | passed |
+| SR_113@1.1.1 | TC_172@1.1.1 | TestMadeWithNamesBothTagsBeforePackages | passed |
+| SR_113@1.1.1 | TC_173@1.1.1 | TestMadeWithIsEmptyWithoutTags | passed |
 | SR_40@3.3.1 | TC_109@1.1.1 | TestVersionOfSbomMD | passed |
 | SR_40@3.3.1 | TC_109@1.1.1 | TestNextRaisesX | passed |
 | SR_40@3.3.1 | TC_110@1.1.1 | TestNextRaisesX | passed |
@@ -655,3 +664,4 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 |---|---|---|---|---|
 | 1.1.1 | 2026-11-15 | T046.0 | #15 | testreport 1a45bbb |
 | 2.1.1 | 2026-11-15 | T046.1 | #21 | testreport dc56473 |
+| 3.1.1 | 2026-11-16 | T047.0 | #26 | testreport ee21d8c |

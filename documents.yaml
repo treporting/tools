@@ -13,13 +13,13 @@ documents:
   verification_method: [review]
 - name: sbom/sbom.md
   type: document
-  object_version: '2.1.1'
-  object_hash: 'fe8eea6'
+  object_version: '3.1.1'
+  object_hash: '5683d87'
   status: completed
   verification_method: [generated]
 - name: testreports/software.md
   type: document
-  object_version: '2.1.1'
-  object_hash: 'b411d27'
+  object_version: '3.1.1'
+  object_hash: '5dd5a49'
   status: completed
   verification_method: [generated]

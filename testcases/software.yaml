@@ -1405,7 +1405,7 @@ testcases:
     reports nothing'
   design_technique: equivalence partitioning
   target_ids: [SR_114@1.1.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_176
   object_version: '1.1.1'
@@ -1413,7 +1413,7 @@ testcases:
     finds the object'
   design_technique: equivalence partitioning
   target_ids: [SR_114@1.1.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_177
   object_version: '1.1.1'
@@ -1421,5 +1421,5 @@ testcases:
     reports SR_7'
   design_technique: boundary value analysis
   target_ids: [SR_114@1.1.1]
-  status: review
+  status: approved
   verification_method: [review]

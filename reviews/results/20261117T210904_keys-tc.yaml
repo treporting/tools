@@ -1,0 +1,193 @@
+# Review of TC_1, TC_2, TC_3, TC_4, TC_5, TC_6, TC_7, TC_8, TC_9, TC_57, TC_58, TC_77, TC_78, TC_140, TC_157 against the criteria of the level r5tc.
+# Made with reviewskeleton; a proposal of Claude Code - the reviewer decides.
+# Format: ../../formats.md, section Reviews.
+schema: schemas/review-result.schema.json
+type: review
+level: r5tc
+object_version: '1.1.1'
+status: open
+created_by: Mathias Fischer
+created_at: '2026-11-17T21:09:04+01:00'
+criteria: reviews/criteria-r5tc.yaml
+criteria_revision: '06ee85d'
+results:
+- object_key: RR_1
+  target_ids: [TC_1]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_2
+  target_ids: [TC_2]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_3
+  target_ids: [TC_3]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_4
+  target_ids: [TC_4]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_5
+  target_ids: [TC_5]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_6
+  target_ids: [TC_6]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_7
+  target_ids: [TC_7]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_8
+  target_ids: [TC_8]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_9
+  target_ids: [TC_9]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_10
+  target_ids: [TC_57]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_11
+  target_ids: [TC_58]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_12
+  target_ids: [TC_77]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_13
+  target_ids: [TC_78]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_14
+  target_ids: [TC_140]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed
+- object_key: RR_15
+  target_ids: [TC_157]
+  revision: 'e341b0e'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+  verdict: passed

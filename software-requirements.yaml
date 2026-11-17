@@ -251,7 +251,7 @@ requirements:
   source_ids: [TOOL_6@2.1.1]
   priority: 'medium'
   safety: ''
-  status: review
+  status: approved
   verification_method: [test]
 - object_key: SR_25
   object_version: '2.2.1'

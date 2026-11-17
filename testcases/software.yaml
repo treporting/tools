@@ -455,7 +455,7 @@ testcases:
     that file'
   design_technique: equivalence partitioning
   target_ids: [SR_86@2.1.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_58
   object_version: '2.1.1'
@@ -463,7 +463,7 @@ testcases:
     found in no file, and neither file is a file of objects'
   design_technique: equivalence partitioning
   target_ids: [SR_86@2.1.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_59
   object_version: '1.1.1'
@@ -613,7 +613,7 @@ testcases:
     annotation'
   design_technique: syntax testing
   target_ids: [SR_30@2.2.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_78
   object_version: '2.1.1'
@@ -621,7 +621,7 @@ testcases:
     annotation'
   design_technique: syntax testing
   target_ids: [SR_30@2.2.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_79
   object_version: '1.1.1'
@@ -1113,7 +1113,7 @@ testcases:
     SR_3@1.1.3, its key with its version, its text and its status'
   design_technique: requirements-based testing
   target_ids: [SR_92@1.2.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_141
   object_version: '1.2.1'
@@ -1260,7 +1260,7 @@ testcases:
     page as GitHub shows it: `a@1.com` is a link to mailto:, `SR_1@1.1.3` is text and no link'
   design_technique: equivalence partitioning
   target_ids: [SR_69@1.1.2]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_158
   object_version: '1.1.1'

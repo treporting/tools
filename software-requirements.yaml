@@ -1185,7 +1185,7 @@ requirements:
   component: annotation
   object_text: match an id an annotation names to an object by the prefix and the number of its key,
     so that a leading zero does not count - `SR_07` and `SR_7` name the same object
-  source_ids: [TOOL_06@2.1.1]
+  source_ids: [TOOL_6@2.1.1]
   priority: 'medium'
   safety: ''
   status: approved

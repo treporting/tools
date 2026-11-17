@@ -279,3 +279,38 @@ func writeFile(dir, path, content string) error {
 	}
 	return os.WriteFile(filepath.Join(dir, path), []byte(content), 0o600)
 }
+
+// keys answers the base commit and the index of a working tree: each holds one approved object.
+func keys(inBase, inTree string) (fakeGit, *review.Index) {
+	file := "tools/software-requirements.yaml"
+	data := func(key string) string {
+		return "type: requirements\nrequirements:\n- object_key: " + key + "\n  status: approved\n"
+	}
+	tree := fakeGit{file: data(inTree)}
+	return fakeGit{file: data(inBase)}, review.NewIndex(func(f string) ([]byte, error) { return tree.Show("", f) }, []string{file})
+}
+
+// @implements TC_175@1.1.1
+func TestANewKeyFindsTheOldOneInTheBaseCommit(t *testing.T) {
+	git, ix := keys("SR_07", "SR_7")
+	if got := messages(Check(git, "b1", ix, []Annotation{{"a.go", 3, "implements", []string{"SR_7"}, []string{"1.1.1"}}})); len(got) != 0 {
+		t.Errorf("want SR_7 matched to SR_07 approved in the base commit, got %q", got)
+	}
+}
+
+// @implements TC_176@1.1.1
+func TestAnOldKeyFindsTheNewOne(t *testing.T) {
+	git, ix := keys("SR_07", "SR_7")
+	if got := messages(Check(git, "b1", ix, []Annotation{{"a.go", 3, "implements", []string{"SR_07"}, []string{"1.1.1"}}})); len(got) != 0 {
+		t.Errorf("want SR_07 matched to SR_7 of the files of the repo, got %q", got)
+	}
+}
+
+// @implements TC_177@1.1.1
+func TestAnotherNumberIsAnotherKey(t *testing.T) {
+	git, ix := keys("SR_70", "SR_70")
+	got := messages(Check(git, "b1", ix, []Annotation{{"a.go", 3, "implements", []string{"SR_7"}, []string{"1.1.1"}}}))
+	if len(got) != 1 || got[0] != "a.go:3 @implements SR_7: no file of objects holds such an id" {
+		t.Errorf("want SR_7 reported, SR_70 is another key; got %q", got)
+	}
+}

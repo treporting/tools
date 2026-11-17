@@ -6,6 +6,7 @@ package review
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -95,6 +96,19 @@ func (ix *Index) Files() []string {
 
 // Lists are the sections of a YAML that hold objects with an object_key.
 var Lists = []string{"requirements", "elements", "decisions", "hazards", "controls", "rules", "testcases"}
+
+// Keys answers every key the index holds, in order.
+//
+// @implements SR_114@1.1.1
+func (ix *Index) Keys() []string {
+
+	keys := make([]string, 0, len(ix.of))
+	for key := range ix.of {
+		keys = append(keys, key)
+	}
+	slices.Sort(keys)
+	return keys
+}
 
 // FileOf answers the file that holds a target, and the key to find it there; a document is its
 // own file and has no key. An id no file holds answers none.

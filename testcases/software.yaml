@@ -1399,3 +1399,27 @@ testcases:
   target_ids: [SR_113@1.1.1]
   status: approved
   verification_method: [review]
+- object_key: TC_175
+  object_version: '1.1.1'
+  object_text: 'an @implements that names SR_7, the base commit holding SR_07 approved: annotationcheck
+    reports nothing'
+  design_technique: equivalence partitioning
+  target_ids: [SR_114@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_176
+  object_version: '1.1.1'
+  object_text: 'an @implements that names SR_07, the files of the repo holding SR_7: annotationcheck
+    finds the object'
+  design_technique: equivalence partitioning
+  target_ids: [SR_114@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_177
+  object_version: '1.1.1'
+  object_text: 'an @implements that names SR_7, the base commit holding SR_70 and no SR_7: annotationcheck
+    reports SR_7'
+  design_technique: boundary value analysis
+  target_ids: [SR_114@1.1.1]
+  status: approved
+  verification_method: [review]

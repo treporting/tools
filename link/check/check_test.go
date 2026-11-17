@@ -43,14 +43,14 @@ func lines(findings []Finding) []string {
 	return out
 }
 
-// TOOL_09 has moved on in x, TOOL_01 in y and z only.
+// TOOL_9 has moved on in x, TOOL_1 in y and z only.
 const tools = `schema: schemas/tool-requirements.schema.json
 type: requirements
 level: tool
 requirements:
-- object_key: TOOL_01
+- object_key: TOOL_1
   object_version: '1.2.3'
-- object_key: TOOL_09
+- object_key: TOOL_9
   object_version: '4.1.1'
 `
 
@@ -60,14 +60,14 @@ func TestOnlyAnotherXIsReported(t *testing.T) {
 		"requirements/tool-requirements.yaml": tools,
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
-  source_ids: [TOOL_01@1.1.1, TOOL_09@3.1.1]
+- object_key: SR_1
+  source_ids: [TOOL_1@1.1.1, TOOL_9@3.1.1]
 `,
 	}.links()
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"SR_01 source_ids names TOOL_09@3.1.1: its object has 4.1.1"}
+	want := []string{"SR_1 source_ids names TOOL_9@3.1.1: its object has 4.1.1"}
 	if !reflect.DeepEqual(lines(got), want) {
 		t.Errorf("findings %q, want %q", lines(got), want)
 	}
@@ -81,31 +81,31 @@ func TestTheAllocationAndControlsAreCompared(t *testing.T) {
 	got, compared, err := files{
 		"requirements/system-requirements.yaml": `type: requirements
 requirements:
-- object_key: SYS_09
+- object_key: SYS_9
   object_version: '4.1.2'
 `,
 		"requirements/user-needs.yaml": `type: requirements
 requirements:
-- object_key: UN_PSF_01
+- object_key: UN_PSF_1
   object_version: '2.1.1'
 `,
 		"architecture/system-architecture.yaml": `type: architecture
 elements:
-- object_key: ARC_01
-  allocated: [SYS_09@3.1.2]
+- object_key: ARC_1
+  allocated: [SYS_9@3.1.2]
 `,
 		"safety/hazards.yaml": `type: hazards
 controls:
-- object_key: HAZC_01
-  controls: [UN_PSF_01@1.1.1]
+- object_key: HAZC_1
+  controls: [UN_PSF_1@1.1.1]
 `,
 	}.links()
 	if err != nil {
 		t.Fatal(err)
 	}
 	want := []string{
-		"ARC_01 allocated names SYS_09@3.1.2: its object has 4.1.2",
-		"HAZC_01 controls names UN_PSF_01@1.1.1: its object has 2.1.1",
+		"ARC_1 allocated names SYS_9@3.1.2: its object has 4.1.2",
+		"HAZC_1 controls names UN_PSF_1@1.1.1: its object has 2.1.1",
 	}
 	if !reflect.DeepEqual(lines(got), want) {
 		t.Errorf("findings %q, want %q", lines(got), want)
@@ -120,21 +120,21 @@ func TestATargetOfATestCaseIsCompared(t *testing.T) {
 	got, compared, err := files{
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
+- object_key: SR_1
   object_version: '2.1.1'
 `,
 		"tools/testcases/software.yaml": `type: testcases
 testcases:
-- object_key: TC_01
-  target_ids: [SR_01@1.1.1]
-- object_key: TC_02
-  target_ids: [SR_01@2.2.1]
+- object_key: TC_1
+  target_ids: [SR_1@1.1.1]
+- object_key: TC_2
+  target_ids: [SR_1@2.2.1]
 `,
 	}.links()
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"TC_01 target_ids names SR_01@1.1.1: its object has 2.1.1"}
+	want := []string{"TC_1 target_ids names SR_1@1.1.1: its object has 2.1.1"}
 	if !reflect.DeepEqual(lines(got), want) {
 		t.Errorf("findings %q, want %q", lines(got), want)
 	}
@@ -151,8 +151,8 @@ func TestAMissingObjectIsNotCompared(t *testing.T) {
 		"requirements/tool-requirements.yaml": tools,
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
-  source_ids: [TOOL_99@1.1.1, TOOL_09]
+- object_key: SR_1
+  source_ids: [TOOL_99@1.1.1, TOOL_9]
 `,
 	}.links()
 	if err != nil {
@@ -166,11 +166,11 @@ requirements:
 // @implements TC_64@1.1.1, TC_65@1.1.1
 func TestAnAnnotationWithAnotherXIsReported(t *testing.T) {
 	got, compared := Annotations(files{"requirements/tool-requirements.yaml": tools}.read, files{"requirements/tool-requirements.yaml": tools}.index(), []annotation.Annotation{
-		{File: "a.go", Line: 3, Kind: "implements", IDs: []string{"TOOL_01", "TOOL_09"}, Versions: []string{"1.1.1", "3.1.1"}},
-		{File: "a_test.go", Line: 7, Kind: "verifies", IDs: []string{"TOOL_09"}, Versions: []string{"4.1.3"}},
-		{File: "b.go", Line: 1, Kind: "implements", IDs: []string{"TOOL_09"}, Versions: []string{""}},
+		{File: "a.go", Line: 3, Kind: "implements", IDs: []string{"TOOL_1", "TOOL_9"}, Versions: []string{"1.1.1", "3.1.1"}},
+		{File: "a_test.go", Line: 7, Kind: "verifies", IDs: []string{"TOOL_9"}, Versions: []string{"4.1.3"}},
+		{File: "b.go", Line: 1, Kind: "implements", IDs: []string{"TOOL_9"}, Versions: []string{""}},
 	})
-	want := []string{"a.go:3 @implements names TOOL_09@3.1.1: its object has 4.1.1"}
+	want := []string{"a.go:3 @implements names TOOL_9@3.1.1: its object has 4.1.1"}
 	if !reflect.DeepEqual(lines(got), want) {
 		t.Errorf("findings %q, want %q", lines(got), want)
 	}
@@ -202,19 +202,19 @@ func TestALinkToAModuleIsCompared(t *testing.T) {
 	got, compared, err := files{
 		"regulatory/DO178C.yaml": `type: normative
 requirements:
-- object_key: REG_DO178C_02
+- object_key: REG_DO178C_2
   object_version: '2.1.1'
 `,
 		"requirements/system-requirements.yaml": `type: requirements
 requirements:
-- object_key: SYS_09
-  source_ids: [REG_DO178C_02@1.1.1]
+- object_key: SYS_9
+  source_ids: [REG_DO178C_2@1.1.1]
 `,
 	}.links()
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"SYS_09 source_ids names REG_DO178C_02@1.1.1: its object has 2.1.1"}
+	want := []string{"SYS_9 source_ids names REG_DO178C_2@1.1.1: its object has 2.1.1"}
 	if !reflect.DeepEqual(lines(got), want) {
 		t.Errorf("findings %q, want %q", lines(got), want)
 	}
@@ -223,7 +223,7 @@ requirements:
 	}
 }
 
-// repoAbove holds TOOL_09 at 4.1.1, as the repo above.
+// repoAbove holds TOOL_9 at 4.1.1, as the repo above.
 func repoAbove() *review.Repo {
 	f := files{"requirements/tool-requirements.yaml": tools}
 	return &review.Repo{Read: f.read, Index: f.index()}
@@ -233,14 +233,14 @@ func repoAbove() *review.Repo {
 func TestALinkIntoTheRepoAboveIsCompared(t *testing.T) {
 	own := files{"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
-  source_ids: [TOOL_09@3.1.1]
+- object_key: SR_1
+  source_ids: [TOOL_9@3.1.1]
 `}
 	got, compared, err := LinksWithAbove(own.read, own.index(), repoAbove())
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"SR_01 source_ids names TOOL_09@3.1.1: its object has 4.1.1"}
+	want := []string{"SR_1 source_ids names TOOL_9@3.1.1: its object has 4.1.1"}
 	if !reflect.DeepEqual(lines(got), want) || compared != 1 {
 		t.Errorf("findings %q, compared %d, want %q and 1", lines(got), compared, want)
 	}
@@ -257,9 +257,9 @@ requirements:
 func TestAnAnnotationIntoTheRepoAboveIsCompared(t *testing.T) {
 	own := files{}
 	got, compared := AnnotationsWithAbove(own.read, own.index(), repoAbove(), []annotation.Annotation{
-		{File: "a.go", Line: 3, Kind: "implements", IDs: []string{"TOOL_09"}, Versions: []string{"3.1.1"}},
+		{File: "a.go", Line: 3, Kind: "implements", IDs: []string{"TOOL_9"}, Versions: []string{"3.1.1"}},
 	})
-	want := []string{"a.go:3 @implements names TOOL_09@3.1.1: its object has 4.1.1"}
+	want := []string{"a.go:3 @implements names TOOL_9@3.1.1: its object has 4.1.1"}
 	if !reflect.DeepEqual(lines(got), want) || compared != 1 {
 		t.Errorf("findings %q, compared %d, want %q and 1", lines(got), compared, want)
 	}

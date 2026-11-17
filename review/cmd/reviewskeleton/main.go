@@ -1,4 +1,4 @@
-// Command reviewskeleton writes the skeleton of a review result into reviews/results/ (TOOL_04).
+// Command reviewskeleton writes the skeleton of a review result into reviews/results/ (TOOL_4).
 //
 //	reviewskeleton [-root dir] -reviewer name -scope scope id-or-document ...
 //

@@ -53,14 +53,14 @@ func (f fakeGit) Authors(commit string) (string, []string, error) {
 
 const criteria = `level: tool
 criteria:
-- object_key: RC_01
-- object_key: RC_02
+- object_key: RC_1
+- object_key: RC_2
 `
 
 const requirements = `type: requirements
 level: tool
 requirements:
-- object_key: TOOL_03
+- object_key: TOOL_3
   object_text: check every review result
 `
 
@@ -135,12 +135,12 @@ func expect(t *testing.T, messages []string, want string) {
 	t.Errorf("no finding %q in %q", want, messages)
 }
 
-// @implements TC_01@1.1.1, TC_06@1.1.1, TC_11@1.1.1, TC_18@1.1.1, TC_20@1.1.1, TC_37@1.1.1
+// @implements TC_1@1.1.1, TC_6@1.1.1, TC_11@1.1.1, TC_18@1.1.1, TC_20@1.1.1, TC_37@1.1.1
 func TestAGoodResultHasNoFinding(t *testing.T) {
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `, history("Claude Opus 5.5", "Claude Opus 5.5"))
 	if len(got) != 0 {
@@ -148,41 +148,41 @@ func TestAGoodResultHasNoFinding(t *testing.T) {
 	}
 }
 
-// @implements TC_02@1.1.1, TC_03@1.1.1
+// @implements TC_2@1.1.1, TC_3@1.1.1
 func TestEveryCriterionOnce(t *testing.T) {
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_09: passed}
+  criteria: {RC_1: passed, RC_9: passed}
   verdict: passed
 `, history("Claude Opus 5.5", "Claude Opus 5.5"))
-	expect(t, got, "criterion RC_02 is missing")
-	expect(t, got, "criterion RC_09 is not in")
+	expect(t, got, "criterion RC_2 is missing")
+	expect(t, got, "criterion RC_9 is not in")
 }
 
-// @implements TC_04@1.1.1, TC_05@1.1.1
+// @implements TC_4@1.1.1, TC_5@1.1.1
 func TestTheVerdictFollowsTheCriteria(t *testing.T) {
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: {result: failed, note: unclear}}
+  criteria: {RC_1: passed, RC_2: {result: failed, note: unclear}}
   verdict: passed
-- object_key: RR_02
-  target_ids: [TOOL_03]
+- object_key: RR_2
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: failed
 `, history("Claude Opus 5.5", "Claude Opus 5.5"))
 	expect(t, got, "the verdict is passed, but not every criterion passed")
 	expect(t, got, "the verdict is failed, but every criterion passed")
 }
 
-// @implements TC_07@1.1.1, TC_09@1.1.1
+// @implements TC_7@1.1.1, TC_9@1.1.1
 func TestAFailedVerdictWithANote(t *testing.T) {
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: {result: failed, note: unclear}}
+  criteria: {RC_1: passed, RC_2: {result: failed, note: unclear}}
   verdict: failed
 `, history("Claude Opus 5.5", "Claude Opus 5.5"))
 	if len(got) != 0 {
@@ -190,23 +190,23 @@ func TestAFailedVerdictWithANote(t *testing.T) {
 	}
 }
 
-// @implements TC_08@1.1.1
+// @implements TC_8@1.1.1
 func TestAFailedCriterionHasANote(t *testing.T) {
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: failed}
+  criteria: {RC_1: passed, RC_2: failed}
   verdict: failed
 `, history("Claude Opus 5.5", "Claude Opus 5.5"))
-	expect(t, got, "criterion RC_02 failed with no note")
+	expect(t, got, "criterion RC_2 failed with no note")
 }
 
 // @implements TC_10@1.1.1
 func TestTheRevisionExists(t *testing.T) {
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'nope'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `, history("Claude Opus 5.5", "Claude Opus 5.5"))
 	expect(t, got, "the revision nope is no commit")
@@ -214,17 +214,17 @@ func TestTheRevisionExists(t *testing.T) {
 
 // @implements TC_12@1.1.1, TC_13@1.1.1
 func TestTheReviewerIsNotTheAuthor(t *testing.T) {
-	result := `- object_key: RR_01
-  target_ids: [TOOL_03]
+	result := `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `
 	//	written by the reviewer alone
-	expect(t, check(t, result, history("Mathias Fischer")), "the reviewer Mathias Fischer is an author of TOOL_03")
+	expect(t, check(t, result, history("Mathias Fischer")), "the reviewer Mathias Fischer is an author of TOOL_3")
 
 	//	written by another, with the reviewer as co-author
-	expect(t, check(t, result, history("Copilot", "Mathias Fischer")), "the reviewer Mathias Fischer is an author of TOOL_03")
+	expect(t, check(t, result, history("Copilot", "Mathias Fischer")), "the reviewer Mathias Fischer is an author of TOOL_3")
 
 	//	written by another, with no co-author: whatever name stands there
 	if got := check(t, result, history("Copilot")); len(got) != 0 {
@@ -238,32 +238,32 @@ func TestASoftwareRequirementOfTheToolsHasAnAuthor(t *testing.T) {
 	git.files["c1"]["tools/software-requirements.yaml"] = `type: requirements
 level: r5
 requirements:
-- object_key: SR_01
+- object_key: SR_1
   object_text: report a criterion that is missing
 `
-	got := check(t, `- object_key: RR_01
-  target_ids: [SR_01]
+	got := check(t, `- object_key: RR_1
+  target_ids: [SR_1]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `, git)
-	expect(t, got, "the reviewer Mathias Fischer is an author of SR_01")
+	expect(t, got, "the reviewer Mathias Fischer is an author of SR_1")
 }
 
 // @implements TC_16@1.1.1
 func TestAValueOtherThanPassedOrFailed(t *testing.T) {
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: todo}
+  criteria: {RC_1: passed, RC_2: todo}
   verdict: passed
-- object_key: RR_02
-  target_ids: [TOOL_03]
+- object_key: RR_2
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: pased
 `, history("Claude Opus 5.5", "Claude Opus 5.5"))
-	expect(t, got, "criterion RC_02 is neither passed nor failed")
+	expect(t, got, "criterion RC_2 is neither passed nor failed")
 	//	counted as not passed
 	expect(t, got, "the verdict is passed, but not every criterion passed")
 	expect(t, got, "the verdict is neither passed nor failed")
@@ -273,15 +273,15 @@ func TestAValueOtherThanPassedOrFailed(t *testing.T) {
 func TestTheCriteriaRevisionChangedTheCriteria(t *testing.T) {
 	git := history("Claude Opus 5.5", "Claude Opus 5.5")
 	git.changed = map[string][]string{"reviews/criteria-tool.yaml": {"c0"}}
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
-- object_key: RR_02
-  target_ids: [TOOL_03]
+- object_key: RR_2
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `, git)
 	if n := strings.Count(strings.Join(got, "\n"), "the criteria revision c1 did not change reviews/criteria-tool.yaml"); n != 1 {
@@ -291,10 +291,10 @@ func TestTheCriteriaRevisionChangedTheCriteria(t *testing.T) {
 
 // @implements TC_21@1.1.1
 func TestTheReviewerIsNotTheAuthorOfADocument(t *testing.T) {
-	result := `- object_key: RR_01
+	result := `- object_key: RR_1
   target_ids: [formats.md]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `
 	git := history("Mathias Fischer")
@@ -320,10 +320,10 @@ func TestAMergeIsNoAuthorship(t *testing.T) {
 	git.changed = map[string][]string{"formats.md": {"m1", "c1"}}
 	git.merges = map[string]bool{"m1": true}
 	git.authors = map[string]string{"m1": "Mathias Fischer"}
-	got := check(t, `- object_key: RR_01
+	got := check(t, `- object_key: RR_1
   target_ids: [formats.md]
   revision: 'm1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `, git)
 	if len(got) != 0 {
@@ -333,14 +333,14 @@ func TestAMergeIsNoAuthorship(t *testing.T) {
 
 // @implements TC_17@1.1.1
 func TestAnUnfilledSkeletonIsReported(t *testing.T) {
-	got := check(t, `- object_key: RR_01
-  target_ids: [TOOL_03]
+	got := check(t, `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: todo, RC_02: todo}
+  criteria: {RC_1: todo, RC_2: todo}
   verdict: todo
 `, history("Claude Opus 5.5", "Claude Opus 5.5"))
-	expect(t, got, "criterion RC_01 is neither passed nor failed")
-	expect(t, got, "criterion RC_02 is neither passed nor failed")
+	expect(t, got, "criterion RC_1 is neither passed nor failed")
+	expect(t, got, "criterion RC_2 is neither passed nor failed")
 	expect(t, got, "the verdict is neither passed nor failed")
 }
 
@@ -350,26 +350,26 @@ func order(t *testing.T, revision string, git fakeGit, last string) {
 	t.Helper()
 	git.files["c1"]["reviews/criteria-tool.yaml"] = `level: tool
 criteria:
-- object_key: RC_01
-- object_key: RC_02
-- object_key: RC_03
-- object_key: RC_04
-- object_key: RC_05
+- object_key: RC_1
+- object_key: RC_2
+- object_key: RC_3
+- object_key: RC_4
+- object_key: RC_5
 `
-	result := `- object_key: RR_01
-  target_ids: [TOOL_03]
+	result := `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: '` + revision + `'
-  criteria: {RC_05: todo, RC_04: todo, RC_01: todo, RC_03: failed, RC_09: passed, RC_07: passed}
+  criteria: {RC_5: todo, RC_4: todo, RC_1: todo, RC_3: failed, RC_9: passed, RC_7: passed}
   verdict: todo
 `
 	want := []string{
-		"criterion RC_01 is neither passed nor failed",
-		"criterion RC_02 is missing",
-		"criterion RC_03 failed with no note",
-		"criterion RC_04 is neither passed nor failed",
-		"criterion RC_05 is neither passed nor failed",
-		"criterion RC_07 is not in reviews/criteria-tool.yaml",
-		"criterion RC_09 is not in reviews/criteria-tool.yaml",
+		"criterion RC_1 is neither passed nor failed",
+		"criterion RC_2 is missing",
+		"criterion RC_3 failed with no note",
+		"criterion RC_4 is neither passed nor failed",
+		"criterion RC_5 is neither passed nor failed",
+		"criterion RC_7 is not in reviews/criteria-tool.yaml",
+		"criterion RC_9 is not in reviews/criteria-tool.yaml",
 		"the verdict is neither passed nor failed",
 		last,
 	}
@@ -388,15 +388,15 @@ func TestTheFindingsInTheSameOrderInEveryRun(t *testing.T) {
 
 // @implements TC_135@1.1.1
 func TestTheFindingsUpToTheReviewerInTheSameOrder(t *testing.T) {
-	order(t, "c1", history("Mathias Fischer"), "the reviewer Mathias Fischer is an author of TOOL_03")
+	order(t, "c1", history("Mathias Fischer"), "the reviewer Mathias Fischer is an author of TOOL_3")
 }
 
 // @implements TC_34@1.1.1, TC_35@1.1.1, TC_36@1.1.1
 func TestACompletedReviewHasItsCompletedAt(t *testing.T) {
-	result := `- object_key: RR_01
-  target_ids: [TOOL_03]
+	result := `- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: 'c1'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `
 	git := history("Claude Opus 5.5", "Claude Opus 5.5")

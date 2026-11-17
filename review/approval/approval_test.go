@@ -27,7 +27,7 @@ func TestFindXReadsTheAttributesForXAlsoInsideOneOf(t *testing.T) {
 
 // @verifies SR_78@1.1.1
 func TestXOfKeepsOnlyTheAttributesForX(t *testing.T) {
-	got := xOf([]byte("object_key: TOOL_01\nobject_text: a text\npriority: high\n"), []string{"object_text", "safety"})
+	got := xOf([]byte("object_key: TOOL_1\nobject_text: a text\npriority: high\n"), []string{"object_text", "safety"})
 	want := map[string]any{"object_text": "a text", "safety": nil}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("xOf = %v, want %v", got, want)
@@ -36,9 +36,9 @@ func TestXOfKeepsOnlyTheAttributesForX(t *testing.T) {
 
 // @verifies SR_80@2.1.3
 func TestInFilesKeepsTheObjectsOfTheChangedFiles(t *testing.T) {
-	objects := []object{{key: "TOOL_01", file: "a.yaml"}, {key: "SR_01", file: "b.yaml"}}
+	objects := []object{{key: "TOOL_1", file: "a.yaml"}, {key: "SR_1", file: "b.yaml"}}
 	got := inFiles(objects, []string{"b.yaml"})
-	if len(got) != 1 || got[0].key != "SR_01" {
+	if len(got) != 1 || got[0].key != "SR_1" {
 		t.Errorf("inFiles = %v", got)
 	}
 }

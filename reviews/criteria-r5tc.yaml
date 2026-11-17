@@ -4,35 +4,35 @@ schema: schemas/review-criteria.schema.json
 type: criteria
 level: r5tc
 criteria:
-- object_key: RC_01
+- object_key: RC_1
   source: treporting - formats.md, section Test cases
   object_text: single - it states one case
   question: Does it state exactly one case?
-- object_key: RC_02
+- object_key: RC_2
   source: treporting
   object_text: decidable - it states what is given and what is expected, so that a run decides passed
     or failed
   question: Does it state what is given and what is expected, so that a run decides passed or failed?
-- object_key: RC_03
-  source: REG_ISO29119-4_01, REG_ISO29119-4_02, REG_ISO29119-4_03 - the test design techniques
-  object_text: derived - its design_technique is one of the techniques of REG_ISO29119-4_01 to _03,
+- object_key: RC_3
+  source: REG_ISO29119-4_1, REG_ISO29119-4_2, REG_ISO29119-4_3 - the test design techniques
+  object_text: derived - its design_technique is one of the techniques of REG_ISO29119-4_1 to _03,
     and the case was derived by it
-  question: Is its design_technique one of the techniques of REG_ISO29119-4_01 to _03, and was the case derived by it?
-- object_key: RC_04
+  question: Is its design_technique one of the techniques of REG_ISO29119-4_1 to _03, and was the case derived by it?
+- object_key: RC_4
   source: treporting
   object_text: targeted - its target_ids name requirements whose verification method holds test, at
     their current version
   question: Do its target_ids name requirements whose verification method holds test, at their current version?
-- object_key: RC_05
+- object_key: RC_5
   source: treporting - traceability.md, section Tests
   object_text: relevant - it fails where its requirement is not met
   question: Does it fail where its requirement is not met?
-- object_key: RC_06
+- object_key: RC_6
   source: treporting
   object_text: covering - the test cases of a requirement together cover it by their technique; where
     the requirement asks to report something, a case where it is reported and one where it is not
   question: Do the test cases of the requirement together cover it by their technique?
-- object_key: RC_07
-  source: treporting - PROC_01
+- object_key: RC_7
+  source: treporting - PROC_1
   object_text: English - it is written in English only
   question: Is it written in English only?

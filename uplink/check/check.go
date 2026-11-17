@@ -1,4 +1,4 @@
-// Package check checks that every approved requirement names approved uplinks only (TOOL_09).
+// Package check checks that every approved requirement names approved uplinks only (TOOL_9).
 package check
 
 import (

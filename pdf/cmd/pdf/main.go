@@ -1,4 +1,4 @@
-// Command pdf makes the documents of a commit or tag into one ZIP of PDFs (TOOL_01, TOOL_02,
+// Command pdf makes the documents of a commit or tag into one ZIP of PDFs (TOOL_1, TOOL_2,
 // TOOL_30, TOOL_31).
 //
 //	pdf -ref commit-or-tag [-root dir] [-repo name] [-out dir]

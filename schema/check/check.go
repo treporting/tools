@@ -1,4 +1,4 @@
-// Package check checks every YAML file against the schema it names in its field schema (TOOL_05).
+// Package check checks every YAML file against the schema it names in its field schema (TOOL_5).
 package check
 
 import (

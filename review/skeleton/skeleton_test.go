@@ -39,14 +39,14 @@ func (f fakeGit) Short(rev string) (string, error) {
 
 func history() fakeGit {
 	return fakeGit{files: map[string]string{
-		"reviews/criteria-tool.yaml":      "level: tool\ncriteria:\n- object_key: RC_01\n- object_key: RC_02\n",
-		"reviews/criteria-documents.yaml": "level: document\ncriteria:\n- object_key: RC_01\n",
+		"reviews/criteria-tool.yaml":      "level: tool\ncriteria:\n- object_key: RC_1\n- object_key: RC_2\n",
+		"reviews/criteria-documents.yaml": "level: document\ncriteria:\n- object_key: RC_1\n",
 		"requirements/tool-requirements.yaml": `type: requirements
 level: tool
 requirements:
-- object_key: TOOL_03
+- object_key: TOOL_3
   object_text: check every review result
-- object_key: TOOL_04
+- object_key: TOOL_4
   object_text: create the skeleton
 `,
 		"harness.md": "# Harness\n",
@@ -95,7 +95,7 @@ func contains(t *testing.T, content string, want ...string) {
 
 // @implements TC_23@1.1.1
 func TestTheNameTheReviewerAndTheTime(t *testing.T) {
-	path, content, err := makeSkeleton(t, "TOOL_03", "TOOL_04")
+	path, content, err := makeSkeleton(t, "TOOL_3", "TOOL_4")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,7 +107,7 @@ func TestTheNameTheReviewerAndTheTime(t *testing.T) {
 
 // @implements TC_24@1.1.1, TC_25@1.1.1
 func TestTheCriteriaOfTheLevel(t *testing.T) {
-	_, content, err := makeSkeleton(t, "TOOL_03")
+	_, content, err := makeSkeleton(t, "TOOL_3")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -122,7 +122,7 @@ func TestTheCriteriaOfTheLevel(t *testing.T) {
 
 // @implements TC_26@1.1.1
 func TestTheRevisionIsHead(t *testing.T) {
-	_, content, err := makeSkeleton(t, "TOOL_03")
+	_, content, err := makeSkeleton(t, "TOOL_3")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -131,11 +131,11 @@ func TestTheRevisionIsHead(t *testing.T) {
 
 // @implements TC_27@1.1.1
 func TestEveryCriterionAndTheVerdictAreTodo(t *testing.T) {
-	_, content, err := makeSkeleton(t, "TOOL_03", "TOOL_04")
+	_, content, err := makeSkeleton(t, "TOOL_3", "TOOL_4")
 	if err != nil {
 		t.Fatal(err)
 	}
-	contains(t, content, "- object_key: RR_01\n  target_ids: [TOOL_03]\n", "- object_key: RR_02\n  target_ids: [TOOL_04]\n")
+	contains(t, content, "- object_key: RR_1\n  target_ids: [TOOL_3]\n", "- object_key: RR_2\n  target_ids: [TOOL_4]\n")
 	if n := strings.Count(content, ": todo\n"); n != 6 {
 		t.Errorf("want 6 todo, two criteria and a verdict for each of two; got %d", n)
 	}
@@ -152,14 +152,14 @@ func TestNothingWhereATargetIsMissingOrTheLevelsDiffer(t *testing.T) {
 	if _, _, err := makeSkeleton(t, "nothing.md"); err == nil {
 		t.Errorf("want nothing.md not found")
 	}
-	if _, _, err := makeSkeleton(t, "TOOL_03", "harness.md"); err == nil || !strings.Contains(err.Error(), "one review, one level") {
+	if _, _, err := makeSkeleton(t, "TOOL_3", "harness.md"); err == nil || !strings.Contains(err.Error(), "one review, one level") {
 		t.Errorf("want two levels refused, got %v", err)
 	}
 }
 
 // @implements TC_32@1.1.1
 func TestTheSkeletonNamesItsSchemaTypeAndLevel(t *testing.T) {
-	_, content, err := makeSkeleton(t, "TOOL_03")
+	_, content, err := makeSkeleton(t, "TOOL_3")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -168,7 +168,7 @@ func TestTheSkeletonNamesItsSchemaTypeAndLevel(t *testing.T) {
 
 // @implements TC_33@1.1.1
 func TestTheSkeletonIsAnOpenRecord(t *testing.T) {
-	_, content, err := makeSkeleton(t, "TOOL_03")
+	_, content, err := makeSkeleton(t, "TOOL_3")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -43,17 +43,17 @@ product - a checker with a fault would let faults pass unseen.
 **Decision**: a tool requirement leads to software requirements, and those to code and tests - as
 for a subsystem. The software requirements of the tools are in
 [software-requirements.yaml](software-requirements.yaml), each naming its tool requirement as
-uplink. The code names them in `@implements SR_nn`, a test in `@verifies SR_nn`. The tests are on
+uplink. The code names them in `@implements SR_n`, a test in `@verifies SR_n`. The tests are on
 the levels MT and SwIT.
 
-**Why**: the first tool showed it. TOOL_03 holds five behaviours that can each be tested on their
+**Why**: the first tool showed it. TOOL_3 holds five behaviours that can each be tested on their
 own; by ISO29148 each is a requirement of its own (singular). Its review noted it, and
-each test of reviewcheck verified one of the five while all named only TOOL_03 - which of them a
+each test of reviewcheck verified one of the five while all named only TOOL_3 - which of them a
 test verifies could not be told. A tool requirement says what a tool does for our work; a
 software requirement says how it behaves.
 
 **Rejected**: a tool requirement leading straight to code and tests - the first decision here. It
-held a tool requirement as concrete as a software requirement, which TOOL_03 proved wrong.
+held a tool requirement as concrete as a software requirement, which TOOL_3 proved wrong.
 
 ## Who changed a requirement
 
@@ -62,7 +62,7 @@ not a merge, that changed the requirement, and its co-authors - `Claude Opus 5.5
 Nothing is derived from it and kept beside it; there is no `mmodified_by`.
 
 **Why**: git records author and co-authors by itself; a record made by a computer is the evidence an
-audit trail asks for (REG_CFR21-11_01), and the original stays original (ARCR_01, REG_FDADI_01).
+audit trail asks for (REG_CFR21-11_1), and the original stays original (ARCR_1, REG_FDADI_1).
 
 **Rejected**:
 
@@ -76,7 +76,7 @@ audit trail asks for (REG_CFR21-11_01), and the original stays original (ARCR_01
 
 **Decision**: the authors of a requirement or a document are the names in its `modified_by` - the
 author and the co-authors of the last commit, not a merge, that changed it, whatever names stand
-there. The reviewer is none of them (PROC_15; TOOL_03, TOOL_11). Who writes the text is the author of the commit:
+there. The reviewer is none of them (PROC_15; TOOL_3, TOOL_11). Who writes the text is the author of the commit:
 Claude Code commits with `--author="Claude Opus 5.5 <noreply@anthropic.com>"`; the Product Owner
 stays its committer.
 
@@ -101,7 +101,7 @@ resolved by hand in a merge is a change no author is found for.
   it names a product, so another assistant, such as Copilot, would need a change of the rule
 - the authors without the committer, where none is left the committer - it keeps the history valid,
   but it is a rule about git again, not the record of git
-- the check left to the approver by hand - TOOL_03 asks for it
+- the check left to the approver by hand - TOOL_3 asks for it
 - rebase merges, so that `main` has no merge commits - git would no longer record who merged, the
   evidence of the approval
 
@@ -146,15 +146,15 @@ new file or a changed prefix needs no change of code.
 
 **Rejected**:
 
-- the id tells its file, by a fixed list of prefixes and the rule `REG_<module>_nn` →
+- the id tells its file, by a fixed list of prefixes and the rule `REG_<module>_n` →
   `regulatory/<module>.yaml`, as before - every new level or prefix is a change of code, and the
   list stood a second time beside the table files of the levels in formats.md
 - a file `levels.yaml` - see formats.md, section Documents
 
 ## reviewcheck
 
-Checks every review result in `reviews/results/` against the rules of formats.md (TOOL_03, TOOL_11; SR_01
-to SR_08, SR_16, SR_84 and SR_103 in [software-requirements.yaml](software-requirements.yaml)): every criterion of its
+Checks every review result in `reviews/results/` against the rules of formats.md (TOOL_3, TOOL_11; SR_1
+to SR_8, SR_16, SR_84 and SR_103 in [software-requirements.yaml](software-requirements.yaml)): every criterion of its
 criteria file once, the verdict passed only when every criterion passed, a note to every failed
 criterion, no value but passed or failed, the revision reviewed exists, the criteria revision changed
 the criteria file, the reviewer is none of the authors of the requirement or document, and a
@@ -175,7 +175,7 @@ breaks a rule. It depends on `gopkg.in/yaml.v3` (MIT and Apache-2.0).
 
 ## reviewskeleton
 
-Writes the skeleton of a review result into `reviews/results/` (TOOL_04; SR_11 to SR_15 in
+Writes the skeleton of a review result into `reviews/results/` (TOOL_4; SR_11 to SR_15 in
 [software-requirements.yaml](software-requirements.yaml)): the name from the time and the scope,
 the criteria file of the level and the last commit that changed it, the commit `HEAD` as the
 revision of each, and every criterion and the verdict as `todo`. It writes nothing where a target is
@@ -228,7 +228,7 @@ there: without `-base` each of them is reported, so here it runs with `-base`.
 ## schemacheck
 
 Checks every YAML file of our own data under version control against the schema it names in its
-field `schema` (TOOL_05; SR_18 and SR_19 in [software-requirements.yaml](software-requirements.yaml)),
+field `schema` (TOOL_5; SR_18 and SR_19 in [software-requirements.yaml](software-requirements.yaml)),
 and reports each place where one does not match, with the file and the path within it. A YAML in
 `.github/` has a form GitHub owns, and is not checked. The CI runs it on every pull request (SR_20).
 
@@ -265,10 +265,10 @@ The code is the component `ruleset`: the package `ruleset/check` and the command
 ## annotationcheck
 
 Checks that every id named in `@implements`, `@verifies` or `@refines` is in the requirements of the
-base commit of the pull request, and approved there (TOOL_06; SR_24, SR_25 and SR_35 in
+base commit of the pull request, and approved there (TOOL_6; SR_24, SR_25 and SR_35 in
 [software-requirements.yaml](software-requirements.yaml)), and that it names its version, as
 `ID@x.y.z` (TOOL_20, SR_30). The id is read apart from its version and checked as before. A requirement approved in the same pull
-request does not count: it has to be through before the code (PROC_05, PROC_12).
+request does not count: it has to be through before the code (PROC_5, PROC_12).
 
 It reads a file by its kind, from the two lists in [kinds.yaml](annotation/kinds.yaml): the
 whitelist of the kinds that are code, the blacklist of those that are no code. A file of a kind on
@@ -309,7 +309,7 @@ The code is the component `annotation`: the package `annotation/check` and the c
 
 ## uplinkcheck
 
-Checks that every approved requirement names approved uplinks only (TOOL_09; SR_28 and SR_29 in
+Checks that every approved requirement names approved uplinks only (TOOL_9; SR_28 and SR_29 in
 [software-requirements.yaml](software-requirements.yaml)). It reads every file of requirements as it
 stands - the levels, the tools, the rules - and reports each uplink in `source_ids` of an approved
 requirement that no file holds, or that is not approved. The version after `@` is not compared here;
@@ -422,7 +422,7 @@ identifiers joined by AND, OR or WITH. A licence named in words, such as "2-clau
 license", is unknown; Open shows the words.
 
 **Why**: npm and Alpine name the licence in SPDX already. Words are no identifier: the check of the
-licences (PROC_08) cannot compare them, so a human has to look.
+licences (PROC_8) cannot compare them, so a human has to look.
 
 **Rejected**: the identifiers checked against the list of SPDX - the list would have to be kept
 here. The known limit: an identifier of the right form that SPDX does not list, such as
@@ -630,7 +630,7 @@ during the run.
 
 ## pdf
 
-Makes the documents of a commit or tag into one ZIP of PDFs (TOOL_01, TOOL_02, TOOL_30, TOOL_31;
+Makes the documents of a commit or tag into one ZIP of PDFs (TOOL_1, TOOL_2, TOOL_30, TOOL_31;
 SR_68 to SR_74 in [software-requirements.yaml](software-requirements.yaml)). It reads the repo at the
 ref without checking it out: `documents.yaml`, and the Markdown of every document it names. The ZIP
 `<repo>-<ref>-documents.zip` holds one PDF per document, named after its path, and `index.pdf`,
@@ -735,3 +735,4 @@ its own root, and by the names of its describe blocks before its own.
 | 39.1.1 | 2026-11-13 | specs-and-deploy is named specs-and-deploy-process | specs-and-deploy-process#641 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 40.1.1 | 2026-11-15 | baseline: `baseline.sh` of its own, the shared helpers in `common.sh` | #12 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 41.1.1 | 2026-11-15 | baseline: the tools and the repo above at the tags of their baselines, named in sbom.md | #18 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 42.1.1 | 2026-11-17 | Keys without a leading zero | treporting/specs-and-deploy-process#679 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

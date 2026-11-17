@@ -1,4 +1,4 @@
-# The documents of a commit or tag as one ZIP of PDFs (TOOL_01), started by hand: Actions, pdf, Run
+# The documents of a commit or tag as one ZIP of PDFs (TOOL_1), started by hand: Actions, pdf, Run
 # workflow, with the commit or tag. The ZIP is an artifact of the run, to download from there; GitHub
 # keeps it 90 days, and the ZIP of a tag can be made again. The run writes nothing to the repo. A
 # repo calls it as a reusable workflow, with the ref:

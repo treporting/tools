@@ -9,20 +9,20 @@ import (
 // A file is indexed when it holds an object, whatever its type; a review result and a file without
 // objects are not.
 //
-// @implements TC_57@1.1.1, TC_58@1.1.1
+// @implements TC_57@2.1.1, TC_58@2.1.1
 func TestEveryFileThatHoldsObjectsIsIndexed(t *testing.T) {
 	files := map[string]string{
 		"tools/testcases/software.yaml": `type: testcases
 testcases:
-- object_key: TC_01
+- object_key: TC_1
 `,
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
+- object_key: SR_1
 `,
 		"reviews/results/r.yaml": `type: review
 results:
-- object_key: RR_01
+- object_key: RR_1
 `,
 		"reviews/criteria-r5.yaml": `type: criteria
 `,
@@ -39,10 +39,10 @@ results:
 	if !reflect.DeepEqual(ix.Files(), want) {
 		t.Errorf("files %q, want %q", ix.Files(), want)
 	}
-	if file, key := ix.FileOf("TC_01"); file != "tools/testcases/software.yaml" || key != "TC_01" {
-		t.Errorf("TC_01 in %q as %q", file, key)
+	if file, key := ix.FileOf("TC_1"); file != "tools/testcases/software.yaml" || key != "TC_1" {
+		t.Errorf("TC_1 in %q as %q", file, key)
 	}
-	if file, _ := ix.FileOf("RR_01"); file != "" {
-		t.Errorf("RR_01 in %q, want none", file)
+	if file, _ := ix.FileOf("RR_1"); file != "" {
+		t.Errorf("RR_1 in %q, want none", file)
 	}
 }

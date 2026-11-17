@@ -1,5 +1,5 @@
 // Package check checks that every id an annotation names is approved in the base commit of the
-// pull request (TOOL_06), and that it names its version (TOOL_20). It reads @refines in the
+// pull request (TOOL_6), and that it names its version (TOOL_20). It reads @refines in the
 // $comment of the schemas as well.
 package check
 
@@ -102,7 +102,7 @@ var version = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+$`)
 // for every file whose kind is on neither list. A YAML that names a schema is our data and is not
 // read. A file is read only once its name has told it is code.
 //
-// @implements SR_24@3.1.1, SR_27@1.1.1
+// @implements SR_24@4.1.1, SR_27@1.1.1
 func Find(root string, files []string, kinds Kinds) ([]Annotation, []Finding, error) {
 
 	var found []Annotation
@@ -209,7 +209,7 @@ func Unversioned(annotations []Annotation) []Finding {
 // Check answers each id the annotations name that is not in the requirements of the base commit,
 // or not approved there. The index tells the file of an id, as the working tree holds it.
 //
-// @implements SR_24@3.1.1, SR_25@2.2.1
+// @implements SR_24@4.1.1, SR_25@2.2.1
 func Check(git Git, base string, index *review.Index, annotations []Annotation) []Finding {
 
 	var findings []Finding

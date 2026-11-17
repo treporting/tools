@@ -1,5 +1,5 @@
 // Command schemacheck checks every YAML file under version control against the schema it names in
-// its field schema (TOOL_05).
+// its field schema (TOOL_5).
 //
 //	schemacheck [-root dir] [-above dir]
 //

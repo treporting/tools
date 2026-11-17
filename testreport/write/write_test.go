@@ -32,16 +32,16 @@ const goTest = `package a
 
 import "testing"
 
-// AT implements TC_01@1.1.1
+// AT implements TC_1@1.1.1
 func TestOne(t *testing.T) {}
 
-// AT verifies SR_02@1.1.1
+// AT verifies SR_2@1.1.1
 func TestTwo(t *testing.T) {}
 
-// AT implements TC_01@1.1.1
+// AT implements TC_1@1.1.1
 func TestThree(t *testing.T) {}
 
-// AT verifies SR_02@1.1.1
+// AT verifies SR_2@1.1.1
 func TestNotRun(t *testing.T) {}
 
 func TestWithoutAnnotation(t *testing.T) {}
@@ -49,14 +49,14 @@ func TestWithoutAnnotation(t *testing.T) {}
 
 const vitestTest = `import { it } from 'vitest'
 
-// AT implements TC_03@1.1.1
+// AT implements TC_3@1.1.1
 it('shows the rail', () => {})
 `
 
 var testcases = []Testcase{
-	{Key: "TC_01", Version: "1.1.1", Text: "one", Targets: []string{"SR_01@1.1.1"}, Status: "approved"},
-	{Key: "TC_03", Version: "1.1.1", Text: "three", Targets: []string{"SR_03@2.1.1"}, Status: "approved"},
-	{Key: "TC_04", Version: "1.1.1", Text: "four", Targets: []string{"SR_04@1.1.1"}, Status: "approved"},
+	{Key: "TC_1", Version: "1.1.1", Text: "one", Targets: []string{"SR_1@1.1.1"}, Status: "approved"},
+	{Key: "TC_3", Version: "1.1.1", Text: "three", Targets: []string{"SR_3@2.1.1"}, Status: "approved"},
+	{Key: "TC_4", Version: "1.1.1", Text: "four", Targets: []string{"SR_4@1.1.1"}, Status: "approved"},
 }
 
 // repo writes the files of tests into a directory and answers the test procedures read from it.
@@ -125,8 +125,8 @@ func TestReadsBothJUnitAndLinksTheProcedureToItsTestCase(t *testing.T) {
 	}
 	execution := section(report(t), "Test execution")
 	for _, want := range []string{
-		"| SR_01@1.1.1 | TC_01@1.1.1 | TestOne | passed |",
-		"| SR_03@2.1.1 | TC_03@1.1.1 | shows the rail | passed |",
+		"| SR_1@1.1.1 | TC_1@1.1.1 | TestOne | passed |",
+		"| SR_3@2.1.1 | TC_3@1.1.1 | shows the rail | passed |",
 	} {
 		if !strings.Contains(execution, want) {
 			t.Errorf("Test execution has no %q:\n%s", want, execution)
@@ -174,10 +174,10 @@ func TestOriginalDataWithoutStore(t *testing.T) {
 	}
 }
 
-// @implements TC_140@1.2.1
+// @implements TC_140@2.2.1
 func TestSpecificationListsTheTestCaseWithItsRequirement(t *testing.T) {
 	spec := section(report(t), "Test specification")
-	if !strings.Contains(spec, "| Requirement | Test case | Text | Status |") || !strings.Contains(spec, "| SR_01@1.1.1 | TC_01@1.1.1 | one | approved |") {
+	if !strings.Contains(spec, "| Requirement | Test case | Text | Status |") || !strings.Contains(spec, "| SR_1@1.1.1 | TC_1@1.1.1 | one | approved |") {
 		t.Errorf("got:\n%s", spec)
 	}
 }
@@ -186,8 +186,8 @@ func TestSpecificationListsTheTestCaseWithItsRequirement(t *testing.T) {
 func TestImplementationWithAndWithoutATestCase(t *testing.T) {
 	impl := section(report(t), "Test implementation")
 	for _, want := range []string{
-		"| SR_01@1.1.1 | TC_01@1.1.1 | TestOne | m/a/a_test.go |",
-		"| SR_02@1.1.1 |  | TestTwo | m/a/a_test.go |",
+		"| SR_1@1.1.1 | TC_1@1.1.1 | TestOne | m/a/a_test.go |",
+		"| SR_2@1.1.1 |  | TestTwo | m/a/a_test.go |",
 	} {
 		if !strings.Contains(impl, want) {
 			t.Errorf("Test implementation has no %q:\n%s", want, impl)
@@ -201,7 +201,7 @@ func TestImplementationWithAndWithoutATestCase(t *testing.T) {
 // @implements TC_142@1.2.1
 func TestExecutionListsOnlyWhatRan(t *testing.T) {
 	execution := section(report(t), "Test execution")
-	if !strings.Contains(execution, "| SR_02@1.1.1 |  | TestTwo | failed |") {
+	if !strings.Contains(execution, "| SR_2@1.1.1 |  | TestTwo | failed |") {
 		t.Errorf("no verdict of TestTwo:\n%s", execution)
 	}
 	if strings.Contains(execution, "TestNotRun") {
@@ -224,7 +224,7 @@ func TestDeviationsAndOpen(t *testing.T) {
 	for _, want := range []string{
 		"**Table open** - every test case and test procedure without a test result",
 		"| Requirement | Test case | Test case status | Test procedure | Test procedure status |",
-		"| SR_04@1.1.1 | TC_04@1.1.1 | approved | - | - |",
+		"| SR_4@1.1.1 | TC_4@1.1.1 | approved | - | - |",
 	} {
 		if !strings.Contains(open, want) {
 			t.Errorf("Open has no %q:\n%s", want, open)
@@ -234,7 +234,7 @@ func TestDeviationsAndOpen(t *testing.T) {
 
 // @implements TC_144@1.3.1
 func TestDeviationsAndOpenEmpty(t *testing.T) {
-	procedures := []Procedure{{Name: "TestOne", File: "a/a_test.go", Suite: "m/a", Implements: []string{"TC_01@1.1.1"}}}
+	procedures := []Procedure{{Name: "TestOne", File: "a/a_test.go", Suite: "m/a", Implements: []string{"TC_1@1.1.1"}}}
 	md := Markdown(Report{
 		Level: "r5tc", Testcases: testcases[:1], Procedures: procedures,
 		Results: []Result{{Suite: "m/a", Name: "TestOne", Verdict: "passed"}},
@@ -246,9 +246,9 @@ func TestDeviationsAndOpenEmpty(t *testing.T) {
 
 // @implements TC_158@1.1.1
 func TestOpenTestProcedureWithoutResult(t *testing.T) {
-	procedures := []Procedure{{Name: "TestOne", File: "a/a_test.go", Suite: "m/a", Implements: []string{"TC_01@1.1.1"}}}
+	procedures := []Procedure{{Name: "TestOne", File: "a/a_test.go", Suite: "m/a", Implements: []string{"TC_1@1.1.1"}}}
 	open := section(Markdown(Report{Level: "r5tc", Testcases: testcases[:1], Procedures: procedures}), "Open")
-	if !strings.Contains(open, "| SR_01@1.1.1 | TC_01@1.1.1 | approved | TestOne | no test result |") {
+	if !strings.Contains(open, "| SR_1@1.1.1 | TC_1@1.1.1 | approved | TestOne | no test result |") {
 		t.Errorf("got:\n%s", open)
 	}
 	if strings.Contains(open, "| - | - |") {
@@ -258,9 +258,9 @@ func TestOpenTestProcedureWithoutResult(t *testing.T) {
 
 // @implements TC_159@1.1.1
 func TestOpenObsoleteTestCase(t *testing.T) {
-	obsolete := []Testcase{{Key: "TC_05", Version: "1.1.1", Text: "five", Targets: []string{"SR_05@1.1.1"}, Status: "obsolete"}}
+	obsolete := []Testcase{{Key: "TC_5", Version: "1.1.1", Text: "five", Targets: []string{"SR_5@1.1.1"}, Status: "obsolete"}}
 	open := section(Markdown(Report{Level: "r5tc", Testcases: obsolete}), "Open")
-	if !strings.Contains(open, "| SR_05@1.1.1 | TC_05@1.1.1 | obsolete | - | - |") {
+	if !strings.Contains(open, "| SR_5@1.1.1 | TC_5@1.1.1 | obsolete | - | - |") {
 		t.Errorf("got:\n%s", open)
 	}
 }

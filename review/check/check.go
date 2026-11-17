@@ -1,4 +1,4 @@
-// Package check checks the results of reviews against the rules of formats.md (TOOL_03, TOOL_11).
+// Package check checks the results of reviews against the rules of formats.md (TOOL_3, TOOL_11).
 package check
 
 import (
@@ -82,7 +82,7 @@ type Git interface {
 // Check reads the review result in path, below root, and answers every rule it breaks. The index
 // tells the file of each target.
 //
-// @implements SR_01@1.1.1, SR_02@1.1.1, SR_03@1.1.1, SR_04@1.1.1, SR_05@2.1.1, SR_06@1.1.1, SR_07@1.1.1, SR_08@1.1.1, SR_16@1.1.1, SR_84@1.1.1
+// @implements SR_1@1.1.1, SR_2@1.1.1, SR_3@1.1.1, SR_4@1.1.1, SR_5@2.1.1, SR_6@1.1.1, SR_7@1.1.1, SR_8@1.1.1, SR_16@1.1.1, SR_84@1.1.1
 func Check(root, path string, git Git, index *review.Index) ([]Finding, error) {
 
 	data, err := os.ReadFile(filepath.Join(root, path)) // #nosec G304 -- the path comes from the user of the tool, not from outside
@@ -141,7 +141,7 @@ func checkCompleted(r Review) []string {
 // The revision is a commit that changed the file, so that the criteria the review followed can be
 // traced.
 //
-// @implements SR_07@1.1.1
+// @implements SR_7@1.1.1
 func criteriaKeys(git Git, revision, file string) ([]string, error) {
 
 	if !git.CommitExists(revision) {
@@ -175,7 +175,7 @@ func criteriaKeys(git Git, revision, file string) ([]string, error) {
 
 // checkResult answers the rules one result breaks.
 //
-// @implements SR_01@1.1.1, SR_02@1.1.1, SR_03@1.1.1, SR_04@1.1.1, SR_05@2.1.1, SR_06@1.1.1, SR_08@1.1.1, SR_16@1.1.1
+// @implements SR_1@1.1.1, SR_2@1.1.1, SR_3@1.1.1, SR_4@1.1.1, SR_5@2.1.1, SR_6@1.1.1, SR_8@1.1.1, SR_16@1.1.1
 func checkResult(r Review, result Result, criteria []string, git Git, index *review.Index) []string {
 
 	messages, allPassed := checkCriteria(r, result, criteria)
@@ -278,7 +278,7 @@ func checkAuthors(r Review, result Result, git Git, index *review.Index) []strin
 // co-authors of the last commit, not a merge, that changed it, whatever names stand there. A merge
 // joins what others wrote; the one who merged approves, and is no author.
 //
-// @implements SR_05@2.1.1, SR_08@1.1.1
+// @implements SR_5@2.1.1, SR_8@1.1.1
 func authorsOf(git Git, index *review.Index, revision, target string) ([]string, error) {
 
 	file, key := index.FileOf(target)

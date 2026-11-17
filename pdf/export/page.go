@@ -54,7 +54,7 @@ pre code { background: none; padding: 0; }
 var markdown = goldmark.New(goldmark.WithExtensions(extension.GFM), goldmark.WithRendererOptions(gmhtml.WithUnsafe()),
 	goldmark.WithParserOptions(parser.WithASTTransformers(util.Prioritized(addresses{}, 0))))
 
-// addresses keeps as text an e-mail address whose last character is no letter, such as SR_01@1.1.3,
+// addresses keeps as text an e-mail address whose last character is no letter, such as SR_1@1.1.3,
 // as GitHub does; goldmark links it to mailto:.
 type addresses struct{}
 

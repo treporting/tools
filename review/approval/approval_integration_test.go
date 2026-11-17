@@ -53,23 +53,23 @@ func documentsYAML(hash, status string) string {
 }
 
 func reviewResult(at, target, revision, verdict string) string {
-	return "created_at: '" + at + "'\nresults:\n- object_key: RR_01\n  target_ids: [" + target +
+	return "created_at: '" + at + "'\nresults:\n- object_key: RR_1\n  target_ids: [" + target +
 		"]\n  revision: '" + revision + "'\n  verdict: " + verdict + "\n"
 }
 
 // A history of three commits: the objects as drafts; approved, with their reviews of the first
-// commit; then TOOL_03 and a.md changed while approved.
+// commit; then TOOL_3 and a.md changed while approved.
 func history(t *testing.T) (root, approved string) {
 
 	root = t.TempDir()
 	gitIn(t, root, "init", "-q")
-	keys := []string{"TOOL_01", "TOOL_02", "TOOL_03", "TOOL_04"}
+	keys := []string{"TOOL_1", "TOOL_2", "TOOL_3", "TOOL_4"}
 	texts := []string{"one", "two", "three", "four"}
 	write(t, root, "schemas/tool.schema.json", schema)
 	write(t, root, "reviews/criteria-tool.yaml", "level: tool\n")
 	write(t, root, "reviews/criteria-documents.yaml", "level: document\n")
 	write(t, root, "requirements/tool.yaml", tool(keys, texts, "draft"))
-	write(t, root, "requirements/other.yaml", tool([]string{"TOOL_09"}, []string{"nine"}, "draft"))
+	write(t, root, "requirements/other.yaml", tool([]string{"TOOL_9"}, []string{"nine"}, "draft"))
 	write(t, root, "a.md", "# A\n")
 	write(t, root, "documents.yaml", documentsYAML("", "draft"))
 	gitIn(t, root, "add", "-A")
@@ -77,12 +77,12 @@ func history(t *testing.T) (root, approved string) {
 	drafts := gitIn(t, root, "rev-parse", "--short", "HEAD")
 
 	write(t, root, "requirements/tool.yaml", tool(keys, texts, "approved"))
-	write(t, root, "requirements/other.yaml", tool([]string{"TOOL_09"}, []string{"nine"}, "approved"))
+	write(t, root, "requirements/other.yaml", tool([]string{"TOOL_9"}, []string{"nine"}, "approved"))
 	write(t, root, "documents.yaml", documentsYAML(gitIn(t, root, "hash-object", "a.md")[:7], "approved"))
-	write(t, root, "reviews/results/1.yaml", reviewResult("2026-11-02T10:00:00+01:00", "TOOL_01", drafts, "passed"))
-	write(t, root, "reviews/results/2.yaml", reviewResult("2026-11-02T10:00:00+01:00", "TOOL_02", drafts, "passed"))
-	write(t, root, "reviews/results/3.yaml", reviewResult("2026-11-02T11:00:00+01:00", "TOOL_02", drafts, "failed"))
-	write(t, root, "reviews/results/4.yaml", reviewResult("2026-11-02T10:00:00+01:00", "TOOL_03", drafts, "passed"))
+	write(t, root, "reviews/results/1.yaml", reviewResult("2026-11-02T10:00:00+01:00", "TOOL_1", drafts, "passed"))
+	write(t, root, "reviews/results/2.yaml", reviewResult("2026-11-02T10:00:00+01:00", "TOOL_2", drafts, "passed"))
+	write(t, root, "reviews/results/3.yaml", reviewResult("2026-11-02T11:00:00+01:00", "TOOL_2", drafts, "failed"))
+	write(t, root, "reviews/results/4.yaml", reviewResult("2026-11-02T10:00:00+01:00", "TOOL_3", drafts, "passed"))
 	write(t, root, "reviews/results/5.yaml", reviewResult("2026-11-02T10:00:00+01:00", "a.md", drafts, "passed"))
 	gitIn(t, root, "add", "-A")
 	gitIn(t, root, "commit", "-q", "-m", "approved")
@@ -120,11 +120,11 @@ func TestEveryApprovedObject(t *testing.T) {
 	got := messages(t, root, "")
 
 	for _, want := range []string{
-		"requirements/tool.yaml: TOOL_02: the last review result that names it, reviews/results/3.yaml, has the verdict failed",
-		"requirements/tool.yaml: TOOL_03: its content for x is not the one reviews/results/4.yaml reviewed at",
-		"requirements/tool.yaml: TOOL_03: its attributes for x are not those of its approval with x 1",
-		"requirements/tool.yaml: TOOL_04: approved, and no review result names it",
-		"requirements/other.yaml: TOOL_09: approved, and no review result names it",
+		"requirements/tool.yaml: TOOL_2: the last review result that names it, reviews/results/3.yaml, has the verdict failed",
+		"requirements/tool.yaml: TOOL_3: its content for x is not the one reviews/results/4.yaml reviewed at",
+		"requirements/tool.yaml: TOOL_3: its attributes for x are not those of its approval with x 1",
+		"requirements/tool.yaml: TOOL_4: approved, and no review result names it",
+		"requirements/other.yaml: TOOL_9: approved, and no review result names it",
 		"a.md: a.md: its content for x is not the one reviews/results/5.yaml reviewed at",
 		"documents.yaml: a.md: its object_hash",
 	} {
@@ -132,8 +132,8 @@ func TestEveryApprovedObject(t *testing.T) {
 			t.Errorf("missing %q in\n%s", want, got)
 		}
 	}
-	if strings.Contains(got, "TOOL_01") {
-		t.Errorf("TOOL_01 has a passed review of its content, and is reported:\n%s", got)
+	if strings.Contains(got, "TOOL_1") {
+		t.Errorf("TOOL_1 has a passed review of its content, and is reported:\n%s", got)
 	}
 	if n := strings.Count(got, "\n") + 1; n != 7 {
 		t.Errorf("%d findings, want 7:\n%s", n, got)
@@ -148,10 +148,10 @@ func TestTheFilesChangedAgainstTheBase(t *testing.T) {
 	root, approved := history(t)
 	got := messages(t, root, approved)
 
-	if strings.Contains(got, "TOOL_09") {
-		t.Errorf("TOOL_09 is in a file the base commit and HEAD share, and is reported:\n%s", got)
+	if strings.Contains(got, "TOOL_9") {
+		t.Errorf("TOOL_9 is in a file the base commit and HEAD share, and is reported:\n%s", got)
 	}
-	for _, want := range []string{"TOOL_03", "TOOL_04", "a.md"} {
+	for _, want := range []string{"TOOL_3", "TOOL_4", "a.md"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %s in\n%s", want, got)
 		}
@@ -164,12 +164,12 @@ func TestTheFilesChangedAgainstTheBase(t *testing.T) {
 func TestAnOpenResultIsNoApproval(t *testing.T) {
 
 	root, approved := history(t)
-	write(t, root, "reviews/results/6.yaml", "status: open\n"+reviewResult("2026-11-02T12:00:00+01:00", "TOOL_01", approved, "passed"))
+	write(t, root, "reviews/results/6.yaml", "status: open\n"+reviewResult("2026-11-02T12:00:00+01:00", "TOOL_1", approved, "passed"))
 	gitIn(t, root, "add", "-A")
-	gitIn(t, root, "commit", "-q", "-m", "an open review of TOOL_01")
+	gitIn(t, root, "commit", "-q", "-m", "an open review of TOOL_1")
 	got := messages(t, root, "")
 
-	want := "requirements/tool.yaml: TOOL_01: the last review result that names it, reviews/results/6.yaml, is open"
+	want := "requirements/tool.yaml: TOOL_1: the last review result that names it, reviews/results/6.yaml, is open"
 	if !strings.Contains(got, want) {
 		t.Errorf("missing %q in\n%s", want, got)
 	}
@@ -236,12 +236,12 @@ func TestADocumentWithoutAReview(t *testing.T) {
 func TestAKindWithoutCriteria(t *testing.T) {
 
 	root, _ := history(t)
-	write(t, root, "requirements/system.yaml", strings.Replace(tool([]string{"SYS_01"}, []string{"one"}, "approved"), "level: tool", "level: r2", 1))
-	commit(t, root, "SYS_01 approved")
+	write(t, root, "requirements/system.yaml", strings.Replace(tool([]string{"SYS_1"}, []string{"one"}, "approved"), "level: tool", "level: r2", 1))
+	commit(t, root, "SYS_1 approved")
 	got := messages(t, root, "")
 
-	if strings.Contains(got, "SYS_01") {
-		t.Errorf("SYS_01 has no criteria file for its level, and is reported:\n%s", got)
+	if strings.Contains(got, "SYS_1") {
+		t.Errorf("SYS_1 has no criteria file for its level, and is reported:\n%s", got)
 	}
 }
 
@@ -249,12 +249,12 @@ func TestAKindWithoutCriteria(t *testing.T) {
 func TestALaterPassedResult(t *testing.T) {
 
 	root, approved := history(t)
-	write(t, root, "reviews/results/6.yaml", reviewResult("2026-11-02T12:00:00+01:00", "TOOL_02", approved, "passed"))
-	commit(t, root, "TOOL_02 reviewed again")
+	write(t, root, "reviews/results/6.yaml", reviewResult("2026-11-02T12:00:00+01:00", "TOOL_2", approved, "passed"))
+	commit(t, root, "TOOL_2 reviewed again")
 	got := messages(t, root, "")
 
-	if strings.Contains(got, "TOOL_02") {
-		t.Errorf("TOOL_02 passed its last review, and is reported:\n%s", got)
+	if strings.Contains(got, "TOOL_2") {
+		t.Errorf("TOOL_2 passed its last review, and is reported:\n%s", got)
 	}
 }
 
@@ -262,14 +262,14 @@ func TestALaterPassedResult(t *testing.T) {
 func TestOnlyALinkChanged(t *testing.T) {
 
 	root, _ := history(t)
-	keys := []string{"TOOL_01", "TOOL_02", "TOOL_03", "TOOL_04"}
+	keys := []string{"TOOL_1", "TOOL_2", "TOOL_3", "TOOL_4"}
 	content := tool(keys, []string{"one", "two", "three, changed", "four"}, "approved")
-	write(t, root, "requirements/tool.yaml", strings.Replace(content, "object_text: one\n", "object_text: one\n  source_ids: [PROC_01@1.1.1]\n", 1))
-	commit(t, root, "a link of TOOL_01 added while approved")
+	write(t, root, "requirements/tool.yaml", strings.Replace(content, "object_text: one\n", "object_text: one\n  source_ids: [PROC_1@1.1.1]\n", 1))
+	commit(t, root, "a link of TOOL_1 added while approved")
 	got := messages(t, root, "")
 
-	if strings.Contains(got, "TOOL_01") {
-		t.Errorf("only a link of TOOL_01 changed, and it is reported:\n%s", got)
+	if strings.Contains(got, "TOOL_1") {
+		t.Errorf("only a link of TOOL_1 changed, and it is reported:\n%s", got)
 	}
 }
 

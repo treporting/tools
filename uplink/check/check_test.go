@@ -46,9 +46,9 @@ const tools = `schema: schemas/tool-requirements.schema.json
 type: requirements
 level: tool
 requirements:
-- object_key: TOOL_01
+- object_key: TOOL_1
   status: approved
-- object_key: TOOL_02
+- object_key: TOOL_2
   status: draft
 `
 
@@ -67,8 +67,8 @@ func TestApprovedUplinksPass(t *testing.T) {
 		"rules.yaml":                          rules,
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
-  source_ids: [TOOL_01@1.1.1, PROC_13@2.1.1]
+- object_key: SR_1
+  source_ids: [TOOL_1@1.1.1, PROC_13@2.1.1]
   status: approved
 `,
 	})
@@ -76,7 +76,7 @@ requirements:
 		t.Errorf("findings %q, want none", got)
 	}
 	if approved != 3 {
-		t.Errorf("approved %d, want 3: TOOL_01, PROC_13, SR_01", approved)
+		t.Errorf("approved %d, want 3: TOOL_1, PROC_13, SR_1", approved)
 	}
 }
 
@@ -86,14 +86,14 @@ func TestUplinkNotApprovedIsAFinding(t *testing.T) {
 		"requirements/tool-requirements.yaml": tools,
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
-  source_ids: [TOOL_02@1.1.1, TOOL_07@1.1.1]
+- object_key: SR_1
+  source_ids: [TOOL_2@1.1.1, TOOL_7@1.1.1]
   status: approved
 `,
 	})
 	want := []string{
-		"SR_01 names TOOL_02@1.1.1: draft, not approved",
-		"SR_01 names TOOL_07@1.1.1: no file of requirements holds such an id",
+		"SR_1 names TOOL_2@1.1.1: draft, not approved",
+		"SR_1 names TOOL_7@1.1.1: no file of requirements holds such an id",
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("findings %q, want %q", got, want)
@@ -109,8 +109,8 @@ func TestDraftIsNotChecked(t *testing.T) {
 		"requirements/tool-requirements.yaml": tools,
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
-  source_ids: [TOOL_02@1.1.1]
+- object_key: SR_1
+  source_ids: [TOOL_2@1.1.1]
   status: draft
 `,
 	})
@@ -126,33 +126,33 @@ requirements:
 func TestAFileIsReadByItsSections(t *testing.T) {
 	got, approved := messages(t, files{
 		"requirements/tool-requirements.yaml": `requirements:
-- object_key: TOOL_01
+- object_key: TOOL_1
   status: approved
 `,
 		"reviews/criteria-tool.yaml": `type: criteria
 criteria:
-- object_key: RC_01
+- object_key: RC_1
 `,
 		"elsewhere/more.yaml": `type: requirements
 requirements:
-- object_key: TOOL_09
+- object_key: TOOL_9
   status: approved
 `,
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
-  source_ids: [TOOL_01@1.1.1, TOOL_09@1.1.1, RC_01@1.1.1]
+- object_key: SR_1
+  source_ids: [TOOL_1@1.1.1, TOOL_9@1.1.1, RC_1@1.1.1]
   status: approved
 `,
 	})
 	want := []string{
-		"SR_01 names RC_01@1.1.1: no file of requirements holds such an id",
+		"SR_1 names RC_1@1.1.1: no file of requirements holds such an id",
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("findings %q, want %q", got, want)
 	}
 	if approved != 3 {
-		t.Errorf("approved %d, want 3: TOOL_01, TOOL_09, SR_01", approved)
+		t.Errorf("approved %d, want 3: TOOL_1, TOOL_9, SR_1", approved)
 	}
 }
 
@@ -163,17 +163,17 @@ func TestARegulatoryRequirementIsFoundInItsModule(t *testing.T) {
 	got, approved := messages(t, files{
 		"regulatory/ISO26262-8.yaml": `type: normative
 requirements:
-- object_key: REG_ISO26262-8_01
+- object_key: REG_ISO26262-8_1
   status: approved
 `,
 		"tools/software-requirements.yaml": `type: requirements
 requirements:
-- object_key: SR_01
-  source_ids: [REG_ISO26262-8_01@1.1.1, REG_EU2016-679_01@1.1.1]
+- object_key: SR_1
+  source_ids: [REG_ISO26262-8_1@1.1.1, REG_EU2016-679_1@1.1.1]
   status: approved
 `,
 	})
-	want := []string{"SR_01 names REG_EU2016-679_01@1.1.1: no file of requirements holds such an id"}
+	want := []string{"SR_1 names REG_EU2016-679_1@1.1.1: no file of requirements holds such an id"}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("findings %q, want %q", got, want)
 	}
@@ -197,7 +197,7 @@ rules:
 // a requirement of this repo that names two rules of the repo above
 var namesRulesAbove = files{"requirements/tool-requirements.yaml": `type: requirements
 requirements:
-- object_key: TOOL_01
+- object_key: TOOL_1
   source_ids: [PROC_13@1.1.1, PROC_14@1.1.1]
   status: approved
 `}
@@ -212,7 +212,7 @@ func TestAnUplinkIsLookedUpInTheRepoAbove(t *testing.T) {
 	for _, f := range findings {
 		got = append(got, f.String())
 	}
-	want := []string{"TOOL_01 names PROC_14@1.1.1: draft, not approved"}
+	want := []string{"TOOL_1 names PROC_14@1.1.1: draft, not approved"}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("findings %q, want %q", got, want)
 	}
@@ -222,8 +222,8 @@ func TestAnUplinkIsLookedUpInTheRepoAbove(t *testing.T) {
 func TestWithoutTheRepoAboveAnUplinkThereIsMissing(t *testing.T) {
 	got, _ := messages(t, namesRulesAbove)
 	want := []string{
-		"TOOL_01 names PROC_13@1.1.1: no file of requirements holds such an id",
-		"TOOL_01 names PROC_14@1.1.1: no file of requirements holds such an id",
+		"TOOL_1 names PROC_13@1.1.1: no file of requirements holds such an id",
+		"TOOL_1 names PROC_14@1.1.1: no file of requirements holds such an id",
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("findings %q, want %q", got, want)

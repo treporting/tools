@@ -1,4 +1,4 @@
-// Package skeleton writes the skeleton of a review result (TOOL_04): what the reviewer would
+// Package skeleton writes the skeleton of a review result (TOOL_4): what the reviewer would
 // otherwise copy by hand. Every judgement is todo, so an unfilled skeleton fails reviewcheck.
 package skeleton
 
@@ -96,7 +96,7 @@ func Make(root string, req Request, git Git, index *review.Index) (string, error
 	fmt.Fprintf(&b, "criteria_revision: '%s'\n", criteriaRevision)
 	fmt.Fprintf(&b, "results:\n")
 	for i, target := range req.Targets {
-		fmt.Fprintf(&b, "- object_key: RR_%02d\n", i+1)
+		fmt.Fprintf(&b, "- object_key: RR_%d\n", i+1)
 		fmt.Fprintf(&b, "  target_ids: [%s]\n", target)
 		fmt.Fprintf(&b, "  revision: '%s'\n", head)
 		fmt.Fprintf(&b, "  criteria:\n")

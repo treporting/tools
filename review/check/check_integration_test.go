@@ -45,17 +45,17 @@ func TestTheCheckOnAHistoryOfGit(t *testing.T) {
 	root := t.TempDir()
 	gitIn(t, root, "init", "-q")
 	write(t, root, "reviews/criteria-tool.yaml", criteria)
-	write(t, root, "requirements/tool-requirements.yaml", requirements+`- object_key: TOOL_04
+	write(t, root, "requirements/tool-requirements.yaml", requirements+`- object_key: TOOL_4
   object_text: first
 `)
 	gitIn(t, root, "add", "-A")
 	gitIn(t, root, "commit", "-q", "--author=Claude Opus 5.5 <noreply@anthropic.com>", "-m", "requirements")
 	first := gitIn(t, root, "rev-parse", "--short", "HEAD")
 
-	write(t, root, "requirements/tool-requirements.yaml", requirements+`- object_key: TOOL_04
+	write(t, root, "requirements/tool-requirements.yaml", requirements+`- object_key: TOOL_4
   object_text: changed by the reviewer alone
 `)
-	gitIn(t, root, "commit", "-q", "-am", "TOOL_04 changed")
+	gitIn(t, root, "commit", "-q", "-am", "TOOL_4 changed")
 	second := gitIn(t, root, "rev-parse", "--short", "HEAD")
 
 	write(t, root, "reviews/r.yaml", `level: review
@@ -64,15 +64,15 @@ created_at: '2026-10-25T13:30:00+01:00'
 criteria: reviews/criteria-tool.yaml
 criteria_revision: '`+first+`'
 results:
-- object_key: RR_01
-  target_ids: [TOOL_03]
+- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: '`+second+`'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
-- object_key: RR_02
-  target_ids: [TOOL_04]
+- object_key: RR_2
+  target_ids: [TOOL_4]
   revision: '`+second+`'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `)
 
@@ -80,16 +80,16 @@ results:
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(findings) != 1 || findings[0].Result != "RR_02" ||
-		!strings.Contains(findings[0].Message, "is an author of TOOL_04") {
-		t.Errorf("want one finding, that the reviewer is an author of TOOL_04; got %v", findings)
+	if len(findings) != 1 || findings[0].Result != "RR_2" ||
+		!strings.Contains(findings[0].Message, "is an author of TOOL_4") {
+		t.Errorf("want one finding, that the reviewer is an author of TOOL_4; got %v", findings)
 	}
 }
 
 // The criteria revision on a real history: a short hash of the commit that changed the criteria is
 // taken, a later commit that did not change them is not.
 //
-// @verifies SR_07@1.1.1
+// @verifies SR_7@1.1.1
 func TestTheCriteriaRevisionOnAHistoryOfGit(t *testing.T) {
 
 	root := t.TempDir()
@@ -114,10 +114,10 @@ created_at: '2026-10-25T13:30:00+01:00'
 criteria: reviews/criteria-tool.yaml
 criteria_revision: '`+c.revision+`'
 results:
-- object_key: RR_01
-  target_ids: [TOOL_03]
+- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: '`+second+`'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `)
 		findings, err := checkAt(t, root)
@@ -163,10 +163,10 @@ created_at: '2026-10-25T13:30:00+01:00'
 criteria: reviews/criteria-tool.yaml
 criteria_revision: '`+first+`'
 results:
-- object_key: RR_01
+- object_key: RR_1
   target_ids: [doc.md]
   revision: '`+merged+`'
-  criteria: {RC_01: passed, RC_02: passed}
+  criteria: {RC_1: passed, RC_2: passed}
   verdict: passed
 `)
 	findings, err := checkAt(t, root)
@@ -206,10 +206,10 @@ created_at: '2026-10-25T13:30:00+01:00'
 criteria: reviews/criteria-tool.yaml
 criteria_revision: '` + first + `'
 results:
-- object_key: RR_01
-  target_ids: [TOOL_03]
+- object_key: RR_1
+  target_ids: [TOOL_3]
   revision: '` + first + `'
-  criteria: {RC_01: passed, RC_02: ` + criterion + `}
+  criteria: {RC_1: passed, RC_2: ` + criterion + `}
   verdict: ` + verdict + `
 `
 	}

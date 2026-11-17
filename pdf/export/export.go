@@ -1,4 +1,4 @@
-// Package export makes the documents of a commit or tag into one package of PDFs (TOOL_01): one PDF
+// Package export makes the documents of a commit or tag into one package of PDFs (TOOL_1): one PDF
 // per document that documents.yaml names, an index of them, in one ZIP.
 package export
 

@@ -42,10 +42,10 @@ func TestASkeletonOnAHistoryOfGit(t *testing.T) {
 
 	root := t.TempDir()
 	gitIn(t, root, "init", "-q")
-	write(t, root, "reviews/criteria-tool.yaml", "level: tool\ncriteria:\n- object_key: RC_01\n- object_key: RC_02\n")
+	write(t, root, "reviews/criteria-tool.yaml", "level: tool\ncriteria:\n- object_key: RC_1\n- object_key: RC_2\n")
 	gitIn(t, root, "add", "-A")
 	gitIn(t, root, "commit", "-q", "-m", "criteria")
-	write(t, root, "requirements/tool-requirements.yaml", "type: requirements\nlevel: tool\nrequirements:\n- object_key: TOOL_03\n  object_text: check\n")
+	write(t, root, "requirements/tool-requirements.yaml", "type: requirements\nlevel: tool\nrequirements:\n- object_key: TOOL_3\n  object_text: check\n")
 	gitIn(t, root, "add", "-A")
 	gitIn(t, root, "commit", "-q", "-m", "requirement")
 
@@ -54,7 +54,7 @@ func TestASkeletonOnAHistoryOfGit(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	path, err := Make(root, Request{Reviewer: "Mathias Fischer", Scope: "tool-03", Targets: []string{"TOOL_03"}, Now: time.Now()}, git, index)
+	path, err := Make(root, Request{Reviewer: "Mathias Fischer", Scope: "tool-03", Targets: []string{"TOOL_3"}, Now: time.Now()}, git, index)
 	if err != nil {
 		t.Fatal(err)
 	}

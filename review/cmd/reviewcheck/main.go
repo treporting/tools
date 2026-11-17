@@ -1,4 +1,4 @@
-// Command reviewcheck checks the review results of a repo against the rules of formats.md (TOOL_03).
+// Command reviewcheck checks the review results of a repo against the rules of formats.md (TOOL_3).
 //
 //	reviewcheck [-root dir] [-base commit] [file ...]
 //
@@ -16,7 +16,7 @@ import (
 	"github.com/treporting/tools/review/check"
 )
 
-// @implements SR_01@1.1.1, SR_02@1.1.1, SR_03@1.1.1, SR_04@1.1.1, SR_05@2.1.1, SR_06@1.1.1, SR_07@1.1.1, SR_08@1.1.1, SR_103@1.1.1
+// @implements SR_1@1.1.1, SR_2@1.1.1, SR_3@1.1.1, SR_4@1.1.1, SR_5@2.1.1, SR_6@1.1.1, SR_7@1.1.1, SR_8@1.1.1, SR_103@1.1.1
 func main() {
 
 	root := flag.String("root", ".", "the root of the repo")

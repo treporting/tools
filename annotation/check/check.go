@@ -226,7 +226,7 @@ func Check(git Git, base string, index *review.Index, annotations []Annotation) 
 // status answers why id does not count in the base commit, or "" where it is approved there.
 func status(git Git, base string, index *review.Index, id string) string {
 
-	file, key := index.FileOf(id)
+	file, key := fileOf(index, id)
 	if file == "" || key == "" {
 		return "no file of objects holds such an id"
 	}
@@ -234,7 +234,7 @@ func status(git Git, base string, index *review.Index, id string) string {
 	if err != nil {
 		return fmt.Sprintf("%s is not in the base commit %.7s", file, base)
 	}
-	object := review.ObjectIn(data, key)
+	object := objectIn(data, key)
 	if object == nil {
 		return fmt.Sprintf("not in %s in the base commit %.7s", file, base)
 	}
@@ -248,4 +248,78 @@ func status(git Git, base string, index *review.Index, id string) string {
 		return fmt.Sprintf("%s in the base commit %.7s, not approved", o.Status, base)
 	}
 	return ""
+}
+
+// fileOf answers the file that holds id, and the key it has there: the same key, or one with the
+// same prefix and number.
+//
+// @implements SR_114@1.1.1
+func fileOf(index *review.Index, id string) (file, key string) {
+
+	if file, key := index.FileOf(id); file != "" {
+		return file, key
+	}
+	for _, k := range index.Keys() {
+		if sameKey(k, id) {
+			return index.FileOf(k)
+		}
+	}
+	return "", ""
+}
+
+// objectIn answers the object of the YAML data whose key is key, or has the same prefix and
+// number; nil where none is there.
+//
+// @implements SR_114@1.1.1
+func objectIn(data []byte, key string) []byte {
+
+	if object := review.ObjectIn(data, key); object != nil {
+		return object
+	}
+	var doc map[string]any
+	if yaml.Unmarshal(data, &doc) != nil {
+		return nil
+	}
+	for _, list := range review.Lists {
+		items, _ := doc[list].([]any)
+		for _, item := range items {
+			object, _ := item.(map[string]any)
+			if k, ok := object["object_key"].(string); ok && sameKey(k, key) {
+				out, _ := yaml.Marshal(object)
+				return out
+			}
+		}
+	}
+	return nil
+}
+
+// sameKey answers whether a and b have the same prefix and the same number; a leading zero of the
+// number does not count, so SR_07 and SR_7 are the same key.
+//
+// @implements SR_114@1.1.1
+func sameKey(a, b string) bool {
+
+	pa, na, oka := splitKey(a)
+	pb, nb, okb := splitKey(b)
+	return oka && okb && pa == pb && na == nb
+}
+
+// splitKey answers the prefix of a key and its number without leading zeros.
+func splitKey(key string) (prefix, number string, ok bool) {
+
+	i := strings.LastIndex(key, "_")
+	if i < 0 || i == len(key)-1 {
+		return "", "", false
+	}
+	number = key[i+1:]
+	for _, r := range number {
+		if r < '0' || r > '9' {
+			return "", "", false
+		}
+	}
+	number = strings.TrimLeft(number, "0")
+	if number == "" {
+		number = "0"
+	}
+	return key[:i], number, true
 }

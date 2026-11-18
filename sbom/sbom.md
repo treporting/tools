@@ -17,7 +17,7 @@ licence and its PURL. It is written by the tool sbom (TOOL_21) and not edited by
 
 | Baseline of | Tag |
 |---|---|
-| the repo above | T047 |
+| the repo above | T0471 |
 
 ## Packages
 
@@ -25,7 +25,7 @@ licence and its PURL. It is written by the tool sbom (TOOL_21) and not edited by
 
 | PURL | Name | Version | Licence |
 |---|---|---|---|
-| pkg:github/treporting/tools@T047.0 | tools | T047.0 | Apache-2.0 |
+| pkg:github/treporting/tools@T0471.0 | tools | T0471.0 | Apache-2.0 |
 | pkg:golang/github.com/chromedp/cdproto@v0.0.0-20250724212937-08a3db8b4327 | github.com/chromedp/cdproto | v0.0.0-20250724212937-08a3db8b4327 | MIT |
 | pkg:golang/github.com/chromedp/chromedp@v0.14.2 | github.com/chromedp/chromedp | v0.14.2 | MIT |
 | pkg:golang/github.com/chromedp/sysutil@v1.1.0 | github.com/chromedp/sysutil | v1.1.0 | MIT |
@@ -50,3 +50,4 @@ licence and its PURL. It is written by the tool sbom (TOOL_21) and not edited by
 | 1.1.1 | 2026-11-15 | T046.0 | #15 | sbom 1a45bbb |
 | 2.1.1 | 2026-11-15 | T046.1 | #21 | sbom dc56473 |
 | 3.1.1 | 2026-11-16 | T047.0 | #26 | sbom ee21d8c |
+| 4.1.1 | 2026-11-18 | T0471.0 | #32 | sbom 961bae7 |

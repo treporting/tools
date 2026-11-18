@@ -19,6 +19,6 @@ jobs:
     uses: ./.github/workflows/baseline.yml
     with:
       above: treporting/specs-and-deploy-process
-      above-ref: T047
+      above-ref: T0471
       approval-base: d09f08f
     secrets: inherit

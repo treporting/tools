@@ -580,16 +580,19 @@ approvals are checked only in the files changed since that commit - in tools its
 every approval before it has its review in specs-and-deploy-process.
 
 The tools and the repo above come at the tags of their baselines (TOOL_27, SR_111 to SR_113): the
-caller names the tag of tools after the `@` of `uses` and once more as `tools-ref`, as `uses` takes no
-expression, and the tag of the repo above as `above-ref`. In tools, the tools are the head itself and
-`tools-ref` stays empty. A pull request raises the tags before a baseline:
+caller names the commit of the tag of tools after the `@` of `uses`, the tag in a comment beside it and
+once more as `tools-ref`, as `uses` takes no expression, and the tag of the repo above as `above-ref`.
+The commit, not the tag: where the tag is a signed one, GitHub looks for the `build.yml` that
+`baseline.yml` calls at the object of the tag, not at its commit, and the call fails before a job
+runs. In tools, the tools are the head itself and `tools-ref` stays empty. A pull request raises the
+tags before a baseline:
 
 ```yaml
-    uses: treporting/tools/.github/workflows/baseline.yml@T046.0
+    uses: treporting/tools/.github/workflows/baseline.yml@0398e569b70945026ffc604211022110421fbcca # T0471.0
     with:
-      tools-ref: T046.0
+      tools-ref: T0471.0
       above: treporting/specs-and-deploy-process
-      above-ref: T046
+      above-ref: T0471
     secrets: inherit
 ```
 
@@ -736,3 +739,4 @@ its own root, and by the names of its describe blocks before its own.
 | 40.1.1 | 2026-11-15 | baseline: `baseline.sh` of its own, the shared helpers in `common.sh` | #12 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 41.1.1 | 2026-11-15 | baseline: the tools and the repo above at the tags of their baselines, named in sbom.md | #18 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 42.1.1 | 2026-11-17 | Keys without a leading zero | treporting/specs-and-deploy-process#679 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 43.1.1 | 2026-11-18 | baseline: the caller names the commit of the tag of tools after the @ | #34 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

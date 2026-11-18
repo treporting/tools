@@ -7,19 +7,21 @@
 #	jobs:
 #	  baseline:
 #	    if: github.event.label.name == 'baseline'
-#	    uses: treporting/tools/.github/workflows/baseline.yml@T046.0
+#	    uses: treporting/tools/.github/workflows/baseline.yml@0398e569b70945026ffc604211022110421fbcca # T0471.0
 #	    with:
-#	      tools-ref: T046.0
+#	      tools-ref: T0471.0
 #	      above: treporting/specs-and-deploy-process
-#	      above-ref: T046
+#	      above-ref: T0471
 #	      images: |
 #	        storages=Dockerfile
 #	    secrets: inherit
 #
 # It runs on the head of main as the ticket event names it, github.sha, so every job sees the same
-# commit. It runs with the tools and the repo above at the tags of their baselines: tools-ref names
-# the tag the caller names after the @ as well, as uses takes no expression; build.yml runs from the
-# same commit as this file (SR_111, SR_112). In tools, the tools are the head itself. It writes with a token of the GitHub App treporting-baseline, so the pull request it opens
+# commit. It runs with the tools and the repo above at the tags of their baselines: the caller names
+# the commit of the tag of tools after the @ and the tag itself in tools-ref, as uses takes no
+# expression; build.yml runs from the same commit as this file (SR_111, SR_112). The commit, not the
+# tag: where the tag is a signed one, GitHub looks for build.yml at the object of the tag and does
+# not find it. In tools, the tools are the head itself. It writes with a token of the GitHub App treporting-baseline, so the pull request it opens
 # runs the checks of the repo. See README.md of tools, section baseline, and devops.md of
 # specs-and-deploy-process, section Baseline.
 #

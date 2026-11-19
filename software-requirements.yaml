@@ -1190,3 +1190,92 @@ requirements:
   safety: ''
   status: approved
   verification_method: [test]
+- object_key: SR_115
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: write for each Go binary a section that names the binary, its Go version, its OS/arch and the
+    commit it was built from
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_116
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: write for each JavaScript bundle a section that names the bundle, the versions of node and of each
+    tool that built it - such as webpack, babel, terser -, a hash of their configuration, and the
+    commit it was built from
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_117
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: 'write in the section of a build output a table with a row per function of the source code: its key
+    `folder/file@function` - in a bundle the function of the source its source map maps the code to -,
+    its name in the output, whether it is in the output, the hash of its code there, whether the tests
+    call it, and how many of its statements the tests ran'
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_118
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: hash the machine code of a function of a Go binary with every address removed, a call of a named
+    function by its name without the offset, every reference to unnamed data as one placeholder, and
+    instructions, registers, immediates and stack offsets as they are
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_119
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: hash the code of a function of a JavaScript bundle with every name the bundler chose replaced by its
+    order of appearance, a call of a function of another module by its name in the source, as the
+    source map gives it, and statements, operators and literals as they are; where one function of
+    the source became several in the bundle, over all of them
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_120
+  object_version: '1.1.1'
+  component: baseline
+  object_text: in baseline.yml, after the jobs build and test, write the object code report as
+    `testreports/object-code.md` from the outputs of the job build and the coverage of the job test,
+    with the label and the ticket, and push it in the commit of sbom.md
+  source_ids: [TOOL_27@3.1.1, TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_121
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: start object-code.yml when the label `object-code` is set on a ticket of the repo, build and test the
+    head of main, write the object code report as `testreports/object-code.md`, push it on the branch
+    `<ticket number>-object-code` and open a pull request naming the ticket
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_122
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: in object-code.yml, started by hand with a commit or tag, check it out, build and test it, write the
+    object code report, and keep it as artifact of the run; fail where the commit or tag does not
+    exist
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]

@@ -22,8 +22,10 @@ type Function struct {
 	Symbol string
 	// File is the file as a coverage profile names it, the import path of its package and its name.
 	File string
-	// From and To are its first and its last line.
-	From, To int
+	// From and To are its first and its last line; FromColumn and ToColumn its first and last
+	// column, from 0, where the source names them, as for JavaScript.
+	From, To             int
+	FromColumn, ToColumn int
 }
 
 // Package is a package of the source code, as `go list -json` prints it.

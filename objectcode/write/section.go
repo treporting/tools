@@ -45,52 +45,110 @@ func ReadBinary(path, commit string) (Binary, error) {
 	return b, nil
 }
 
+// Head is the head of the section of a build output.
+type Head interface {
+	// Title is the name of the output; Kind what it is, binary or bundle; Lines what the head names.
+	Title() string
+	Kind() string
+	Lines() []string
+}
+
+// Title is the file of the binary.
+func (b Binary) Title() string { return b.Name }
+
+// Kind is binary.
+func (b Binary) Kind() string { return "binary" }
+
+// Lines name the binary and its main package, the Go version, the OS/arch and the commit.
+//
+// @implements SR_115@1.1.1
+func (b Binary) Lines() []string {
+	return []string{
+		fmt.Sprintf("Binary: %s (%s)", b.Name, b.Main),
+		fmt.Sprintf("Go %s, %s/%s, commit %s", b.GoVersion, b.OS, b.Arch, b.Commit),
+	}
+}
+
+// Title is the file of the bundle.
+func (b Bundle) Title() string { return b.Name }
+
+// Kind is bundle.
+func (b Bundle) Kind() string { return "bundle" }
+
+// Lines name the bundle and its project, node and each tool with its version, the hash of their
+// configuration and the commit.
+//
+// @implements SR_116@1.1.1
+func (b Bundle) Lines() []string {
+	versions := []string{"node " + b.Node}
+	for _, t := range b.Tools {
+		versions = append(versions, t.Name+" "+t.Version)
+	}
+	return []string{
+		fmt.Sprintf("Bundle: %s (%s)", b.Name, b.Dir),
+		fmt.Sprintf("%s, configuration %s, commit %s", strings.Join(versions, ", "), b.Configuration, b.Commit),
+	}
+}
+
+// Output is a build output: it finds a function of the source in it.
+type Output interface {
+	Find(f Function) (name, hash string, ok bool)
+}
+
+// Coverage is the coverage of the tests of the source.
+type Coverage interface {
+	Coverage(f Function) (called bool, ran, statements int)
+}
+
 // Row is the row of a function in the table of a section.
 type Row struct {
 	Function
+	// Name is its name in the output.
+	Name       string
 	InOutput   bool
 	Hash       string
 	Called     bool
 	Ran, Total int
 }
 
-// Rows are the rows of the functions: each with whether it is in the binary, the hash of its machine
-// code, and its coverage.
+// Rows are the rows of the functions: each with its name in the output, whether it is there, the
+// hash of its code there, and its coverage.
 //
 // @implements SR_117@1.1.1
-func Rows(functions []Function, d Disassembly, p *Profile) []Row {
+func Rows(functions []Function, out Output, c Coverage) []Row {
 
 	var rows []Row
 	for _, f := range functions {
 		r := Row{Function: f}
-		r.Hash, r.InOutput = d.Hash(f.Symbol)
-		r.Called, r.Ran, r.Total = p.Coverage(f)
+		r.Name, r.Hash, r.InOutput = out.Find(f)
+		r.Called, r.Ran, r.Total = c.Coverage(f)
 		rows = append(rows, r)
 	}
 	return rows
 }
 
-// Section is the section of a Go binary: its head, then the table of its functions.
+// Section is the section of a build output: its head, then the table of its functions.
 //
-// @implements SR_115@1.1.1, SR_117@1.1.1
-func Section(b Binary, rows []Row) string {
+// @implements SR_115@1.1.1, SR_116@1.1.1, SR_117@1.1.1
+func Section(h Head, rows []Row) string {
 
 	var s strings.Builder
-	fmt.Fprintf(&s, "## %s\n\n", b.Name)
-	fmt.Fprintf(&s, "- Binary: %s (%s)\n", b.Name, b.Main)
-	fmt.Fprintf(&s, "- Go %s, %s/%s, commit %s\n\n", b.GoVersion, b.OS, b.Arch, b.Commit)
-	s.WriteString("| Function | Symbol | In binary | Hash | Called by tests | Statements |\n")
+	fmt.Fprintf(&s, "## %s\n\n", h.Title())
+	for _, line := range h.Lines() {
+		fmt.Fprintf(&s, "- %s\n", line)
+	}
+	fmt.Fprintf(&s, "\n| Function | Symbol | In %s | Hash | Called by tests | Statements |\n", h.Kind())
 	s.WriteString("|---|---|---|---|---|---|\n")
 	for _, r := range rows {
-		symbol, in, hash := "-", "no", "-"
+		name, in, hash := "-", "no", "-"
 		if r.InOutput {
-			symbol, in, hash = r.Symbol, "yes", r.Hash
+			name, in, hash = r.Name, "yes", r.Hash
 		}
 		called := "no"
 		if r.Called {
 			called = "yes"
 		}
-		fmt.Fprintf(&s, "| %s | %s | %s | %s | %s | %d/%d |\n", r.Key, symbol, in, hash, called, r.Ran, r.Total)
+		fmt.Fprintf(&s, "| %s | %s | %s | %s | %s | %d/%d |\n", r.Key, name, in, hash, called, r.Ran, r.Total)
 	}
 	return s.String()
 }

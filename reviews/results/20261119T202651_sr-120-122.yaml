@@ -13,7 +13,7 @@ criteria_revision: '06ee85d'
 results:
 - object_key: RR_1
   target_ids: [SR_120]
-  revision: '7817104'
+  revision: '0d46e55'
   criteria:
     RC_1: passed
     RC_2: passed
@@ -29,7 +29,7 @@ results:
   verdict: passed
 - object_key: RR_2
   target_ids: [SR_121]
-  revision: '7817104'
+  revision: '0d46e55'
   criteria:
     RC_1: passed
     RC_2: passed
@@ -45,7 +45,7 @@ results:
   verdict: passed
 - object_key: RR_3
   target_ids: [SR_122]
-  revision: '7817104'
+  revision: '0d46e55'
   criteria:
     RC_1: passed
     RC_2: passed

@@ -1428,75 +1428,75 @@ testcases:
   object_text: 'a Go binary built at a commit with go1.25.14 for linux/amd64: its section names the binary, go1.25.14, linux/amd64 and the commit'
   design_technique: requirements-based testing
   target_ids: [SR_115@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_179
   object_version: '1.1.1'
   object_text: 'a JavaScript bundle built by webpack, babel and terser on node at a commit: its section names the bundle, node, webpack, babel and terser each with its version, a hash of their configuration, and the commit'
   design_technique: requirements-based testing
   target_ids: [SR_116@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_180
   object_version: '1.1.1'
   object_text: 'the same bundle built twice, the second time with another option of terser: the hash of the configuration differs, the versions are the same'
   design_technique: equivalence partitioning
   target_ids: [SR_116@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_181
   object_version: '1.1.1'
   object_text: 'a Go binary with a function the tests call, a function they do not call, and a function the compiler inlined: three rows, the third with no name, not in the binary and no hash; the first called, the second not, each with the statements the tests ran of all'
   design_technique: equivalence partitioning
   target_ids: [SR_117@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_182
   object_version: '1.1.1'
   object_text: 'a bundle in which an async method of the source became a wrapper and a function `_callee`: one row, keyed `folder/file@method` by the source map, not by a name in the bundle'
   design_technique: equivalence partitioning
   target_ids: [SR_117@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_183
   object_version: '1.1.1'
   object_text: 'the same source built twice with the same Go version, the second time with a function added before it, so that its addresses move: the hash of the function is the same'
   design_technique: equivalence partitioning
   target_ids: [SR_118@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_184
   object_version: '1.1.1'
   object_text: 'the same source built twice, the linker naming the unnamed type data `_type:*` in one build and `typerel.*` in the other: the hash of the function is the same'
   design_technique: equivalence partitioning
   target_ids: [SR_118@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_185
   object_version: '1.1.1'
   object_text: 'a function that calls fmt.Sprint instead of fmt.Sprintf, and one with another constant: the hash of each differs'
   design_technique: equivalence partitioning
   target_ids: [SR_118@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_186
   object_version: '1.1.1'
   object_text: 'the same source bundled twice, the minifier choosing other names for the local variables of a function: the hash of the function is the same'
   design_technique: equivalence partitioning
   target_ids: [SR_119@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_187
   object_version: '1.1.1'
   object_text: 'a function that calls another function of another module, and one with another literal: the hash of each differs'
   design_technique: equivalence partitioning
   target_ids: [SR_119@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]
 - object_key: TC_188
   object_version: '1.1.1'
   object_text: 'a method that became a wrapper and a function `_callee` in the bundle, changed in the `_callee` only: the hash of the method differs'
   design_technique: equivalence partitioning
   target_ids: [SR_119@1.1.1]
-  status: draft
+  status: review
   verification_method: [review]

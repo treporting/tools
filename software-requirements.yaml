@@ -1260,9 +1260,9 @@ requirements:
 - object_key: SR_121
   object_version: '1.1.1'
   component: objectcode
-  object_text: start coverage.yml when the label `coverage` is set on a ticket of the repo, build and test the
+  object_text: start object-code.yml when the label `object-code` is set on a ticket of the repo, build and test the
     head of main, write the object code report as `testreports/object-code.md`, push it on the branch
-    `<ticket number>-coverage` and open a pull request naming the ticket
+    `<ticket number>-object-code` and open a pull request naming the ticket
   source_ids: [TOOL_35@1.1.1]
   priority: 'medium'
   safety: ''
@@ -1271,7 +1271,7 @@ requirements:
 - object_key: SR_122
   object_version: '1.1.1'
   component: objectcode
-  object_text: in coverage.yml, started by hand with a commit or tag, check it out, build and test it, write the
+  object_text: in object-code.yml, started by hand with a commit or tag, check it out, build and test it, write the
     object code report, and keep it as artifact of the run; fail where the commit or tag does not
     exist
   source_ids: [TOOL_35@1.1.1]

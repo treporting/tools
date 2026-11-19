@@ -145,3 +145,9 @@ func (d Disassembly) Hash(symbol string) (string, bool) {
 	}
 	return hex.EncodeToString(h.Sum(nil))[:8], true
 }
+
+// Find is the symbol of a function in the binary, and the hash of its machine code.
+func (d Disassembly) Find(f Function) (name, hash string, ok bool) {
+	hash, ok = d.Hash(f.Symbol)
+	return f.Symbol, hash, ok
+}

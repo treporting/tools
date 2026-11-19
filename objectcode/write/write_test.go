@@ -132,7 +132,7 @@ func TestSection(t *testing.T) {
 
 	b := Binary{Name: "x", Main: "cmd/x", GoVersion: "go1.25.14", OS: "linux", Arch: "amd64", Commit: "961bae7"}
 	rows := []Row{
-		{Function: Function{Key: "a/a.go@F", Symbol: "example.org/m/a.F"}, InOutput: true, Hash: "75ebe987", Called: true, Ran: 15, Total: 16},
+		{Function: Function{Key: "a/a.go@F", Symbol: "example.org/m/a.F"}, Name: "example.org/m/a.F", InOutput: true, Hash: "75ebe987", Called: true, Ran: 15, Total: 16},
 		{Function: Function{Key: "a/a.go@named", Symbol: "example.org/m/a.named"}, Called: true, Ran: 3, Total: 3},
 	}
 	want := `## x

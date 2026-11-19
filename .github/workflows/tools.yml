@@ -16,7 +16,7 @@ concurrency:
 
 #	the revision of specs-and-deploy-process the checks read as the repo above; raised by a pull request
 env:
-  ABOVE_REF: 024faa974c2f90ae955ffaa97501c4ca02bbbfaf
+  ABOVE_REF: c6b3b2a1b12d6bb3fa43b4ea09c6bc229c5318ea
 
 jobs:
   reviewcheck:

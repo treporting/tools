@@ -1,0 +1,61 @@
+# Review of SR_120, SR_121, SR_122 against the criteria of the level r5.
+# Made with reviewskeleton; a proposal of Claude Code - the reviewer decides.
+# Format: ../../formats.md, section Reviews.
+schema: schemas/review-result.schema.json
+type: review
+level: r5
+object_version: '1.1.1'
+status: open
+created_by: Mathias Fischer
+created_at: '2026-11-19T20:26:51+01:00'
+criteria: reviews/criteria-r5.yaml
+criteria_revision: '06ee85d'
+results:
+- object_key: RR_1
+  target_ids: [SR_120]
+  revision: '7817104'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+    RC_8: passed
+    RC_9: passed
+    RC_10: passed
+    RC_11: passed
+  verdict: passed
+- object_key: RR_2
+  target_ids: [SR_121]
+  revision: '7817104'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+    RC_8: passed
+    RC_9: passed
+    RC_10: passed
+    RC_11: passed
+  verdict: passed
+- object_key: RR_3
+  target_ids: [SR_122]
+  revision: '7817104'
+  criteria:
+    RC_1: passed
+    RC_2: passed
+    RC_3: passed
+    RC_4: passed
+    RC_5: passed
+    RC_6: passed
+    RC_7: passed
+    RC_8: passed
+    RC_9: passed
+    RC_10: passed
+    RC_11: passed
+  verdict: passed

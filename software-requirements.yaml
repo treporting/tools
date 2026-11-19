@@ -1255,7 +1255,7 @@ requirements:
   source_ids: [TOOL_27@3.1.1, TOOL_35@1.1.1]
   priority: 'medium'
   safety: ''
-  status: draft
+  status: review
   verification_method: [test]
 - object_key: SR_121
   object_version: '1.1.1'
@@ -1266,7 +1266,7 @@ requirements:
   source_ids: [TOOL_35@1.1.1]
   priority: 'medium'
   safety: ''
-  status: draft
+  status: review
   verification_method: [test]
 - object_key: SR_122
   object_version: '1.1.1'
@@ -1277,5 +1277,5 @@ requirements:
   source_ids: [TOOL_35@1.1.1]
   priority: 'medium'
   safety: ''
-  status: draft
+  status: review
   verification_method: [test]

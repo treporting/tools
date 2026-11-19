@@ -1246,3 +1246,36 @@ requirements:
   safety: ''
   status: review
   verification_method: [test]
+- object_key: SR_120
+  object_version: '1.1.1'
+  component: baseline
+  object_text: in baseline.yml, after the jobs build and test, write the object code report as
+    `testreports/object-code.md` from the outputs of the job build and the coverage of the job test,
+    with the label and the ticket, and push it in the commit of sbom.md
+  source_ids: [TOOL_27@3.1.1, TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: draft
+  verification_method: [test]
+- object_key: SR_121
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: start coverage.yml when the label `coverage` is set on a ticket of the repo, build and test the
+    head of main, write the object code report as `testreports/object-code.md`, push it on the branch
+    `<ticket number>-coverage` and open a pull request naming the ticket
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: draft
+  verification_method: [test]
+- object_key: SR_122
+  object_version: '1.1.1'
+  component: objectcode
+  object_text: in coverage.yml, started by hand with a commit or tag, check it out, build and test it, write the
+    object code report, and keep it as artifact of the run; fail where the commit or tag does not
+    exist
+  source_ids: [TOOL_35@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: draft
+  verification_method: [test]

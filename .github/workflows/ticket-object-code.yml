@@ -1,0 +1,30 @@
+# The object code report of tools (TOOL_35), started by the label object-code on one of its tickets,
+# or by hand: Actions, ticket-object-code, Run workflow, with the commit or tag. The work is in
+# object-code.yml; see README.md, section objectcode. The repo above is taken at the tag of its
+# baseline, above-ref, as in ticket-baseline.yml.
+#
+# @implements SR_121@1.1.1, SR_122@1.1.1
+name: ticket-object-code
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: the commit or tag, such as T0471.0
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  object-code:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'object-code'
+    uses: ./.github/workflows/object-code.yml
+    with:
+      ref: ${{ inputs.ref }}
+      above: treporting/specs-and-deploy-process
+      above-ref: T0471
+    secrets: inherit

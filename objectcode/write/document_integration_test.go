@@ -79,6 +79,22 @@ func TestDocumentKeepsItsHistoryAndSetsItsEntry(t *testing.T) {
 	}
 }
 
+func TestDocumentWithATicketAloneNamesIt(t *testing.T) {
+
+	bin := objectcode(t)
+	root, section := repo(t)
+	if out, err := exec.Command(bin, "-document", "-root", root, "-ticket", "37", section).CombinedOutput(); err != nil { // #nosec G204 -- the arguments come from the test
+		t.Fatalf("objectcode: %v\n%s", err, out)
+	}
+	md, err := os.ReadFile(filepath.Join(root, "testreports", "object-code.md")) // #nosec G304 -- a folder of the test
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(md), "- Label: -\n") || !strings.Contains(string(md), " | - | #37 | objectcode ") {
+		t.Errorf("the report names not the ticket alone:\n%s", md)
+	}
+}
+
 func TestDocumentWithALabelWithoutATicketFails(t *testing.T) {
 
 	bin := objectcode(t)

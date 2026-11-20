@@ -727,8 +727,25 @@ COVERAGE=/tmp/oc/coverage ../tools/.github/build/steps.sh test
 OUTPUTS=/tmp/oc/outputs COVERAGE=/tmp/oc/coverage SECTIONS=/tmp/oc/sections ../tools/.github/build/steps.sh objectcode
 ```
 
-The code is the component `objectcode`: the package `objectcode/write` and the command
-`objectcode/cmd/objectcode`. It uses the Change history of the component `testreport` and the entry
+Apart from a baseline, `.github/workflows/object-code.yml` writes the report at any time (SR_121,
+SR_122), a reusable workflow that each repo calls with a workflow of its own, in tools
+`ticket-object-code.yml`. It runs the jobs of `build.yml` with `object-code` true, on the commit
+given:
+
+- by the label `object-code` on a ticket of the repo: the head of `main` as the ticket event names
+  it. It pushes the report on the branch `<ticket number>-object-code` and opens a pull request
+  naming the ticket, with a token of the GitHub App `treporting-baseline`. It fails where the branch
+  exists.
+- by hand - Actions, ticket-object-code, Run workflow - with a commit or tag: the report is the
+  artifact `object-code-report` of the run, and nothing is written to the repo. It fails where the
+  commit or tag does not exist.
+
+Where a test fails, the run fails, and the report is still written, from the coverage of the tests
+that ran. In tools at a commit or tag, the steps are those of `tools-ref`, `main`, as those of an
+old commit may lack one.
+
+The code is the component `objectcode`: the package `objectcode/write`, the command
+`objectcode/cmd/objectcode`, and the workflows `object-code.yml` and `ticket-object-code.yml`. It uses the Change history of the component `testreport` and the entry
 in `documents.yaml` of the component `sbom`.
 
 **Decision**: the report is written from the outputs the job `build` built and the coverage of the
@@ -791,3 +808,4 @@ run of the job `test`, kept as artifacts of the run.
 | 42.1.1 | 2026-11-17 | Keys without a leading zero | treporting/specs-and-deploy-process#679 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 43.1.1 | 2026-11-18 | baseline: the caller names the commit of the tag of tools after the @ | #34 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 44.1.1 | 2026-11-20 | build steps; baseline; objectcode | #37 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 45.1.1 | 2026-11-20 | objectcode: object-code.yml | #37 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

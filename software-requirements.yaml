@@ -1212,10 +1212,11 @@ requirements:
   status: approved
   verification_method: [test]
 - object_key: SR_117
-  object_version: '1.1.1'
+  object_version: '2.1.1'
   component: objectcode
   object_text: 'write in the section of a build output a table with a row per function of the source code: its key
-    `folder/file@function` - in a bundle the function of the source its source map maps the code to -,
+    `folder/file@function`, for a method `folder/file@Type.method` with the type of its receiver or its
+    class - in a bundle the function of the source its source map maps the code to -,
     its name in the output, whether it is in the output, the hash of its code there, whether the tests
     call it, and how many of its statements the tests ran'
   source_ids: [TOOL_35@1.1.1]

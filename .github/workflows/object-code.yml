@@ -1,0 +1,175 @@
+# The object code report of a repo (TOOL_35), as one reusable workflow, at any time apart from a
+# baseline. A repo calls it when the label object-code is set on one of its tickets, and by hand with
+# a commit or tag:
+#
+#	on:
+#	  issues:
+#	    types: [labeled]
+#	  workflow_dispatch:
+#	    inputs:
+#	      ref: {required: true, type: string}
+#	jobs:
+#	  object-code:
+#	    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'object-code'
+#	    uses: treporting/tools/.github/workflows/object-code.yml@main
+#	    with:
+#	      ref: ${{ inputs.ref }}
+#	      above: treporting/specs-and-deploy-process
+#	      above-ref: T0471
+#	    secrets: inherit
+#
+# By the label, it builds and tests the head of main as the ticket event names it, writes
+# testreports/object-code.md with the ticket, pushes it on the branch <ticket number>-object-code
+# and opens a pull request naming the ticket, with a token of the GitHub App treporting-baseline, so
+# that the pull request runs the checks of the repo. By hand, it builds and tests the commit or tag,
+# writes the report and keeps it as the artifact object-code-report of the run; it fails where the
+# commit or tag does not exist. See README.md of tools, section objectcode.
+#
+# @implements SR_121@1.1.1, SR_122@1.1.1
+name: object-code
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: the commit or tag, by hand; empty for the head of main, by the label
+        type: string
+        default: ''
+      go-version-file:
+        description: the go.mod whose version of Go the steps use
+        type: string
+        default: go.mod
+      above:
+        description: the repo above, such as treporting/specs-and-deploy-process, whose files the tests read; empty for none
+        type: string
+        default: ''
+      above-ref:
+        description: the ref of the repo above the tests read
+        type: string
+        default: main
+      tools-ref:
+        description: the ref of tools the steps run from
+        type: string
+        default: main
+    secrets:
+      BASELINE_APP_PRIVATE_KEY:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  #	the commit to report on: that of the commit or tag given, or the head of main as the ticket event
+  #	names it; by the label, no branch <ticket number>-object-code yet
+  start:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      sha: ${{ steps.ref.outputs.sha }}
+      branch: ${{ steps.ref.outputs.branch }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: the commit
+        id: ref
+        env:
+          REF: ${{ inputs.ref }}
+          TICKET: ${{ github.event.issue.number }}
+        run: |
+          if [ -n "$TICKET" ]; then
+            branch="$TICKET-object-code"
+            if git ls-remote --exit-code --heads origin "refs/heads/$branch" >/dev/null; then
+              echo "the branch $branch exists"
+              exit 1
+            fi
+            echo "sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            echo "branch=$branch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ -z "$REF" ]; then
+            echo "the input ref is empty: it names the commit or tag"
+            exit 1
+          fi
+          if ! sha="$(git rev-parse --verify --quiet "$REF^{commit}")"; then
+            echo "the commit or tag \"$REF\" does not exist"
+            exit 1
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+  #	the jobs of build.yml on that commit, with the outputs and the coverage kept, and the sections
+  #	written from them
+  build:
+    needs: start
+    uses: ./.github/workflows/build.yml
+    with:
+      ref: ${{ needs.start.outputs.sha }}
+      go-version-file: ${{ inputs.go-version-file }}
+      object-code: true
+      above: ${{ inputs.above }}
+      above-ref: ${{ inputs.above-ref }}
+      tools-ref: ${{ inputs.tools-ref }}
+
+  #	the report from the sections; by the label the pull request, by hand the artifact
+  report:
+    needs: [start, build]
+    if: ${{ !cancelled() && needs.start.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/create-github-app-token@v3
+        if: needs.start.outputs.branch != ''
+        id: app
+        with:
+          client-id: ${{ vars.BASELINE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.BASELINE_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.start.outputs.sha }}
+          token: ${{ steps.app.outputs.token || github.token }}
+      - uses: actions/checkout@v7
+        with:
+          repository: treporting/tools
+          ref: ${{ inputs.tools-ref }}
+          path: .build-steps
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: .build-steps/go.mod
+          cache-dependency-path: .build-steps/go.sum
+      - uses: actions/download-artifact@v8
+        with:
+          name: object-code-sections
+          path: ${{ runner.temp }}/sections/
+      - name: the object code report
+        env:
+          SECTIONS: ${{ runner.temp }}/sections
+          TICKET: ${{ github.event.issue.number }}
+        run: |
+          #	a commit before the repo had documents.yaml: the report has no entry to set there
+          [ -f documents.yaml ] || : >documents.yaml
+          (cd .build-steps && go build -o "$RUNNER_TEMP/objectcode" ./objectcode/cmd/objectcode)
+          "$RUNNER_TEMP/objectcode" -document -root . ${TICKET:+-ticket "$TICKET"} "$SECTIONS"/*.md
+      - uses: actions/upload-artifact@v7
+        if: needs.start.outputs.branch == ''
+        with:
+          name: object-code-report
+          path: testreports/object-code.md
+          if-no-files-found: error
+      - name: the pull request
+        if: needs.start.outputs.branch != ''
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          BRANCH: ${{ needs.start.outputs.branch }}
+          TICKET: ${{ github.event.issue.number }}
+          SHA: ${{ needs.start.outputs.sha }}
+          APP: ${{ steps.app.outputs.app-slug }}
+        run: |
+          git config user.name "${APP}[bot]"
+          git config user.email "${APP}[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add testreports/object-code.md documents.yaml
+          git commit -m "Object code report" -m "Part of #$TICKET"
+          git push origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" --title "Object code report" --body "Part of #$TICKET
+
+          The object code report of $GITHUB_REPOSITORY at $SHA, written by the tool objectcode, completed without a review (PROC_13)."

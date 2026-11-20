@@ -20,7 +20,7 @@
 // note that says which. It writes the section to the standard output.
 //
 // With -document it writes the object code report as testreports/object-code.md in root from the
-// sections given, in their order, with the label and the ticket. It keeps the rows of the Change
+// sections given, in their order, with the label and the ticket, or the ticket alone. It keeps the rows of the Change
 // history of a report that is there, and adds one. It sets the entry of the report in documents.yaml
 // of the repo: the version of the new row, the hash of the file written, completed and generated.
 package main
@@ -220,7 +220,7 @@ func writeDocument(root, label, ticket string, files []string) {
 		Commit:   head(root),
 		Date:     date,
 		Sections: sections,
-		History:  append(report.History(old), report.Row(next, date, label, ticket, "objectcode "+version())),
+		History:  append(report.History(old), row(next, date, label, ticket)),
 	}))
 	if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
 		fail(err)
@@ -232,6 +232,15 @@ func writeDocument(root, label, ticket string, files []string) {
 		fail(err)
 	}
 	fmt.Fprintf(os.Stderr, "%s written: %d sections, version %s\n", path, len(sections), next)
+}
+
+// row is the row of the Change history this run adds; with a ticket but without a label, it names the
+// ticket as its reason, with - as its change.
+func row(next, date, label, ticket string) string {
+	if label == "" && ticket != "" {
+		label = "-"
+	}
+	return report.Row(next, date, label, ticket, "objectcode "+version())
 }
 
 // head is the commit of the head of the repo.

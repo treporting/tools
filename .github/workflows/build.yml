@@ -51,13 +51,18 @@ on:
         description: the ref of the repo above the tests read; baseline.yml sets the tag of its baseline
         type: string
         default: main
+      ref:
+        description: the commit or tag the jobs check out; empty for that of the run; object-code.yml sets it
+        type: string
+        default: ''
 
 permissions:
   contents: read
 
 env:
-  #	the root of tools, with the script and the configurations of the linters
-  STEPS: ${{ github.repository == 'treporting/tools' && github.workspace || format('{0}/.build-steps', github.workspace) }}
+  #	the root of tools, with the script and the configurations of the linters; in tools at another
+  #	ref than that of the run, the steps of tools-ref, as those of an old commit may lack one
+  STEPS: ${{ github.repository == 'treporting/tools' && inputs.ref == '' && github.workspace || format('{0}/.build-steps', github.workspace) }}
 
 jobs:
   build:
@@ -67,9 +72,10 @@ jobs:
       #	two commits: the merge of a pull request and its base, to see whether it changes sbom.md
       - uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.ref }}
           fetch-depth: 2
       - uses: actions/checkout@v7
-        if: github.repository != 'treporting/tools'
+        if: github.repository != 'treporting/tools' || inputs.ref != ''
         with:
           repository: treporting/tools
           ref: ${{ inputs.tools-ref }}
@@ -114,8 +120,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/checkout@v7
-        if: github.repository != 'treporting/tools'
+        if: github.repository != 'treporting/tools' || inputs.ref != ''
         with:
           repository: treporting/tools
           ref: ${{ inputs.tools-ref }}
@@ -150,8 +158,10 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/checkout@v7
-        if: github.repository != 'treporting/tools'
+        if: github.repository != 'treporting/tools' || inputs.ref != ''
         with:
           repository: treporting/tools
           ref: ${{ inputs.tools-ref }}
@@ -184,8 +194,9 @@ jobs:
           COVERAGE: ${{ inputs.object-code && format('{0}/coverage', runner.temp) || '' }}
           ABOVE: ${{ inputs.above != '' && format('{0}/.above', github.workspace) || '' }}
         run: '"$STEPS/.github/build/steps.sh" test'
+      #	also where a test failed: the coverage of the tests that ran
       - uses: actions/upload-artifact@v7
-        if: inputs.object-code
+        if: ${{ !cancelled() && inputs.object-code }}
         with:
           name: object-code-coverage
           path: ${{ runner.temp }}/coverage/
@@ -197,17 +208,19 @@ jobs:
           path: ${{ runner.temp }}/junit/
           if-no-files-found: ignore
 
-  #	the sections of the object code report, from the outputs of build and the coverage of test; it
-  #	fails only where it cannot write them (TOOL_35)
+  #	the sections of the object code report, from the outputs of build and the coverage of test - of
+  #	the tests that ran, where one failed; it fails only where it cannot write them (TOOL_35)
   object-code:
-    if: inputs.object-code
+    if: ${{ !cancelled() && inputs.object-code && needs.build.result == 'success' }}
     needs: [build, test]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/checkout@v7
-        if: github.repository != 'treporting/tools'
+        if: github.repository != 'treporting/tools' || inputs.ref != ''
         with:
           repository: treporting/tools
           ref: ${{ inputs.tools-ref }}
@@ -252,8 +265,10 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/checkout@v7
-        if: github.repository != 'treporting/tools'
+        if: github.repository != 'treporting/tools' || inputs.ref != ''
         with:
           repository: treporting/tools
           ref: ${{ inputs.tools-ref }}

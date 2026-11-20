@@ -23,3 +23,9 @@ documents:
   object_hash: '685645d'
   status: completed
   verification_method: [generated]
+- name: testreports/object-code.md
+  type: document
+  object_version: '1.1.1'
+  object_hash: '593656d'
+  status: completed
+  verification_method: [generated]

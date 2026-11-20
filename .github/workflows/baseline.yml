@@ -26,7 +26,7 @@
 # specs-and-deploy-process, section Baseline.
 #
 # @implements SR_61@1.1.2, SR_62@1.1.2, SR_63@1.1.2, SR_64@1.1.2, SR_65@1.1.2, SR_99@2.1.2
-# @implements SR_111@1.1.1, SR_112@1.1.1
+# @implements SR_111@1.1.1, SR_112@1.1.1, SR_120@1.1.1
 name: baseline
 
 on:
@@ -154,6 +154,7 @@ jobs:
     with:
       go-version-file: ${{ inputs.go-version-file }}
       report: true
+      object-code: true
       above: ${{ inputs.above }}
       tools-ref: ${{ inputs.tools-ref }}
       above-ref: ${{ inputs.above-ref }}
@@ -200,9 +201,16 @@ jobs:
           name: junit
           path: ${{ runner.temp }}/junit/
         continue-on-error: true
-      - name: sbom, the check of the licences and of the approvals, the test reports
+      #	the sections of the object code report, from the job object-code of build (SR_120)
+      - uses: actions/download-artifact@v8
+        with:
+          name: object-code-sections
+          path: ${{ runner.temp }}/sections/
+        continue-on-error: true
+      - name: sbom, the check of the licences and of the approvals, the test reports, the object code report
         env:
           JUNIT: ${{ runner.temp }}/junit
+          SECTIONS: ${{ runner.temp }}/sections
           LABEL: ${{ needs.start.outputs.label }}
           TICKET: ${{ github.event.issue.number }}
           IMAGES: ${{ inputs.images }}
@@ -227,12 +235,12 @@ jobs:
           git switch -c "$BRANCH"
           git add sbom/sbom.md documents.yaml
           find . -path '*/testreports/*.md' -not -path './.build-steps/*' -not -path './.above/*' -exec git add {} +
-          git commit -m "Baseline $LABEL: sbom.md, test reports" -m "Part of #$TICKET"
+          git commit -m "Baseline $LABEL: sbom.md, test reports, object code report" -m "Part of #$TICKET"
           git push origin "$BRANCH"
           body="$(cat <<BODY
           Part of #$TICKET
 
-          The baseline $LABEL of $GITHUB_REPOSITORY, run on main at $GITHUB_SHA: build, lint, test, report, sbom, the check of the licences and the check of the approvals passed. sbom.md, the test reports and their entries in documents.yaml are written by the tools sbom and testreport, completed without a review (PROC_13).
+          The baseline $LABEL of $GITHUB_REPOSITORY, run on main at $GITHUB_SHA: build, lint, test, report, sbom, the check of the licences and the check of the approvals passed. sbom.md, the test reports, the object code report and their entries in documents.yaml are written by the tools sbom, testreport and objectcode, completed without a review (PROC_13).
 
           After the merge, set the signed tag on the merge commit:
 

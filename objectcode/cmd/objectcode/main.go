@@ -16,7 +16,8 @@
 // that built the bundle, from root. It names each -tool with the version of its package.json in
 // -modules, <dir>/node_modules where empty, and the hash of the files of -config.
 //
-// It writes the section to the standard output.
+// Where the coverage file or the source map is not there, the section of the bundle is its head and a
+// note that says which. It writes the section to the standard output.
 //
 // With -document it writes the object code report as testreports/object-code.md in root from the
 // sections given, in their order, with the label and the ticket. It keeps the rows of the Change
@@ -119,38 +120,16 @@ func goBinary(root, binary, mainPkg, coverprofile, commit string) string {
 	return write.Section(b, write.Rows(functions, d, profile))
 }
 
-// jsBundle is the section of a JavaScript bundle.
+// jsBundle is the section of a JavaScript bundle; its head alone, with a note, where the coverage
+// file or the source map is not there.
 func jsBundle(root, bundle, sourceMap, dir, coverage, modules, node, commit string, tools, configs []string) string {
 
-	f, err := os.Open(coverage) // #nosec G304 -- the path comes from the user of the tool
-	if err != nil {
-		fail(err)
-	}
-	c, err := write.ReadIstanbul(f, root)
-	_ = f.Close()
-	if err != nil {
-		fail(fmt.Errorf("%s: %w", coverage, err))
-	}
-	if sourceMap == "" {
-		sourceMap = bundle + ".map"
-	}
-	src, err := os.ReadFile(bundle) // #nosec G304 -- the path comes from the user of the tool
-	if err != nil {
-		fail(err)
-	}
-	smap, err := os.ReadFile(sourceMap) // #nosec G304 -- the path comes from the user of the tool
-	if err != nil {
-		fail(err)
-	}
 	dir = strings.TrimPrefix(filepath.ToSlash(filepath.Clean(dir)), "./")
-	code, err := write.ReadBundle(src, smap, dir, c.Functions())
-	if err != nil {
-		fail(err)
-	}
 	if modules == "" {
 		modules = filepath.Join(root, dir, "node_modules")
 	}
 	b := write.Bundle{Name: filepath.Base(bundle), Dir: dir, Node: node, Commit: commit}
+	var err error
 	if b.Tools, err = write.ReadTools(modules, tools); err != nil {
 		fail(err)
 	}
@@ -167,7 +146,43 @@ func jsBundle(root, bundle, sourceMap, dir, coverage, modules, node, commit stri
 	if b.Commit == "" {
 		b.Commit = head(root)
 	}
+	if sourceMap == "" {
+		sourceMap = bundle + ".map"
+	}
+	if !exists(coverage) {
+		return write.Note(b, "No coverage of the tests: "+filepath.Base(coverage)+" is not there.")
+	}
+	if !exists(sourceMap) {
+		return write.Note(b, "No source map: "+filepath.Base(sourceMap)+" is not there.")
+	}
+	f, err := os.Open(coverage) // #nosec G304 -- the path comes from the user of the tool
+	if err != nil {
+		fail(err)
+	}
+	c, err := write.ReadIstanbul(f, root)
+	_ = f.Close()
+	if err != nil {
+		fail(fmt.Errorf("%s: %w", coverage, err))
+	}
+	src, err := os.ReadFile(bundle) // #nosec G304 -- the path comes from the user of the tool
+	if err != nil {
+		fail(err)
+	}
+	smap, err := os.ReadFile(sourceMap) // #nosec G304 -- the path comes from the user of the tool
+	if err != nil {
+		fail(err)
+	}
+	code, err := write.ReadBundle(src, smap, dir, c.Functions())
+	if err != nil {
+		fail(err)
+	}
 	return write.Section(b, write.Rows(c.Functions(), code, c))
+}
+
+// exists is whether there is a file at path.
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
 
 // writeDocument writes the object code report from the files of the sections, and its entry in

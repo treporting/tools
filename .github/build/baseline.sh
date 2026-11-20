@@ -20,9 +20,9 @@ set -uo pipefail
 # shellcheck source=common.sh
 . "$(dirname "$0")/common.sh"
 
-#	@implements SR_63@1.1.1, SR_82@2.1.3
+#	@implements SR_63@1.1.1, SR_82@2.1.3, SR_120@1.1.1
 baseline() {
-	local label="$1" ticket="$2" bin_sbom bin_licence bin_approval bin_testreport
+	local label="$1" ticket="$2" bin_sbom bin_licence bin_approval bin_testreport bin_objectcode
 	shift 2
 	#	every tool before the first of them writes, so that none is built from a changed working
 	#	tree and records its revision with -dirty
@@ -30,6 +30,7 @@ baseline() {
 	bin_licence="$(tool licence/cmd/licencecheck)"
 	bin_approval="$(tool review/cmd/approvalcheck)"
 	bin_testreport="$(tool testreport/cmd/testreport)"
+	bin_objectcode="$(tool objectcode/cmd/objectcode)"
 	build_images "$@"
 	run . "$bin_sbom" -label "$label" -ticket "$ticket" ${TOOLS_TAG:+-tools "$TOOLS_TAG"} \
 		${ABOVE_TAG:+-above "$ABOVE_TAG"} ${image_flags[@]+"${image_flags[@]}"}
@@ -41,6 +42,22 @@ baseline() {
 	if [ -n "${JUNIT:-}" ]; then
 		testreports "$bin_testreport" "$label" "$ticket"
 	fi
+	if [ -n "${SECTIONS:-}" ]; then
+		objectcodereport "$bin_objectcode" "$label" "$ticket"
+	fi
+}
+
+#	objectcodereport <bin> <label> <ticket>: write with the objectcode at <bin> the object code report
+#	from the sections in $SECTIONS, in the order of their names
+#
+#	@implements SR_120@1.1.1
+objectcodereport() {
+	local sections=() s
+	for s in "$SECTIONS"/*.md; do
+		[ -e "$s" ] && sections+=("$s")
+	done
+	[ ${#sections[@]} -gt 0 ] || return
+	run . "$1" -document -root . -label "$2" -ticket "$3" "${sections[@]}"
 }
 
 #	testreports <bin> <label> <ticket>: write with the testreport at <bin> the test report of each

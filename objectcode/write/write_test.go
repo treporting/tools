@@ -1,6 +1,10 @@
 package write
 
 import (
+	"go/ast"
+	"go/parser"
+	"go/token"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -156,5 +160,28 @@ func TestNote(t *testing.T) {
 	want := "## a.js\n\n- Bundle: a.js (web)\n- node v24.21.0, configuration 0f1e2d3c, commit 961bae7\n\nNo source map: a.js.map is not there.\n"
 	if got := Note(b, "No source map: a.js.map is not there."); got != want {
 		t.Errorf("the section is\n%s\nwant\n%s", got, want)
+	}
+}
+
+func TestNameOf(t *testing.T) {
+
+	file, err := parser.ParseFile(token.NewFileSet(), "a.go", `package a
+func F() {}
+func (a A) M() {}
+func (b *B) M() {}
+func (s *Set[K]) Add(k K) {}
+func (m Map[K, V]) Get(k K) V { var v V; return v }
+`, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, d := range file.Decls {
+		f := d.(*ast.FuncDecl)
+		got = append(got, nameOf(f)+" "+symbolOf("p", f))
+	}
+	want := []string{"F p.F", "A.M p.A.M", "B.M p.(*B).M", "Set.Add p.(*Set).Add", "Map.Get p.Map.Get"}
+	if !slices.Equal(got, want) {
+		t.Errorf("the names are %q, want %q", got, want)
 	}
 }

@@ -46,7 +46,7 @@ type list []string
 func (l *list) String() string     { return strings.Join(*l, ",") }
 func (l *list) Set(v string) error { *l = append(*l, v); return nil }
 
-// @implements SR_115@1.1.1, SR_116@1.1.1, SR_117@1.1.1, SR_118@1.1.1, SR_119@1.1.1
+// @implements SR_115@1.1.1, SR_116@1.1.1, SR_117@2.1.1, SR_118@1.1.1, SR_119@1.1.1
 func main() {
 
 	root := flag.String("root", ".", "the root of the repo")

@@ -6,6 +6,7 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20250724212937-08a3db8b4327
 	github.com/chromedp/chromedp v0.14.2
 	github.com/dop251/goja v0.0.0-20261009203008-ac6c29549738
+	github.com/evanw/esbuild v0.28.2
 	github.com/go-sourcemap/sourcemap v2.1.4+incompatible
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3
 	github.com/yuin/goldmark v1.7.8

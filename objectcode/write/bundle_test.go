@@ -127,41 +127,83 @@ func TestTheHashSeesAnotherCallAndAnotherLiteral(t *testing.T) {
 	}
 }
 
-// split is a bundle in which the async method load became a wrapper and a function _callee, both
-// mapped into it; the body of each maps to line 2 or 3 of the source.
-func split(t *testing.T, callee string) (*Code, string) {
+// readIstanbul reads a coverage file of istanbul of the source src/a.js of the project web, written
+// below a folder of the test; the coverage names the source by ${path}.
+func readIstanbul(t *testing.T, src, coverage string) *Istanbul {
 
 	t.Helper()
+	root := t.TempDir()
+	path := filepath.Join(root, "web", "src", "a.js")
+	if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, []byte(src), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	name, err := json.Marshal(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	c, err := ReadIstanbul(strings.NewReader(strings.ReplaceAll(coverage, `"${path}"`, string(name))), root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
+}
+
+// loader is the source of the async method load of the class Loader, lines 2 to 4, and its coverage.
+const loader = `export class Loader {
+  async load(n) {
+    return g(n);
+  }
+}
+`
+
+const loaderCoverage = `{"${path}": {"path": "${path}",
+	"statementMap": {"0": {"start": {"line": 3, "column": 4}, "end": {"line": 3, "column": 16}}},
+	"fnMap": {"0": {"name": "load", "decl": {"start": {"line": 2, "column": 8}, "end": {"line": 2, "column": 12}},
+		"loc": {"start": {"line": 2, "column": 2}, "end": {"line": 4, "column": 3}}}},
+	"s": {"0": 1}, "f": {"0": 1}}}`
+
+// split is a bundle in which the async method load of the class Loader became a wrapper and a
+// function _callee, both mapped into it; the body of each maps to line 2 or 3 of the source.
+func split(t *testing.T, callee string) (*Code, Function) {
+
+	t.Helper()
+	fs := readIstanbul(t, loader, loaderCoverage).Functions()
+	if len(fs) != 1 {
+		t.Fatalf("the functions are %+v, want load alone", fs)
+	}
 	bundle := "function w(){return c.apply(this,arguments)}function c(n){" + callee + "}"
 	segments := []segment{
 		{column: at(t, bundle, "return c"), line: 1, sourceColumn: 2},
 		{column: at(t, bundle, "function c"), line: 1, sourceColumn: 2},
 		{column: at(t, bundle, callee), line: 2, sourceColumn: 4},
 	}
-	code, err := ReadBundle([]byte(bundle), sourceMapOf(t, segments), "web", []Function{load})
+	code, err := ReadBundle([]byte(bundle), sourceMapOf(t, segments), "web", fs)
 	if err != nil {
 		t.Fatal(err)
 	}
-	return code, bundle
+	return code, fs[0]
 }
 
-// @implements TC_182@1.1.1
+// @implements TC_182@2.1.1
 func TestAMethodSplitByTheBundlerIsOneRow(t *testing.T) {
 
-	code, _ := split(t, "return g(n)")
-	if parts := code.byFunc[load.Key+"\x001"]; len(parts) != 2 {
+	code, load := split(t, "return g(n)")
+	if parts := code.byFunc[load.Key+"\x002"]; len(parts) != 2 {
 		t.Fatalf("load has %d functions of the bundle, want the wrapper and the _callee", len(parts))
 	}
 	rows := Rows([]Function{load}, code, &Istanbul{coverage: map[string][3]int{}})
-	if len(rows) != 1 || rows[0].Key != "web/src/a.js@load" || !rows[0].InOutput || rows[0].Name != "w" {
-		t.Errorf("the rows are %+v, want one, web/src/a.js@load, in the bundle as w", rows)
+	if len(rows) != 1 || rows[0].Key != "web/src/a.js@Loader.load" || !rows[0].InOutput || rows[0].Name != "w" {
+		t.Errorf("the rows are %+v, want one, web/src/a.js@Loader.load, in the bundle as w", rows)
 	}
 }
 
 // @implements TC_188@1.1.1
 func TestTheHashOfASplitMethodSeesItsCallee(t *testing.T) {
 
-	one, _ := split(t, "return g(n)")
+	one, load := split(t, "return g(n)")
 	other, _ := split(t, "return g(n,1)")
 	_, h1, _ := one.Find(load)
 	_, h2, _ := other.Find(load)
@@ -241,7 +283,7 @@ func TestTheHashOfTheConfigurationSeesAnOption(t *testing.T) {
 
 func TestReadIstanbul(t *testing.T) {
 
-	coverage := `{"/repo/web/src/a.js": {"path": "/repo/web/src/a.js",
+	coverage := `{"${path}": {"path": "${path}",
 		"statementMap": {"0": {"start": {"line": 2, "column": 2}, "end": {"line": 2, "column": 20}},
 			"1": {"start": {"line": 6, "column": 2}, "end": {"line": 6, "column": 9}}},
 		"fnMap": {"0": {"name": "load", "decl": {"start": {"line": 1, "column": 16}, "end": {"line": 1, "column": 20}},
@@ -249,16 +291,66 @@ func TestReadIstanbul(t *testing.T) {
 			"1": {"name": "(anonymous_1)", "decl": {"start": {"line": 5, "column": 0}, "end": {"line": 5, "column": 1}},
 				"loc": {"start": {"line": 5, "column": 5}, "end": {"line": 7, "column": null}}}},
 		"s": {"0": 3, "1": 0}, "f": {"0": 1, "1": 0}}}`
-	c, err := ReadIstanbul(strings.NewReader(coverage), "/repo")
-	if err != nil {
-		t.Fatal(err)
-	}
+	src := "export function load(n) {\n  return fetchIt(n + 1);\n}\n\nf(() => {\n  return 1;\n});\n"
+	c := readIstanbul(t, src, coverage)
 	fs := c.Functions()
 	if len(fs) != 1 || fs[0].Key != "web/src/a.js@load" || fs[0].From != 1 || fs[0].FromColumn != 16 || fs[0].ToColumn != endOfLine {
 		t.Fatalf("the functions are %+v, want load alone, from its head to the end of line 3", fs)
 	}
 	if called, ran, total := c.Coverage(fs[0]); !called || ran != 1 || total != 1 {
 		t.Errorf("load: %v %d/%d, want called, 1/1", called, ran, total)
+	}
+}
+
+// twoClasses is a source with JSX of two classes, each with a method render: A's on line 4, B's
+// on line 10.
+const twoClasses = `import React from 'react';
+
+export class A extends React.Component {
+  render() {
+    return <p>Don't {this.props.x}</p>;
+  }
+}
+
+class B {
+  async render(n) {
+    return ` + "`${n} }`" + `;
+  }
+}
+`
+
+// @implements TC_190@1.1.1
+func TestMethodsOfTheSameNameInTwoClassesAreTwoRows(t *testing.T) {
+
+	coverage := `{"${path}": {"path": "${path}",
+		"statementMap": {"0": {"start": {"line": 5, "column": 4}, "end": {"line": 5, "column": 39}},
+			"1": {"start": {"line": 11, "column": 4}, "end": {"line": 11, "column": 20}}},
+		"fnMap": {"0": {"name": "render", "decl": {"start": {"line": 4, "column": 2}, "end": {"line": 4, "column": 8}},
+				"loc": {"start": {"line": 4, "column": 2}, "end": {"line": 6, "column": 3}}},
+			"1": {"name": "render", "decl": {"start": {"line": 10, "column": 8}, "end": {"line": 10, "column": 14}},
+				"loc": {"start": {"line": 10, "column": 2}, "end": {"line": 12, "column": 3}}}},
+		"s": {"0": 2, "1": 0}, "f": {"0": 2, "1": 0}}}`
+	c := readIstanbul(t, twoClasses, coverage)
+	fs := c.Functions()
+	if len(fs) != 2 || fs[0].Key != "web/src/a.js@A.render" || fs[1].Key != "web/src/a.js@B.render" {
+		t.Fatalf("the functions are %+v, want web/src/a.js@A.render and web/src/a.js@B.render", fs)
+	}
+	if called, ran, total := c.Coverage(fs[0]); !called || ran != 1 || total != 1 {
+		t.Errorf("A.render: %v %d/%d, want called, 1/1", called, ran, total)
+	}
+	if called, ran, total := c.Coverage(fs[1]); called || ran != 0 || total != 1 {
+		t.Errorf("B.render: %v %d/%d, want not called, 0/1", called, ran, total)
+	}
+}
+
+func TestClassesOfTypeScript(t *testing.T) {
+
+	classes, err := Classes("a.ts", []byte("class C<T> {\n  private n: number = 1;\n  get(x: T): T { return x; }\n}\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := classes[position{3, 2}]; got != "C" {
+		t.Errorf("the classes are %v, want C at line 3, column 2", classes)
 	}
 }
 

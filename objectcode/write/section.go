@@ -152,3 +152,18 @@ func Section(h Head, rows []Row) string {
 	}
 	return s.String()
 }
+
+// Note is the section of a build output whose functions cannot be listed: its head, then the note
+// that says why.
+//
+// @implements SR_116@1.1.1
+func Note(h Head, note string) string {
+
+	var s strings.Builder
+	fmt.Fprintf(&s, "## %s\n\n", h.Title())
+	for _, line := range h.Lines() {
+		fmt.Fprintf(&s, "- %s\n", line)
+	}
+	fmt.Fprintf(&s, "\n%s\n", note)
+	return s.String()
+}

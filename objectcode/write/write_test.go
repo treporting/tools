@@ -149,3 +149,12 @@ func TestSection(t *testing.T) {
 		t.Errorf("the section is\n%s\nwant\n%s", got, want)
 	}
 }
+
+func TestNote(t *testing.T) {
+
+	b := Bundle{Name: "a.js", Dir: "web", Node: "v24.21.0", Configuration: "0f1e2d3c", Commit: "961bae7"}
+	want := "## a.js\n\n- Bundle: a.js (web)\n- node v24.21.0, configuration 0f1e2d3c, commit 961bae7\n\nNo source map: a.js.map is not there.\n"
+	if got := Note(b, "No source map: a.js.map is not there."); got != want {
+		t.Errorf("the section is\n%s\nwant\n%s", got, want)
+	}
+}

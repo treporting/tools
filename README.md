@@ -523,6 +523,10 @@ coverage. The script runs by hand too, with go, golangci-lint v2, deadcode and n
 structural debt, and `eslint.config.js`. They lie there, not in the root, because a YAML file outside
 `.github` is our data and names a schema.
 
+Where the input `object-code` is true, as `baseline.yml` sets it, `build` keeps its outputs, `test`
+the coverage of its run, and a job `object-code` writes from both the sections of the object code
+report (section objectcode).
+
 The code is the component `ci`: the workflow and the files of `.github/build` but `baseline.sh`.
 The helpers `steps.sh` shares with `baseline.sh` lie in `common.sh`.
 
@@ -605,7 +609,8 @@ tags before a baseline:
 3. `sbom`: `baseline.sh <label> <ticket number> [name=Dockerfile]...` builds the images,
    writes `sbom.md` with both tags in its table made with, and its entry in `documents.yaml`,
    checks the licences, and checks the
-   approvals of every approved object (approvalcheck, SR_82). Where it passes, it
+   approvals of every approved object (approvalcheck, SR_82). It writes the test reports, and the
+   object code report from the sections of the job `object-code` of `build` (SR_120). Where it passes, it
    pushes the branch with one commit and opens the pull request, with a token of the GitHub App
    `treporting-baseline` (devops.md, section Baseline).
 4. `result`: a comment on the ticket - the pull request, or the step that failed, with the link to
@@ -688,6 +693,51 @@ its own root, and by the names of its describe blocks before its own.
 
 **Rejected**: `go test -json` as input - Vitest does not write it; JUnit XML is written by both.
 
+## objectcode
+
+Writes the object code report as `testreports/object-code.md` (TOOL_35; SR_115 to SR_120 in
+[software-requirements.yaml](software-requirements.yaml)): for each build output of the repo a
+section with a row per function of its source code - whether it is in the output, the hash of its
+code there, and its coverage by the tests. A Go binary is read by `go tool objdump`, its coverage
+from the coverage profile of `go test`. A JavaScript bundle is read by its source map, the
+functions of the source and their coverage from the `coverage-final.json` of istanbul, as Vitest
+writes it. A bundle without its source map or without the coverage gets its head and a note that
+says which; the report does not fail on it.
+
+A call writes the section of one output to the standard output; `-document` makes the report of
+the sections given, and sets its entry in `documents.yaml`:
+
+```bash
+cd tools
+go build -o annotationcheck ./annotation/cmd/annotationcheck
+go test -tags integration -coverpkg=./... -coverprofile=cover.out ./...
+go run ./objectcode/cmd/objectcode -binary annotationcheck -main ./annotation/cmd/annotationcheck \
+  -coverprofile cover.out >annotationcheck.md
+go run ./objectcode/cmd/objectcode -document annotationcheck.md
+```
+
+In the build steps, the outputs are every main package of each Go module, and every `.js` that
+`npm run build` leaves in a package and git does not track. The tools a bundle names are those of
+webpack, vite, rollup, esbuild, @babel/core and terser in its `node_modules`, its configuration the
+files `*.config.*` and `.babelrc` of the package:
+
+```bash
+OUTPUTS=/tmp/oc/outputs ../tools/.github/build/steps.sh build
+COVERAGE=/tmp/oc/coverage ../tools/.github/build/steps.sh test
+OUTPUTS=/tmp/oc/outputs COVERAGE=/tmp/oc/coverage SECTIONS=/tmp/oc/sections ../tools/.github/build/steps.sh objectcode
+```
+
+The code is the component `objectcode`: the package `objectcode/write` and the command
+`objectcode/cmd/objectcode`. It uses the Change history of the component `testreport` and the entry
+in `documents.yaml` of the component `sbom`.
+
+**Decision**: the report is written from the outputs the job `build` built and the coverage of the
+run of the job `test`, kept as artifacts of the run.
+
+**Why**: the report names the code that was built and tested, not that of a build of its own.
+
+**Rejected**: a job that builds and tests once more - simpler, but its outputs are another build.
+
 ## Open
 
 - `treporting = 1_tools` - **Checks of the code repos**: not set up yet. They are to call
@@ -740,3 +790,4 @@ its own root, and by the names of its describe blocks before its own.
 | 41.1.1 | 2026-11-15 | baseline: the tools and the repo above at the tags of their baselines, named in sbom.md | #18 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 42.1.1 | 2026-11-17 | Keys without a leading zero | treporting/specs-and-deploy-process#679 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 43.1.1 | 2026-11-18 | baseline: the caller names the commit of the tag of tools after the @ | #34 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 44.1.1 | 2026-11-20 | build steps; baseline; objectcode | #37 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

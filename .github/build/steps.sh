@@ -2,7 +2,7 @@
 # The build steps of every repo (TOOL_23 to TOOL_26), run by .github/workflows/build.yml in the root
 # of the repo; the same script runs by hand. The baseline is baseline.sh beside it.
 #
-#	steps.sh build|lint|test|cover|debt
+#	steps.sh build|lint|test|cover|debt|objectcode
 #	steps.sh sbom [name=Dockerfile]...
 #
 # A Go module is every directory with a go.mod, a JavaScript package every directory with a
@@ -12,6 +12,14 @@
 # its Dockerfile, and exits with 1 where sbom.md does not list the packages delivered. Where JUNIT
 # names a directory, test writes the junit.xml of each run there, for the test reports of
 # baseline.sh.
+#
+# For the object code report (TOOL_35): where OUTPUTS names a directory, build also builds each main
+# package of each module into it, copies each bundle of each package there - each file with .js
+# that npm run build leaves and git does not track, with its .map - and lists them in
+# OUTPUTS/outputs.txt. Where COVERAGE names a directory, test writes there the coverage profile of
+# each run of the Go tests and the coverage-final.json of the tests of each package, by Vitest.
+# objectcode writes from both the section of each build output into SECTIONS, and exits with 2 where
+# it cannot.
 #
 # It needs go, golangci-lint v2 and deadcode on the PATH, gotestsum where JUNIT is set, and node with
 # npm where there is a JavaScript package.
@@ -30,14 +38,67 @@ packages() {
 	find . -name package-lock.json -not -path '*/node_modules/*' -not -path '*/.*/*' | sed 's#/package-lock.json$##' | sort
 }
 
-#	@implements SR_51@1.1.1, SR_52@1.1.1
+#	slug <dir>: the name of a module or package in a file name: root, or its path with - for /
+slug() {
+	if [ "$1" = . ]; then
+		echo root
+	else
+		echo "${1#./}" | tr '/' '-'
+	fi
+}
+
+#	@implements SR_51@1.1.1, SR_52@1.1.1, SR_120@1.1.1
 build() {
 	for m in $(modules); do
 		run "$m" go build ./...
+		[ -z "${OUTPUTS:-}" ] || binaries "$m"
 	done
 	for p in $(packages); do
 		run "$p" npm ci --no-audit --no-fund
 		run "$p" npm run build
+		[ -z "${OUTPUTS:-}" ] || bundles "$p"
+	done
+}
+
+#	output <file>...: copy the files of a build output into a folder of its own in $OUTPUTS, and
+#	print the path of the first there
+output() {
+	local n dir
+	mkdir -p "$OUTPUTS"
+	n="$(find "$OUTPUTS" -mindepth 2 -maxdepth 2 -path "$OUTPUTS/files/*" -type d | wc -l | tr -d ' ')"
+	dir="files/$((n + 1))"
+	mkdir -p "$OUTPUTS/$dir"
+	cp "$@" "$OUTPUTS/$dir/"
+	echo "$dir/$(basename "$1")"
+}
+
+#	binaries <module>: build each main package of the module, and list it in $OUTPUTS/outputs.txt as
+#	binary <file> <module> <main package>
+#
+#	@implements SR_120@1.1.1
+binaries() {
+	local m="$1" root dir main bin
+	root="$(cd "$m" && pwd)"
+	for dir in $(cd "$m" && go list -f '{{if eq .Name "main"}}{{.Dir}}{{end}}' ./...); do
+		main=".${dir#"$root"}"
+		bin="$(mktemp -d)/$(basename "$dir")"
+		run "$m" go build -o "$bin" "$main"
+		[ -f "$bin" ] || continue
+		echo "binary $(output "$bin") $m $main" >>"$OUTPUTS/outputs.txt"
+	done
+}
+
+#	bundles <package>: list each bundle of the package in $OUTPUTS/outputs.txt as bundle <file>
+#	<package>
+#
+#	@implements SR_120@1.1.1
+bundles() {
+	local p="$1" f files
+	for f in $( (cd "$p" && git ls-files --others --exclude-standard -- '*.js' &&
+		git ls-files --others --ignored --exclude-standard -- '*.js') | grep -v '\(^\|/\)node_modules/' | sort -u); do
+		files=("$p/$f")
+		[ ! -f "$p/$f.map" ] || files+=("$p/$f.map")
+		echo "bundle $(output "${files[@]}") $p" >>"$OUTPUTS/outputs.txt"
 	done
 }
 
@@ -80,20 +141,32 @@ junit() {
 	run "$m" gotestsum --junitfile "$JUNIT/$name" -- "$@"
 }
 
-#	@implements SR_55@1.1.1, SR_56@1.1.1
+#	@implements SR_55@1.1.1, SR_56@1.1.1, SR_120@1.1.1
 test() {
+	local unit integration
+	[ -z "${COVERAGE:-}" ] || mkdir -p "$COVERAGE"
 	for m in $(modules); do
+		unit=()
+		integration=()
+		if [ -n "${COVERAGE:-}" ]; then
+			unit=(-coverpkg=./... "-coverprofile=$COVERAGE/$(slug "$m")-unit.out")
+			integration=(-coverpkg=./... "-coverprofile=$COVERAGE/$(slug "$m")-integration.out")
+		fi
 		if [ -n "${JUNIT:-}" ]; then
-			junit "$m" unit -race -timeout 30m ./...
-			junit "$m" integration -race -timeout 30m -tags integration ./...
+			junit "$m" unit -race -timeout 30m ${unit[@]+"${unit[@]}"} ./...
+			junit "$m" integration -race -timeout 30m -tags integration ${integration[@]+"${integration[@]}"} ./...
 		else
-			run "$m" go test -race -timeout 30m ./...
-			run "$m" go test -race -timeout 30m -tags integration ./...
+			run "$m" go test -race -timeout 30m ${unit[@]+"${unit[@]}"} ./...
+			run "$m" go test -race -timeout 30m -tags integration ${integration[@]+"${integration[@]}"} ./...
 		fi
 	done
 	for p in $(packages); do
 		run "$p" npm ci --no-audit --no-fund
-		run "$p" npm test
+		if [ -n "${COVERAGE:-}" ]; then
+			run "$p" npm test -- --coverage --coverage.reporter=json "--coverage.reportsDirectory=$COVERAGE/$(slug "$p")"
+		else
+			run "$p" npm test
+		fi
 	done
 }
 
@@ -130,6 +203,64 @@ debt() {
 	done
 }
 
+#	profile <module>: the coverage profiles of the runs of the Go tests of the module in $COVERAGE, as
+#	one; nothing where there is none
+profile() {
+	local f first=1
+	for f in "$COVERAGE/$(slug "$1")"-*.out; do
+		[ -f "$f" ] || continue
+		if [ "$first" = 1 ]; then
+			cat "$f"
+			first=0
+		else
+			tail -n +2 "$f"
+		fi
+	done
+}
+
+#	objectcode: write the section of each build output listed in $OUTPUTS/outputs.txt, with the
+#	coverage in $COVERAGE, into $SECTIONS as <n>.md, in the order of the list
+#
+#	@implements SR_120@1.1.1
+objectcode() {
+	local bin n=0 kind file dir main section cover flags t c
+	bin="$(tool objectcode/cmd/objectcode)"
+	OUTPUTS="$(cd "$OUTPUTS" && pwd)" || exit 2
+	COVERAGE="$(mkdir -p "$COVERAGE" && cd "$COVERAGE" && pwd)" || exit 2
+	mkdir -p "$SECTIONS"
+	if [ ! -f "$OUTPUTS/outputs.txt" ]; then
+		echo "no build outputs"
+		return
+	fi
+	while read -r kind file dir main <&3; do
+		n=$((n + 1))
+		section="$SECTIONS/$(printf '%03d' "$n").md"
+		echo "== $dir: $kind $file"
+		case "$kind" in
+		binary)
+			cover="$(mktemp)"
+			profile "$dir" >"$cover"
+			flags=()
+			[ ! -s "$cover" ] || flags=(-coverprofile "$cover")
+			(cd "$dir" && "$bin" -root . -binary "$OUTPUTS/$file" -main "$main" ${flags[@]+"${flags[@]}"}) >"$section" || exit 2
+			rm -f "$cover"
+			;;
+		bundle)
+			[ -d "$dir/node_modules" ] || (cd "$dir" && npm ci --no-audit --no-fund) || exit 2
+			flags=()
+			for t in webpack vite rollup esbuild @babel/core terser; do
+				[ ! -f "$dir/node_modules/$t/package.json" ] || flags+=(-tool "$t")
+			done
+			for c in $(find "$dir" -maxdepth 1 -type f \( -name '*.config.*' -o -name .babelrc \) | sort); do
+				flags+=(-config "$c")
+			done
+			"$bin" -root . -bundle "$OUTPUTS/$file" -dir "$dir" -coverage "$COVERAGE/$(slug "$dir")/coverage-final.json" \
+				${flags[@]+"${flags[@]}"} >"$section" || exit 2
+			;;
+		esac
+	done 3<"$OUTPUTS/outputs.txt"
+}
+
 #	@implements SR_67@1.1.1
 sbom() {
 	local bin
@@ -148,11 +279,11 @@ sbom)
 	sbom "$@"
 	exit "$failed"
 	;;
-cover | debt)
+cover | debt | objectcode)
 	"$1"
 	;;
 *)
-	echo "usage: steps.sh build|lint|test|cover|debt|sbom" >&2
+	echo "usage: steps.sh build|lint|test|cover|debt|objectcode|sbom" >&2
 	exit 2
 	;;
 esac

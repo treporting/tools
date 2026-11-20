@@ -8,13 +8,16 @@
 #	        storages=Dockerfile
 #
 # build, lint and test fail where a step fails; report reports test coverage and structural debt
-# and fails on nothing, and runs only where the input report is true, as baseline.yml sets it. Where a pull request changes sbom.md, build also checks that it lists the
+# and fails on nothing, and runs only where the input report is true, as baseline.yml sets it.
+# Where the input object-code is true, build keeps its outputs and test the coverage of its run, and
+# object-code writes from both the section of each output of the object code report (TOOL_35), as
+# the artifact object-code-sections. Where a pull request changes sbom.md, build also checks that it lists the
 # packages delivered, with the images named built at its head (TOOL_28). Each job runs .github/build/steps.sh of tools in the root of the
 # repo; tools itself runs its own, the others that of tools-ref - main, or in a baseline the tag
 # of the baseline of tools (SR_112). See README.md of tools, section build steps.
 #
 # @implements SR_51@1.1.1, SR_52@1.1.1, SR_53@2.1.1, SR_54@2.1.1, SR_55@1.1.1, SR_56@1.1.1, SR_57@2.1.2, SR_58@2.1.2, SR_67@1.1.1
-# @implements SR_112@1.1.1
+# @implements SR_112@1.1.1, SR_120@1.1.1
 name: build
 
 on:
@@ -30,6 +33,10 @@ on:
         default: ''
       report:
         description: run the job report; baseline.yml sets it, a pull request does not
+        type: boolean
+        default: false
+      object-code:
+        description: keep the outputs of build and the coverage of test, and write the sections of the object code report from them; baseline.yml sets it
         type: boolean
         default: false
       above:
@@ -76,7 +83,15 @@ jobs:
         with:
           node-version: '24.x'
       - name: build
+        env:
+          OUTPUTS: ${{ inputs.object-code && format('{0}/outputs', runner.temp) || '' }}
         run: '"$STEPS/.github/build/steps.sh" build'
+      - uses: actions/upload-artifact@v7
+        if: inputs.object-code
+        with:
+          name: object-code-outputs
+          path: ${{ runner.temp }}/outputs/
+          if-no-files-found: ignore
       - name: sbom.md lists the packages delivered
         if: github.event_name == 'pull_request'
         env:
@@ -166,13 +181,67 @@ jobs:
       - name: test
         env:
           JUNIT: ${{ inputs.report && format('{0}/junit', runner.temp) || '' }}
+          COVERAGE: ${{ inputs.object-code && format('{0}/coverage', runner.temp) || '' }}
           ABOVE: ${{ inputs.above != '' && format('{0}/.above', github.workspace) || '' }}
         run: '"$STEPS/.github/build/steps.sh" test'
+      - uses: actions/upload-artifact@v7
+        if: inputs.object-code
+        with:
+          name: object-code-coverage
+          path: ${{ runner.temp }}/coverage/
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v7
         if: inputs.report
         with:
           name: junit
           path: ${{ runner.temp }}/junit/
+          if-no-files-found: ignore
+
+  #	the sections of the object code report, from the outputs of build and the coverage of test; it
+  #	fails only where it cannot write them (TOOL_35)
+  object-code:
+    if: inputs.object-code
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        if: github.repository != 'treporting/tools'
+        with:
+          repository: treporting/tools
+          ref: ${{ inputs.tools-ref }}
+          path: .build-steps
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+          cache-dependency-path: '**/go.sum'
+      - uses: actions/setup-node@v7
+        if: hashFiles('**/package-lock.json') != ''
+        with:
+          node-version: '24.x'
+      - uses: actions/download-artifact@v8
+        with:
+          name: object-code-outputs
+          path: ${{ runner.temp }}/outputs/
+        continue-on-error: true
+      - uses: actions/download-artifact@v8
+        with:
+          name: object-code-coverage
+          path: ${{ runner.temp }}/coverage/
+        continue-on-error: true
+      - name: the sections of the object code report
+        env:
+          OUTPUTS: ${{ runner.temp }}/outputs
+          COVERAGE: ${{ runner.temp }}/coverage
+          SECTIONS: ${{ runner.temp }}/sections
+        run: |
+          mkdir -p "$OUTPUTS"
+          "$STEPS/.github/build/steps.sh" objectcode
+      - uses: actions/upload-artifact@v7
+        with:
+          name: object-code-sections
+          path: ${{ runner.temp }}/sections/
           if-no-files-found: ignore
 
   #	reports and fails on nothing; a step fails only where the measuring itself did not happen.

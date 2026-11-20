@@ -126,10 +126,11 @@ type Istanbul struct {
 }
 
 // ReadIstanbul reads a coverage file of istanbul. Its functions are those of the source with a name,
-// keyed by their file from root; a function of the source that has none, such as a callback, is
-// part of the function it lies in.
+// keyed by their file from root, a method also by its class, which istanbul does not name: from the
+// file of the source, as Classes finds it; a function of the source that has none, such as a
+// callback, is part of the function it lies in.
 //
-// @implements SR_117@1.1.1
+// @implements SR_117@2.1.1
 func ReadIstanbul(r io.Reader, root string) (*Istanbul, error) {
 
 	var files istanbul
@@ -143,9 +144,23 @@ func ReadIstanbul(r io.Reader, root string) (*Istanbul, error) {
 			return nil, err
 		}
 		rel = filepath.ToSlash(rel)
+		var classes map[position]string
 		for id, fn := range file.FnMap {
 			if fn.Name == "" || strings.HasPrefix(fn.Name, "(anonymous") {
 				continue
+			}
+			if classes == nil {
+				src, err := os.ReadFile(file.Path) // #nosec G304 -- the file of the source the coverage names
+				if err != nil {
+					return nil, fmt.Errorf("the source of the coverage: %w", err)
+				}
+				if classes, err = Classes(file.Path, src); err != nil {
+					return nil, err
+				}
+			}
+			key := fn.Name
+			if class, ok := classes[fn.Decl.from()]; ok {
+				key = class + "." + fn.Name
 			}
 			//	a function begins with its head, decl, before the body, loc
 			from, to := fn.Loc.from(), fn.Loc.to()
@@ -153,7 +168,7 @@ func ReadIstanbul(r io.Reader, root string) (*Istanbul, error) {
 				from = fn.Decl.from()
 			}
 			f := Function{
-				Key: rel + "@" + fn.Name, Symbol: fn.Name, File: rel,
+				Key: rel + "@" + key, Symbol: fn.Name, File: rel,
 				From: from.line, To: to.line, FromColumn: from.column, ToColumn: to.column,
 			}
 			ran, total := 0, 0
@@ -189,7 +204,7 @@ func (c *Istanbul) Functions() []Function { return c.functions }
 
 // Coverage is whether the tests call a function, and how many of its statements they ran.
 //
-// @implements SR_117@1.1.1
+// @implements SR_117@2.1.1
 func (c *Istanbul) Coverage(f Function) (called bool, ran, statements int) {
 	v := c.coverage[f.Key+"\x00"+strconv.Itoa(f.From)]
 	return v[0] == 1, v[1], v[2]
@@ -224,7 +239,7 @@ type identifier struct {
 // functions of the bundle that are its code. dir is the folder of the project that built it, from
 // root, to which the source map names its sources.
 //
-// @implements SR_117@1.1.1, SR_119@1.1.1
+// @implements SR_117@2.1.1, SR_119@1.1.1
 func ReadBundle(bundle, sourceMap []byte, dir string, functions []Function) (*Code, error) {
 
 	program, err := parser.ParseFile(nil, "", string(bundle), 0, parser.WithDisableSourceMaps)

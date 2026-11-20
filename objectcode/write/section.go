@@ -114,7 +114,7 @@ type Row struct {
 // Rows are the rows of the functions: each with its name in the output, whether it is there, the
 // hash of its code there, and its coverage.
 //
-// @implements SR_117@1.1.1
+// @implements SR_117@2.1.1
 func Rows(functions []Function, out Output, c Coverage) []Row {
 
 	var rows []Row
@@ -129,7 +129,7 @@ func Rows(functions []Function, out Output, c Coverage) []Row {
 
 // Section is the section of a build output: its head, then the table of its functions.
 //
-// @implements SR_115@1.1.1, SR_116@1.1.1, SR_117@1.1.1
+// @implements SR_115@1.1.1, SR_116@1.1.1, SR_117@2.1.1
 func Section(h Head, rows []Row) string {
 
 	var s strings.Builder

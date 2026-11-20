@@ -61,7 +61,7 @@ func ReadProfile(r io.Reader) (*Profile, error) {
 
 // Coverage is whether the tests call a function, and how many of its statements they ran.
 //
-// @implements SR_117@1.1.1
+// @implements SR_117@2.1.1
 func (p *Profile) Coverage(f Function) (called bool, ran, statements int) {
 
 	if p == nil {

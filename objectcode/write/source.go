@@ -16,7 +16,7 @@ import (
 // Function is a function of the source code.
 type Function struct {
 	// Key is folder/file@function, the file from the root of the repo, as the source code (SC)
-	// names it; a method by its name alone.
+	// names it; a method folder/file@Type.method, by the type of its receiver or its class.
 	Key string
 	// Symbol is its name in the binary, such as example.org/m/a.(*T).M.
 	Symbol string
@@ -77,7 +77,7 @@ func readPackages(r io.Reader) ([]Package, error) {
 
 // Functions lists the functions of the packages, with their keys from root.
 //
-// @implements SR_117@1.1.1
+// @implements SR_117@2.1.1
 func Functions(root string, packages []Package) ([]Function, error) {
 
 	var functions []Function
@@ -104,7 +104,7 @@ func Functions(root string, packages []Package) ([]Function, error) {
 					continue
 				}
 				functions = append(functions, Function{
-					Key:    filepath.ToSlash(rel) + "@" + f.Name.Name,
+					Key:    filepath.ToSlash(rel) + "@" + nameOf(f),
 					Symbol: symbolOf(prefix, f),
 					File:   p.ImportPath + "/" + name,
 					From:   fset.Position(f.Pos()).Line,
@@ -117,14 +117,14 @@ func Functions(root string, packages []Package) ([]Function, error) {
 	return functions, nil
 }
 
-// symbolOf is the name the compiler gives a function: pkg.F, pkg.T.M or pkg.(*T).M.
-func symbolOf(prefix string, f *ast.FuncDecl) string {
+// receiverOf is the type of the receiver of a method, without * and type parameters, and whether
+// it is a pointer; empty for a function.
+func receiverOf(f *ast.FuncDecl) (name string, pointer bool) {
 
 	if f.Recv == nil || len(f.Recv.List) == 0 {
-		return prefix + "." + f.Name.Name
+		return "", false
 	}
 	t := f.Recv.List[0].Type
-	pointer := false
 	if star, ok := t.(*ast.StarExpr); ok {
 		pointer, t = true, star.X
 	}
@@ -135,12 +135,32 @@ func symbolOf(prefix string, f *ast.FuncDecl) string {
 	case *ast.IndexListExpr:
 		t = g.X
 	}
-	name := fmt.Sprint(t)
 	if id, ok := t.(*ast.Ident); ok {
-		name = id.Name
+		return id.Name, pointer
 	}
-	if pointer {
-		return prefix + ".(*" + name + ")." + f.Name.Name
+	return fmt.Sprint(t), pointer
+}
+
+// nameOf is the name of a function in its key: F, or T.M for a method.
+//
+// @implements SR_117@2.1.1
+func nameOf(f *ast.FuncDecl) string {
+
+	if recv, _ := receiverOf(f); recv != "" {
+		return recv + "." + f.Name.Name
 	}
-	return prefix + "." + name + "." + f.Name.Name
+	return f.Name.Name
+}
+
+// symbolOf is the name the compiler gives a function: pkg.F, pkg.T.M or pkg.(*T).M.
+func symbolOf(prefix string, f *ast.FuncDecl) string {
+
+	recv, pointer := receiverOf(f)
+	switch {
+	case recv == "":
+		return prefix + "." + f.Name.Name
+	case pointer:
+		return prefix + ".(*" + recv + ")." + f.Name.Name
+	}
+	return prefix + "." + recv + "." + f.Name.Name
 }

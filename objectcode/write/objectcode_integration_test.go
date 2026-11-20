@@ -110,7 +110,7 @@ func TestCalled(t *testing.T) {
 }
 `
 
-// @implements TC_181@1.1.1
+// @implements TC_181@1.2.1
 func TestTheTableNamesEachFunction(t *testing.T) {
 
 	dir := module(t, map[string]string{"main.go": called, "main_test.go": calledTest})
@@ -147,6 +147,44 @@ func TestTheTableNamesEachFunction(t *testing.T) {
 		if r.InOutput != tt.in || (r.Hash != "") != tt.in || r.Called != tt.called || r.Ran != tt.ran || r.Total != tt.total {
 			t.Errorf("%s: in binary %v, hash %q, called %v, %d/%d", tt.key, r.InOutput, r.Hash, r.Called, r.Ran, r.Total)
 		}
+	}
+}
+
+// twoLines is a Go file with a method Lines on two types, one with a pointer receiver.
+const twoLines = `package main
+
+import (
+	"fmt"
+	"os"
+)
+
+type A struct{ n int }
+
+type B struct{ n int }
+
+//go:noinline
+func (a A) Lines() string { return fmt.Sprint(a.n + 1) }
+
+//go:noinline
+func (b *B) Lines() string { return fmt.Sprintf("%d lines", b.n*2) }
+
+func main() { fmt.Println(A{len(os.Args)}.Lines(), (&B{len(os.Args)}).Lines()) }
+`
+
+// @implements TC_189@1.1.1
+func TestMethodsOfTheSameNameOnTwoTypesAreTwoRows(t *testing.T) {
+
+	functions, d := build(t, module(t, map[string]string{"main.go": twoLines}))
+	rows := map[string]Row{}
+	for _, r := range Rows(functions, d, &Profile{}) {
+		rows[r.Key] = r
+	}
+	a, b := rows["main.go@A.Lines"], rows["main.go@B.Lines"]
+	if !a.InOutput || !b.InOutput || a.Name != "main.A.Lines" || b.Name != "main.(*B).Lines" {
+		t.Fatalf("the rows are %+v, want main.go@A.Lines as main.A.Lines and main.go@B.Lines as main.(*B).Lines", rows)
+	}
+	if a.Hash == "" || a.Hash == b.Hash {
+		t.Errorf("A.Lines has the hash %q, B.Lines %q, want each its own", a.Hash, b.Hash)
 	}
 }
 

@@ -1449,14 +1449,14 @@ testcases:
   object_text: 'a Go binary with a function the tests call, a function they do not call, and a function the compiler inlined: three rows, the third with no name, not in the binary and no hash; the first called, the second not, each with the statements the tests ran of all'
   design_technique: equivalence partitioning
   target_ids: [SR_117@2.1.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_182
   object_version: '2.1.1'
   object_text: 'a bundle in which an async method of a class of the source became a wrapper and a function `_callee`: one row, keyed `folder/file@Class.method` by the source map, not by a name in the bundle'
   design_technique: equivalence partitioning
   target_ids: [SR_117@2.1.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_183
   object_version: '1.1.1'
@@ -1505,12 +1505,12 @@ testcases:
   object_text: 'a Go file with a method `Lines` on two types, one with a pointer receiver: two rows, keyed `folder/file@A.Lines` and `folder/file@B.Lines`, each with the hash of its own code'
   design_technique: equivalence partitioning
   target_ids: [SR_117@2.1.1]
-  status: review
+  status: approved
   verification_method: [review]
 - object_key: TC_190
   object_version: '1.1.1'
   object_text: 'a JavaScript source file with two classes, each with a method `render`: two rows, keyed `folder/file@A.render` and `folder/file@B.render`, each with its own coverage'
   design_technique: equivalence partitioning
   target_ids: [SR_117@2.1.1]
-  status: review
+  status: approved
   verification_method: [review]

@@ -410,3 +410,42 @@ func TestACompletedReviewHasItsCompletedAt(t *testing.T) {
 		}
 	}
 }
+
+// twoFiles is a history whose two files both hold TOOL_3: a last changed by the reviewer, b by
+// another.
+func twoFiles() fakeGit {
+	git := history("Copilot")
+	git.files["c1"]["a/requirements.yaml"] = requirements
+	git.files["c1"]["b/requirements.yaml"] = requirements
+	git.files["ca"] = map[string]string{"a/requirements.yaml": requirements}
+	git.files["cb"] = map[string]string{"b/requirements.yaml": requirements}
+	git.changed = map[string][]string{"a/requirements.yaml": {"ca"}, "b/requirements.yaml": {"cb"}}
+	git.authors = map[string]string{"ca": "Mathias Fischer", "cb": "Copilot"}
+	return git
+}
+
+// resultOf is a passed result of TOOL_3 that names file.
+func resultOf(file string) string {
+	return `- object_key: RR_1
+  target_ids: [TOOL_3]
+  file: ` + file + `
+  revision: 'c1'
+  criteria: {RC_1: passed, RC_2: passed}
+  verdict: passed
+`
+}
+
+// @implements TC_195@1.1.1
+func TestTheAuthorIsTakenFromTheFileTheResultNames(t *testing.T) {
+	if got := check(t, resultOf("b/requirements.yaml"), twoFiles()); len(got) != 0 {
+		t.Errorf("want no finding for b, got %q", got)
+	}
+	expect(t, check(t, resultOf("a/requirements.yaml"), twoFiles()), "the reviewer Mathias Fischer is an author of TOOL_3")
+}
+
+// @implements TC_196@1.1.1
+func TestAFileThatHoldsNoneOfTheTargets(t *testing.T) {
+	git := twoFiles()
+	git.files["c1"]["c/requirements.yaml"] = "type: requirements\nlevel: tool\nrequirements:\n- object_key: TOOL_4\n  object_text: another\n"
+	expect(t, check(t, resultOf("c/requirements.yaml"), git), "the file c/requirements.yaml holds none of its targets")
+}

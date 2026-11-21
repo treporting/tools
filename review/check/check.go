@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -31,6 +32,7 @@ type Review struct {
 type Result struct {
 	ObjectKey string               `yaml:"object_key"`
 	TargetIDs []string             `yaml:"target_ids"`
+	File      string               `yaml:"file"`
 	Revision  string               `yaml:"revision"`
 	Criteria  map[string]Judgement `yaml:"criteria"`
 	Verdict   string               `yaml:"verdict"`
@@ -184,7 +186,26 @@ func checkResult(r Review, result Result, criteria []string, git Git, index *rev
 	if !git.CommitExists(result.Revision) {
 		return append(messages, "the revision "+result.Revision+" is no commit")
 	}
+	if message := checkFile(result, index); message != "" {
+		return append(messages, message)
+	}
 	return append(messages, checkAuthors(r, result, git, index)...)
+}
+
+// checkFile answers the rule the field file of a result breaks: it holds none of its targets.
+//
+// @implements SR_126@1.1.1
+func checkFile(result Result, index *review.Index) string {
+
+	if result.File == "" {
+		return ""
+	}
+	for _, target := range result.TargetIDs {
+		if slices.Contains(index.FilesOf(target), result.File) {
+			return ""
+		}
+	}
+	return "the file " + result.File + " holds none of its targets"
 }
 
 // checkCriteria answers the rules the criteria of one result break, and whether every criterion
@@ -259,7 +280,7 @@ func checkVerdict(verdict string, allPassed bool) []string {
 func checkAuthors(r Review, result Result, git Git, index *review.Index) []string {
 	var messages []string
 	for _, target := range result.TargetIDs {
-		authors, err := authorsOf(git, index, result.Revision, target)
+		authors, err := authorsOf(git, index, result.Revision, target, result.File)
 		if err != nil {
 			messages = append(messages, err.Error())
 			continue
@@ -278,10 +299,15 @@ func checkAuthors(r Review, result Result, git Git, index *review.Index) []strin
 // co-authors of the last commit, not a merge, that changed it, whatever names stand there. A merge
 // joins what others wrote; the one who merged approves, and is no author.
 //
-// @implements SR_5@2.1.1, SR_8@1.1.1
-func authorsOf(git Git, index *review.Index, revision, target string) ([]string, error) {
+// The object is the one in the file the result names, where it names one.
+//
+// @implements SR_5@2.1.1, SR_8@1.1.1, SR_125@1.1.1
+func authorsOf(git Git, index *review.Index, revision, target, given string) ([]string, error) {
 
 	file, key := index.FileOf(target)
+	if given != "" && slices.Contains(index.FilesOf(target), given) {
+		file = given
+	}
 	if file == "" {
 		return nil, fmt.Errorf("no file holds %s", target)
 	}

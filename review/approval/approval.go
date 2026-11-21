@@ -101,7 +101,7 @@ func CheckWithAbove(root, above, base string, git Git, index *review.Index) ([]F
 	var findings []Finding
 	for _, o := range append(requirements, docs...) {
 		if o.review {
-			findings = append(findings, checkReview(o, last[o.key], git)...)
+			findings = append(findings, checkReview(o, last.of(o, index), git)...)
 		}
 	}
 	versions, err := checkVersions(requirements, docs, git)
@@ -194,45 +194,79 @@ type result struct {
 	status   string
 }
 
+// reviews are the last review results by their targets: by the id alone where a result names no
+// file, and by the file and the id where it names one.
+type reviews struct {
+	byID   map[string]*result
+	byFile map[[2]string]*result
+}
+
+// of answers the last result that names an object: one that names its file, or one that names
+// none where the id stands in one file alone - the later of the two.
+//
+// @implements SR_124@1.1.1
+func (r reviews) of(o object, index *review.Index) *result {
+
+	last := r.byFile[[2]string{o.file, o.key}]
+	if len(index.FilesOf(o.key)) == 1 {
+		if plain := r.byID[o.key]; plain != nil && (last == nil || plain.at.After(last.at)) {
+			last = plain
+		}
+	}
+	return last
+}
+
+// keep keeps res as the last for key in m, where it is later than the one there.
+func keep[K comparable](m map[K]*result, key K, res *result) {
+
+	if old, ok := m[key]; ok && !res.at.After(old.at) {
+		return
+	}
+	m[key] = res
+}
+
 // lastReviews answers, for every target, the review result that names it with the latest
 // created_at of its file.
 //
-// @implements SR_76@1.1.1
-func lastReviews(root string) (map[string]*result, error) {
+// @implements SR_76@1.1.1, SR_124@1.1.1
+func lastReviews(root string) (reviews, error) {
 
+	last := reviews{byID: map[string]*result{}, byFile: map[[2]string]*result{}}
 	files, err := filepath.Glob(filepath.Join(root, "reviews", "results", "*.yaml"))
 	if err != nil {
-		return nil, err
+		return last, err
 	}
-	last := map[string]*result{}
 	for _, f := range files {
 		data, err := os.ReadFile(f) // #nosec G304 -- the path comes from the user of the tool, not from outside
 		if err != nil {
-			return nil, err
+			return last, err
 		}
 		var r struct {
 			Status    string `yaml:"status"`
 			CreatedAt string `yaml:"created_at"`
 			Results   []struct {
 				TargetIDs []string `yaml:"target_ids"`
+				File      string   `yaml:"file"`
 				Revision  string   `yaml:"revision"`
 				Verdict   string   `yaml:"verdict"`
 			} `yaml:"results"`
 		}
 		if err := yaml.Unmarshal(data, &r); err != nil {
-			return nil, fmt.Errorf("%s: %w", f, err)
+			return last, fmt.Errorf("%s: %w", f, err)
 		}
 		at, err := time.Parse(time.RFC3339, r.CreatedAt)
 		if err != nil {
-			return nil, fmt.Errorf("%s: created_at: %w", f, err)
+			return last, fmt.Errorf("%s: created_at: %w", f, err)
 		}
 		rel, _ := filepath.Rel(root, f)
 		for _, res := range r.Results {
 			for _, target := range res.TargetIDs {
-				if old, ok := last[target]; ok && !at.After(old.at) {
-					continue
+				one := &result{path: rel, at: at, revision: res.Revision, verdict: res.Verdict, status: r.Status}
+				if res.File != "" {
+					keep(last.byFile, [2]string{res.File, target}, one)
+				} else {
+					keep(last.byID, target, one)
 				}
-				last[target] = &result{path: rel, at: at, revision: res.Revision, verdict: res.Verdict, status: r.Status}
 			}
 		}
 	}

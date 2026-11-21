@@ -1288,7 +1288,7 @@ requirements:
   source_ids: [TOOL_4@3.2.4]
   priority: 'medium'
   safety: ''
-  status: review
+  status: approved
   verification_method: [test]
 - object_key: SR_124
   object_version: '1.1.1'
@@ -1298,7 +1298,7 @@ requirements:
   source_ids: [TOOL_32@2.1.5]
   priority: 'medium'
   safety: ''
-  status: review
+  status: approved
   verification_method: [test]
 - object_key: SR_125
   object_version: '1.1.1'
@@ -1307,7 +1307,7 @@ requirements:
   source_ids: [TOOL_3@3.3.6]
   priority: 'medium'
   safety: ''
-  status: review
+  status: approved
   verification_method: [test]
 - object_key: SR_126
   object_version: '1.1.1'
@@ -1316,5 +1316,5 @@ requirements:
   source_ids: [TOOL_3@3.3.6]
   priority: 'medium'
   safety: ''
-  status: review
+  status: approved
   verification_method: [test]

@@ -1514,3 +1514,45 @@ testcases:
   target_ids: [SR_117@2.1.1]
   status: approved
   verification_method: [review]
+- object_key: TC_191
+  object_version: '1.1.1'
+  object_text: 'SR_1 in two files `a/requirements.yaml` and `b/requirements.yaml`, the skeleton made for SR_1 with -file `b/requirements.yaml`: the result of SR_1 has the field file `b/requirements.yaml`'
+  design_technique: equivalence partitioning
+  target_ids: [SR_123@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_192
+  object_version: '1.1.1'
+  object_text: 'SR_1 in two files, the skeleton made for SR_1 without -file: no file is written, and the report names both files'
+  design_technique: equivalence partitioning
+  target_ids: [SR_123@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_193
+  object_version: '1.1.1'
+  object_text: 'SR_1 approved in `a/requirements.yaml` and in `b/requirements.yaml`, one passed and completed result naming SR_1 with the field file `b/requirements.yaml`: SR_1 of `a` is reported as without review, SR_1 of `b` is not'
+  design_technique: equivalence partitioning
+  target_ids: [SR_124@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_194
+  object_version: '1.1.1'
+  object_text: 'a passed and completed result naming SR_1 without the field file: with SR_1 approved in one file only, it is not reported; with SR_1 approved in two files, both are reported as without review'
+  design_technique: equivalence partitioning
+  target_ids: [SR_124@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_195
+  object_version: '1.1.1'
+  object_text: 'SR_1 in `a/requirements.yaml`, last changed by the reviewer, and in `b/requirements.yaml`, last changed by another: a result of that reviewer with the field file `b/requirements.yaml` is not reported, one with `a/requirements.yaml` is'
+  design_technique: equivalence partitioning
+  target_ids: [SR_125@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_196
+  object_version: '1.1.1'
+  object_text: 'a result naming SR_1 with the field file `b/requirements.yaml`, which holds SR_2 only: the result is reported'
+  design_technique: equivalence partitioning
+  target_ids: [SR_126@1.1.1]
+  status: approved
+  verification_method: [review]

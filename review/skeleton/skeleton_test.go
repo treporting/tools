@@ -174,3 +174,55 @@ func TestTheSkeletonIsAnOpenRecord(t *testing.T) {
 	}
 	contains(t, content, "level: tool\nobject_version: '1.1.1'\nstatus: open\n")
 }
+
+// twoSubsystems is the history of a code repo whose two subsystems both hold SR_1.
+func twoSubsystems() fakeGit {
+	sr := "type: requirements\nlevel: r5\nrequirements:\n- object_key: SR_1\n  object_text: a behaviour\n"
+	return fakeGit{files: map[string]string{
+		"reviews/criteria-r5.yaml": "level: r5\ncriteria:\n- object_key: RC_1\n",
+		"a/requirements.yaml":      sr,
+		"b/requirements.yaml":      sr,
+	}}
+}
+
+// makeIn writes a skeleton of the history git into a temporary root, with file as -file.
+func makeIn(t *testing.T, git fakeGit, file string, targets ...string) (string, string, error) {
+	t.Helper()
+	root := t.TempDir()
+	path, err := Make(root, Request{Reviewer: "Mathias Fischer", Scope: "sr-1", Targets: targets, File: file, Now: now}, git, indexOf(git))
+	if err != nil {
+		if _, statErr := os.Stat(filepath.Join(root, results)); statErr == nil {
+			t.Errorf("want nothing written, got %s", results)
+		}
+		return "", "", err
+	}
+	data, _ := os.ReadFile(filepath.Join(root, path)) // #nosec G304 -- the path comes from the user of the tool, not from outside
+	return path, string(data), nil
+}
+
+// @implements TC_191@1.1.1
+func TestTheFileGivenIsTheFileOfTheResult(t *testing.T) {
+	_, content, err := makeIn(t, twoSubsystems(), "b/requirements.yaml", "SR_1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	contains(t, content, "  target_ids: [SR_1]\n  file: b/requirements.yaml\n")
+}
+
+// @implements TC_192@1.1.1
+func TestNothingWhereAnIdStandsInTwoFilesAndNoFileIsGiven(t *testing.T) {
+	_, _, err := makeIn(t, twoSubsystems(), "", "SR_1")
+	if err == nil || !strings.Contains(err.Error(), "a/requirements.yaml, b/requirements.yaml") {
+		t.Errorf("want both files named, got %v", err)
+	}
+}
+
+func TestNoFieldFileWhereTheIdIsUnique(t *testing.T) {
+	_, content, err := makeSkeleton(t, "TOOL_3")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(content, "file:") {
+		t.Errorf("an id in one file wants no field file:\n%s", content)
+	}
+}

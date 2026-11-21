@@ -19,7 +19,7 @@ type Read func(file string) ([]byte, error)
 // it (tools/README.md, section The component review).
 type Index struct {
 	files []string
-	of    map[string]string
+	of    map[string][]string
 }
 
 // NewIndex reads the files and keeps, in their order, each that holds an object in one of the
@@ -28,7 +28,7 @@ type Index struct {
 // @implements SR_86@2.1.1
 func NewIndex(read Read, files []string) *Index {
 
-	ix := &Index{of: map[string]string{}}
+	ix := &Index{of: map[string][]string{}}
 	for _, file := range files {
 		if !strings.HasSuffix(file, ".yaml") && !strings.HasSuffix(file, ".yml") {
 			continue
@@ -47,7 +47,9 @@ func NewIndex(read Read, files []string) *Index {
 			for _, item := range items {
 				object, _ := item.(map[string]any)
 				if key, ok := object["object_key"].(string); ok {
-					ix.of[key] = file
+					if !slices.Contains(ix.of[key], file) {
+						ix.of[key] = append(ix.of[key], file)
+					}
 					holds = true
 				}
 			}
@@ -111,16 +113,30 @@ func (ix *Index) Keys() []string {
 }
 
 // FileOf answers the file that holds a target, and the key to find it there; a document is its
-// own file and has no key. An id no file holds answers none.
+// own file and has no key. An id no file holds answers none; an id that stands in more than one
+// file answers the first of them in the order git lists them - FilesOf answers every one.
 func (ix *Index) FileOf(target string) (file, key string) {
 
 	if strings.HasSuffix(target, ".md") {
 		return target, ""
 	}
-	if file, ok := ix.of[target]; ok {
-		return file, target
+	if files := ix.of[target]; len(files) > 0 {
+		return files[0], target
 	}
 	return "", ""
+}
+
+// FilesOf answers every file that holds a target, in the order git lists them; a document is its
+// own file. An id is unique only together with its file, as the software requirements of two
+// subsystems in one repo both hold SR_1 (formats.md, Ids).
+//
+// @implements SR_123@1.1.1, SR_124@1.1.1
+func (ix *Index) FilesOf(target string) []string {
+
+	if strings.HasSuffix(target, ".md") {
+		return []string{target}
+	}
+	return slices.Clone(ix.of[target])
 }
 
 // ObjectIn answers the object with key in the YAML data, as YAML, or the whole data where key is

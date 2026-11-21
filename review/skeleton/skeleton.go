@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -51,6 +52,7 @@ type Request struct {
 	Reviewer string
 	Scope    string
 	Targets  []string // ids of requirements, or paths of documents
+	File     string   // the file of the targets, where an id stands in more than one file
 	Now      time.Time
 }
 
@@ -66,7 +68,7 @@ func Make(root string, req Request, git Git, index *review.Index) (string, error
 		return "", err
 	}
 
-	level, err := levelOf(git, index, req.Targets)
+	level, err := levelOf(git, index, req.Targets, req.File)
 	if err != nil {
 		return "", err
 	}
@@ -98,6 +100,9 @@ func Make(root string, req Request, git Git, index *review.Index) (string, error
 	for i, target := range req.Targets {
 		fmt.Fprintf(&b, "- object_key: RR_%d\n", i+1)
 		fmt.Fprintf(&b, "  target_ids: [%s]\n", target)
+		if len(index.FilesOf(target)) > 1 {
+			fmt.Fprintf(&b, "  file: %s\n", req.File)
+		}
 		fmt.Fprintf(&b, "  revision: '%s'\n", head)
 		fmt.Fprintf(&b, "  criteria:\n")
 		for _, key := range keys {
@@ -119,16 +124,16 @@ func Make(root string, req Request, git Git, index *review.Index) (string, error
 // requirement, and document for a document.
 //
 // @implements SR_15@1.1.1
-func levelOf(git Git, index *review.Index, targets []string) (string, error) {
+func levelOf(git Git, index *review.Index, targets []string, given string) (string, error) {
 
 	if len(targets) == 0 {
 		return "", fmt.Errorf("no id or document given")
 	}
 	level := ""
 	for _, target := range targets {
-		file, key := index.FileOf(target)
-		if file == "" {
-			return "", fmt.Errorf("no file holds %s", target)
+		file, key, err := fileOf(index, target, given)
+		if err != nil {
+			return "", err
 		}
 		data, err := git.Show("HEAD", file)
 		if err != nil || review.ObjectIn(data, key) == nil {
@@ -150,6 +155,27 @@ func levelOf(git Git, index *review.Index, targets []string) (string, error) {
 		level = l
 	}
 	return level, nil
+}
+
+// fileOf answers the file of a target and the key to find it there: the one file that holds it,
+// or, where it stands in more than one, the file given, which must be one of them.
+//
+// @implements SR_123@1.1.1
+func fileOf(index *review.Index, target, given string) (file, key string, err error) {
+
+	files := index.FilesOf(target)
+	switch {
+	case len(files) == 0:
+		return "", "", fmt.Errorf("no file holds %s", target)
+	case len(files) == 1:
+		file, key = index.FileOf(target)
+		return file, key, nil
+	case given == "":
+		return "", "", fmt.Errorf("%s stands in %s - name one with -file", target, strings.Join(files, ", "))
+	case !slices.Contains(files, given):
+		return "", "", fmt.Errorf("%s stands in %s, not in %s", target, strings.Join(files, ", "), given)
+	}
+	return given, target, nil
 }
 
 // criteriaOf answers the criteria file of a level, the last commit that changed it, and the level

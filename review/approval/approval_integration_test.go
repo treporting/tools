@@ -340,3 +340,63 @@ func TestWithoutTheRepoAboveTheSchemaIsMissing(t *testing.T) {
 		t.Errorf("error %v, want one that names schemas/tool.schema.json", err)
 	}
 }
+
+// twoFiles is a repo whose two files both hold TOOL_1 approved, with the results given, which
+// name the first commit.
+func twoFiles(t *testing.T, files []string, results ...string) string {
+
+	root := t.TempDir()
+	gitIn(t, root, "init", "-q")
+	write(t, root, "schemas/tool.schema.json", schema)
+	write(t, root, "reviews/criteria-tool.yaml", "level: tool\n")
+	for _, file := range files {
+		write(t, root, file, tool([]string{"TOOL_1"}, []string{"one"}, "draft"))
+	}
+	gitIn(t, root, "add", "-A")
+	gitIn(t, root, "commit", "-q", "-m", "drafts")
+	drafts := gitIn(t, root, "rev-parse", "--short", "HEAD")
+
+	for _, file := range files {
+		write(t, root, file, tool([]string{"TOOL_1"}, []string{"one"}, "approved"))
+	}
+	for i, res := range results {
+		write(t, root, "reviews/results/"+string(rune('1'+i))+".yaml", strings.ReplaceAll(res, "REV", drafts))
+	}
+	gitIn(t, root, "add", "-A")
+	gitIn(t, root, "commit", "-q", "-m", "approved")
+	return root
+}
+
+// withFile is a passed result of TOOL_1 that names the file of its target.
+func withFile(file string) string {
+	return "created_at: '2026-11-02T10:00:00+01:00'\nresults:\n- object_key: RR_1\n  target_ids: [TOOL_1]\n  file: " +
+		file + "\n  revision: 'REV'\n  verdict: passed\n"
+}
+
+// @implements TC_193@1.1.1
+func TestAResultCountsForTheFileItNames(t *testing.T) {
+
+	root := twoFiles(t, []string{"a/requirements.yaml", "b/requirements.yaml"}, withFile("b/requirements.yaml"))
+	got := messages(t, root, "")
+	if !strings.Contains(got, "a/requirements.yaml: TOOL_1: approved, and no review result names it") {
+		t.Errorf("want TOOL_1 of a without review, got\n%s", got)
+	}
+	if strings.Contains(got, "b/requirements.yaml: TOOL_1") {
+		t.Errorf("want TOOL_1 of b reviewed, got\n%s", got)
+	}
+}
+
+// @implements TC_194@1.1.1
+func TestAResultWithoutAFileCountsWhereTheIdIsUnique(t *testing.T) {
+
+	plain := reviewResult("2026-11-02T10:00:00+01:00", "TOOL_1", "REV", "passed")
+	if got := messages(t, twoFiles(t, []string{"a/requirements.yaml"}, plain), ""); strings.Contains(got, "TOOL_1") {
+		t.Errorf("want TOOL_1 in one file reviewed, got\n%s", got)
+	}
+	got := messages(t, twoFiles(t, []string{"a/requirements.yaml", "b/requirements.yaml"}, plain), "")
+	for _, file := range []string{"a", "b"} {
+		if !strings.Contains(got, file+"/requirements.yaml: TOOL_1: approved, and no review result names it") {
+			t.Errorf("want TOOL_1 of %s without review, got\n%s", file, got)
+		}
+	}
+}

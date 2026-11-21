@@ -181,6 +181,16 @@ the criteria file of the level and the last commit that changed it, the commit `
 revision of each, and every criterion and the verdict as `todo`. It writes nothing where a target is
 not found, or where the targets belong to more than one level.
 
+Where an id stands in more than one file of the repo - SR_1 of two subsystems in one code repo -
+`-file` names the file of the ids, and each result names it in its field `file` (SR_123). Without
+`-file` it writes nothing and names the files. approvalcheck counts a result only for the object in
+the file it names, or, without one, where the id stands in one file alone (SR_124); reviewcheck
+takes the author from that file and reports a file that holds none of the targets (SR_125, SR_126).
+
+```bash
+go run ./review/cmd/reviewskeleton -root ../trace -reviewer "Mathias Fischer" -scope viewer-sr -file viewer/requirements/software-requirements.yaml SR_1 SR_2
+```
+
 ```bash
 cd tools
 go run ./review/cmd/reviewskeleton -root ../specs-and-deploy-process -reviewer "Mathias Fischer" -scope harness harness.md
@@ -809,3 +819,4 @@ run of the job `test`, kept as artifacts of the run.
 | 43.1.1 | 2026-11-18 | baseline: the caller names the commit of the tag of tools after the @ | #34 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 44.1.1 | 2026-11-20 | build steps; baseline; objectcode | #37 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 45.1.1 | 2026-11-20 | objectcode: object-code.yml | #37 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 46.1.1 | 2026-11-21 | reviewskeleton: -file, where an id is not unique in the repo | #49 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

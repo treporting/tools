@@ -1280,3 +1280,41 @@ requirements:
   safety: ''
   status: approved
   verification_method: [test]
+- object_key: SR_123
+  object_version: '1.1.1'
+  component: review
+  object_text: where an id given stands in more than one file, take the file given with -file and write it
+    as the field file of each result; without -file, write nothing and report the files that hold it
+  source_ids: [TOOL_4@3.2.4]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_124
+  object_version: '1.1.1'
+  component: review
+  object_text: take a result as naming an object only where its field file is the file of the object, or,
+    without the field, where the id stands in one file alone
+  source_ids: [TOOL_32@2.1.5]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_125
+  object_version: '1.1.1'
+  component: review
+  object_text: take the author of an object from the file a result names, where it names one
+  source_ids: [TOOL_3@3.3.6]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]
+- object_key: SR_126
+  object_version: '1.1.1'
+  component: review
+  object_text: report a result whose field file holds none of its targets
+  source_ids: [TOOL_3@3.3.6]
+  priority: 'medium'
+  safety: ''
+  status: approved
+  verification_method: [test]

@@ -1556,3 +1556,35 @@ testcases:
   target_ids: [SR_126@1.1.1]
   status: approved
   verification_method: [review]
+- object_key: TC_197
+  object_version: '1.1.1'
+  object_text: 'a link in source_ids, target_ids, allocated or controls names an obsolete object at its
+    version: linkcheck reports the link as obsolete; a link to an approved object at its version is not
+    reported'
+  design_technique: equivalence partitioning
+  target_ids: [SR_127@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_198
+  object_version: '1.1.1'
+  object_text: 'an @implements names an obsolete object at its version: linkcheck reports it as obsolete'
+  design_technique: equivalence partitioning
+  target_ids: [SR_127@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_199
+  object_version: '1.1.1'
+  object_text: 'a link names an obsolete object of the repo above: linkcheck with the repo above reports
+    it as obsolete'
+  design_technique: equivalence partitioning
+  target_ids: [SR_127@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_200
+  object_version: '1.1.1'
+  object_text: 'an obsolete object and an approved object name an object at another x than it has:
+    linkcheck reports the link of the approved object only'
+  design_technique: equivalence partitioning
+  target_ids: [SR_128@1.1.1]
+  status: approved
+  verification_method: [review]

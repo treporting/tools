@@ -26,7 +26,7 @@ import (
 	"github.com/treporting/tools/review"
 )
 
-// @implements SR_32@1.1.1, SR_33@2.1.1, SR_109@1.1.1, SR_127@1.1.1, SR_128@1.1.1
+// @implements SR_32@2.1.1, SR_33@2.2.1, SR_109@1.2.1, SR_127@2.1.1, SR_128@2.1.1
 func main() {
 
 	root := flag.String("root", ".", "the root of the repo")

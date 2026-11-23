@@ -54,7 +54,7 @@ requirements:
   object_version: '4.1.1'
 `
 
-// @implements TC_59@1.1.1, TC_60@1.1.1
+// @implements TC_59@1.2.1, TC_60@1.2.1
 func TestOnlyAnotherXIsReported(t *testing.T) {
 	got, compared, err := files{
 		"requirements/tool-requirements.yaml": tools,
@@ -76,23 +76,13 @@ requirements:
 	}
 }
 
-// @implements TC_61@1.1.1, TC_62@1.1.1
-func TestTheAllocationAndControlsAreCompared(t *testing.T) {
+// @implements TC_62@1.2.1
+func TestControlsAreCompared(t *testing.T) {
 	got, compared, err := files{
-		"requirements/system-requirements.yaml": `type: requirements
-requirements:
-- object_key: SYS_9
-  object_version: '4.1.2'
-`,
 		"requirements/user-needs.yaml": `type: requirements
 requirements:
 - object_key: UN_PSF_1
   object_version: '2.1.1'
-`,
-		"architecture/system-architecture.yaml": `type: architecture
-elements:
-- object_key: ARC_1
-  allocated: [SYS_9@3.1.2]
 `,
 		"safety/hazards.yaml": `type: hazards
 controls:
@@ -103,15 +93,12 @@ controls:
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{
-		"ARC_1 allocated names SYS_9@3.1.2: its object has 4.1.2",
-		"HAZC_1 controls names UN_PSF_1@1.1.1: its object has 2.1.1",
-	}
+	want := []string{"HAZC_1 controls names UN_PSF_1@1.1.1: its object has 2.1.1"}
 	if !reflect.DeepEqual(lines(got), want) {
 		t.Errorf("findings %q, want %q", lines(got), want)
 	}
-	if compared != 2 {
-		t.Errorf("compared %d, want 2", compared)
+	if compared != 1 {
+		t.Errorf("compared %d, want 1", compared)
 	}
 }
 
@@ -145,7 +132,7 @@ testcases:
 
 // A link to an object no file holds is not compared; uplinkcheck reports it.
 //
-// @verifies SR_32@1.1.1
+// @verifies SR_32@2.1.1
 func TestAMissingObjectIsNotCompared(t *testing.T) {
 	got, compared, err := files{
 		"requirements/tool-requirements.yaml": tools,
@@ -197,7 +184,7 @@ elements:
 
 // A link to a regulatory requirement is compared with the version in the file of its module.
 //
-// @implements TC_63@1.1.1
+// @implements TC_63@1.2.1
 func TestALinkToAModuleIsCompared(t *testing.T) {
 	got, compared, err := files{
 		"regulatory/DO178C.yaml": `type: normative
@@ -278,10 +265,10 @@ requirements:
   status: obsolete
 `
 
-// A link, an entry of the allocation and of controls, and an annotation that name an obsolete
-// object are reported, though their version matches.
+// A link, an entry of controls and an annotation that name an obsolete object are reported, though
+// their version matches.
 //
-// @implements TC_197@1.1.1, TC_198@1.1.1
+// @implements TC_197@2.1.1, TC_198@1.2.1
 func TestALinkToAnObsoleteObjectIsReported(t *testing.T) {
 	f := files{
 		"requirements/tool-requirements.yaml": obsoleteTools,
@@ -289,11 +276,6 @@ func TestALinkToAnObsoleteObjectIsReported(t *testing.T) {
 requirements:
 - object_key: SR_1
   source_ids: [TOOL_1@1.1.1, TOOL_9@1.1.1]
-`,
-		"architecture/system-architecture.yaml": `type: architecture
-elements:
-- object_key: ARC_1
-  allocated: [TOOL_9@1.1.1]
 `,
 		"safety/hazards.yaml": `type: hazards
 controls:
@@ -311,13 +293,12 @@ testcases:
 		t.Fatal(err)
 	}
 	want := []string{
-		"ARC_1 allocated names TOOL_9@1.1.1: its object is obsolete",
 		"HAZC_1 controls names TOOL_9@1.1.1: its object is obsolete",
 		"SR_1 source_ids names TOOL_9@1.1.1: its object is obsolete",
 		"TC_1 target_ids names TOOL_9@1.1.1: its object is obsolete",
 	}
-	if !reflect.DeepEqual(lines(got), want) || compared != 5 {
-		t.Errorf("findings %q, compared %d, want %q and 5", lines(got), compared, want)
+	if !reflect.DeepEqual(lines(got), want) || compared != 4 {
+		t.Errorf("findings %q, compared %d, want %q and 4", lines(got), compared, want)
 	}
 	ids, _ := Annotations(f.read, f.index(), []annotation.Annotation{
 		{File: "a.go", Line: 3, Kind: "implements", IDs: []string{"TOOL_1", "TOOL_9"}, Versions: []string{"1.1.1", "1.1.1"}},
@@ -330,7 +311,7 @@ testcases:
 
 // A link to an obsolete object in the repo above is reported.
 //
-// @implements TC_199@1.1.1
+// @implements TC_199@1.2.1
 func TestALinkToAnObsoleteObjectAboveIsReported(t *testing.T) {
 	above := files{"requirements/tool-requirements.yaml": obsoleteTools}
 	own := files{"tools/software-requirements.yaml": `type: requirements
@@ -351,7 +332,7 @@ requirements:
 // The links of an obsolete object are not compared: its link to TOOL_9, which has moved on in x,
 // is no finding, and the link of SR_2, approved, is.
 //
-// @implements TC_200@1.1.1
+// @implements TC_200@1.2.1
 func TestTheLinksOfAnObsoleteObjectAreNotCompared(t *testing.T) {
 	got, compared, err := files{
 		"requirements/tool-requirements.yaml": tools,

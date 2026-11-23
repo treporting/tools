@@ -1,10 +1,12 @@
-// Command uplinkcheck checks that every approved requirement names approved uplinks only (TOOL_9).
+// Command uplinkcheck checks that every approved requirement names approved uplinks only (TOOL_9),
+// and that every requirement of r3, r6 and r7 names a part and an interface of its level (TOOL_39).
 //
 //	uplinkcheck [-root dir] [-above dir]
 //
 // -above is the root of the repo above, where an uplink that this repo does not hold is looked up.
 // It reads the files of requirements as they stand in the working tree. It prints every uplink of
-// an approved requirement that is missing or not approved, and exits with 1 where there is one.
+// an approved requirement that is missing or not approved, and every component and interface that
+// names no part of its level, and exits with 1 where there is one.
 package main
 
 import (
@@ -17,7 +19,7 @@ import (
 	"github.com/treporting/tools/uplink/check"
 )
 
-// @implements SR_28@1.1.1, SR_108@1.1.1
+// @implements SR_28@1.1.1, SR_108@1.1.1, SR_129@1.1.1, SR_130@1.1.1
 func main() {
 
 	root := flag.String("root", ".", "the root of the repo")
@@ -37,12 +39,14 @@ func main() {
 	if err != nil {
 		fail(err)
 	}
-	findings, approved, err := check.CheckWithAbove(func(file string) ([]byte, error) {
+	read := func(file string) ([]byte, error) {
 		return os.ReadFile(filepath.Join(*root, file)) // #nosec G304 -- the path comes from the user of the tool, not from outside
-	}, index, above)
+	}
+	findings, approved, err := check.CheckWithAbove(read, index, above)
 	if err != nil {
 		fail(err)
 	}
+	findings = append(findings, check.Parts(read, index)...)
 	for _, f := range findings {
 		fmt.Println(f)
 	}

@@ -1649,7 +1649,7 @@ testcases:
     the SR_1 of its own subsystem at the version it has: linkcheck reports no link'
   design_technique: equivalence partitioning
   target_ids: [SR_32@2.1.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_209
   object_version: '1.1.1'
@@ -1657,7 +1657,7 @@ testcases:
     its own: linkcheck reports the link'
   design_technique: equivalence partitioning
   target_ids: [SR_32@2.1.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_210
   object_version: '1.1.1'
@@ -1665,7 +1665,7 @@ testcases:
     the SR_1 of its own subsystem at the version it has: linkcheck reports no link'
   design_technique: equivalence partitioning
   target_ids: [SR_87@1.2.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_211
   object_version: '1.1.1'
@@ -1674,7 +1674,7 @@ testcases:
     annotation'
   design_technique: equivalence partitioning
   target_ids: [SR_33@2.2.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_212
   object_version: '1.1.1'
@@ -1682,7 +1682,7 @@ testcases:
     another: uplinkcheck reports no uplink'
   design_technique: equivalence partitioning
   target_ids: [SR_28@1.1.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_213
   object_version: '1.1.1'
@@ -1690,5 +1690,5 @@ testcases:
     in its own subsystem and draft in another: annotationcheck reports no id'
   design_technique: equivalence partitioning
   target_ids: [SR_25@2.2.1]
-  status: draft
+  status: approved
   verification_method: [review]

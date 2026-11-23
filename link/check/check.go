@@ -1,5 +1,5 @@
 // Package check makes the link check (TOOL_16): it compares the version a link, a target, an entry
-// of the allocation or of controls, or an annotation names with the version its object has, and reports
+// of controls, or an annotation names with the version its object has, and reports
 // each whose object has another x. It makes the status check too (TOOL_36): it reports each whose
 // object is obsolete, and compares no link of an obsolete object (TOOL_38). It reports and does not
 // decide (definitions.md, section Link check and impact assessment).
@@ -35,19 +35,19 @@ func (f Finding) String() string {
 }
 
 // fields are the fields of an object that name other objects with their version: the uplinks,
-// the targets of a test case, the allocation and the down-link of a control to its user needs.
-var fields = []string{"source_ids", "target_ids", "allocated", "controls"}
+// the targets of a test case and the down-link of a control to its user needs.
+var fields = []string{"source_ids", "target_ids", "controls"}
 
-// Links reads every file of objects and answers each entry of source_ids, target_ids, allocated
-// and controls whose object has another x than the version it names, and each whose object is
+// Links reads every file of objects and answers each entry of source_ids, target_ids and controls
+// whose object has another x than the version it names, and each whose object is
 // obsolete. It answers too how many entries it compared. An entry whose object no file holds, or that
 // names no version, is not compared: uplinkcheck and schemacheck report it. The entries of an
 // obsolete object are not compared.
 //
-// @implements SR_32@1.1.1
-// @implements SR_87@1.1.1
-// @implements SR_127@1.1.1
-// @implements SR_128@1.1.1
+// @implements SR_32@2.1.1
+// @implements SR_87@1.2.1
+// @implements SR_127@2.1.1
+// @implements SR_128@2.1.1
 func Links(read Read, index *review.Index) ([]Finding, int, error) {
 	return LinksWithAbove(read, index, nil)
 }
@@ -55,7 +55,7 @@ func Links(read Read, index *review.Index) ([]Finding, int, error) {
 // LinksWithAbove is Links, and compares an entry whose object no file of the repo holds with its
 // object in the repo above, where one is given.
 //
-// @implements SR_109@1.1.1
+// @implements SR_109@1.2.1
 func LinksWithAbove(read Read, index *review.Index, above *review.Repo) ([]Finding, int, error) {
 
 	versions := newVersions(read, index, above)
@@ -90,8 +90,8 @@ func LinksWithAbove(read Read, index *review.Index, above *review.Repo) ([]Findi
 // names, or whose object is obsolete, and how many ids it compared. An id whose object no file holds,
 // or that names no version, is not compared: annotationcheck reports it.
 //
-// @implements SR_33@2.1.1
-// @implements SR_127@1.1.1
+// @implements SR_33@2.2.1
+// @implements SR_127@2.1.1
 func Annotations(read Read, index *review.Index, annotations []annotation.Annotation) ([]Finding, int) {
 	return AnnotationsWithAbove(read, index, nil, annotations)
 }

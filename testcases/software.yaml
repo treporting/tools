@@ -1643,3 +1643,52 @@ testcases:
   target_ids: [SR_130@1.1.1]
   status: approved
   verification_method: [review]
+- object_key: TC_208
+  object_version: '1.1.1'
+  object_text: 'two subsystems of a repo hold SR_1 at different x, and a requirement of the one names
+    the SR_1 of its own subsystem at the version it has: linkcheck reports no link'
+  design_technique: equivalence partitioning
+  target_ids: [SR_32@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_209
+  object_version: '1.1.1'
+  object_text: 'a requirement names SR_1 at the x of the SR_1 of another subsystem, not at the x of
+    its own: linkcheck reports the link'
+  design_technique: equivalence partitioning
+  target_ids: [SR_32@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_210
+  object_version: '1.1.1'
+  object_text: 'two subsystems of a repo hold SR_1 at different x, and a test case of the one names
+    the SR_1 of its own subsystem at the version it has: linkcheck reports no link'
+  design_technique: equivalence partitioning
+  target_ids: [SR_87@1.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_211
+  object_version: '1.1.1'
+  object_text: 'an @implements in the code of one subsystem names the SR_1 of its own subsystem at
+    the version it has, and another subsystem holds SR_1 at another x: linkcheck reports no
+    annotation'
+  design_technique: equivalence partitioning
+  target_ids: [SR_33@2.2.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_212
+  object_version: '1.1.1'
+  object_text: 'an approved requirement names SR_1, approved in its own subsystem and draft in
+    another: uplinkcheck reports no uplink'
+  design_technique: equivalence partitioning
+  target_ids: [SR_28@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_213
+  object_version: '1.1.1'
+  object_text: 'an @implements in the code of one subsystem names SR_1, in the base commit approved
+    in its own subsystem and draft in another: annotationcheck reports no id'
+  design_technique: equivalence partitioning
+  target_ids: [SR_25@2.2.1]
+  status: approved
+  verification_method: [review]

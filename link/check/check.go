@@ -65,13 +65,13 @@ func LinksWithAbove(read Read, index *review.Index, above *review.Repo) ([]Findi
 		for _, object := range objects(versions.load(file)) {
 			for _, field := range fields {
 				for _, link := range object.links(field) {
-					if versions.obsolete(link) {
+					if versions.obsolete(link, file) {
 						findings = append(findings, Finding{Where: object.Key + " " + field, Link: link, Obsolete: true})
 					}
 					if object.Status == "obsolete" {
 						continue
 					}
-					has, ok := versions.suspect(link)
+					has, ok := versions.suspect(link, file)
 					if !ok {
 						continue
 					}
@@ -109,10 +109,10 @@ func AnnotationsWithAbove(read Read, index *review.Index, above *review.Repo, an
 		for i, id := range a.IDs {
 			link := id + "@" + a.Versions[i]
 			where := fmt.Sprintf("%s:%d @%s", a.File, a.Line, a.Kind)
-			if versions.obsolete(link) {
+			if versions.obsolete(link, a.File) {
 				findings = append(findings, Finding{Where: where, Link: link, Obsolete: true})
 			}
-			has, ok := versions.suspect(link)
+			has, ok := versions.suspect(link, a.File)
 			if !ok {
 				continue
 			}
@@ -155,14 +155,15 @@ func (v *versions) load(file string) []byte {
 }
 
 // suspect answers the version the object of link has where its x differs from the x the link
-// names, "" where it is the same, and false where the two cannot be compared.
-func (v *versions) suspect(link string) (string, bool) {
+// names, "" where it is the same, and false where the two cannot be compared. From is the file
+// that names the link.
+func (v *versions) suspect(link, from string) (string, bool) {
 
 	_, named, _ := strings.Cut(link, "@")
 	if !version.MatchString(named) {
 		return "", false
 	}
-	o, ok := v.find(link)
+	o, ok := v.find(link, from)
 	if !ok || !version.MatchString(o.Version) {
 		return "", false
 	}
@@ -173,8 +174,8 @@ func (v *versions) suspect(link string) (string, bool) {
 }
 
 // obsolete answers whether the object of link is obsolete; false where no file holds it.
-func (v *versions) obsolete(link string) bool {
-	o, ok := v.find(link)
+func (v *versions) obsolete(link, from string) bool {
+	o, ok := v.find(link, from)
 	return ok && o.Status == "obsolete"
 }
 
@@ -185,14 +186,15 @@ type found struct {
 }
 
 // find answers the version and the status of the object of link, in its repo or the repo above,
-// and false where no file holds it.
-func (v *versions) find(link string) (found, bool) {
+// and false where no file holds it. In its repo, an id that stands in several files is the one of
+// the subsystem of from, the file that names it.
+func (v *versions) find(link, from string) (found, bool) {
 
 	id, _, _ := strings.Cut(link, "@")
-	file, key := v.index.FileOf(id)
+	file, key := v.index.FileFrom(id, from)
 	if file == "" || key == "" {
 		if v.above != nil {
-			return v.above.find(link)
+			return v.above.find(link, "")
 		}
 		return found{}, false
 	}

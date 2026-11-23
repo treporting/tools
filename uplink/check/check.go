@@ -53,9 +53,9 @@ func CheckWithAbove(read Read, index *review.Index, above *review.Repo) ([]Findi
 			}
 			approved++
 			for _, uplink := range object.SourceIDs {
-				message := status(load, index, uplink)
+				message := status(load, index, uplink, file)
 				if message == missing && above != nil {
-					message = status(loadAbove, above.Index, uplink)
+					message = status(loadAbove, above.Index, uplink, "")
 				}
 				if message != "" {
 					findings = append(findings, Finding{object.Key, uplink, message})
@@ -117,11 +117,12 @@ func objects(data []byte) []object {
 }
 
 // status answers why an uplink does not count, or "" where it is approved. The uplink names its
-// version after @; the version is not compared here (PROC_20).
-func status(load func(string) []byte, index *review.Index, uplink string) string {
+// version after @; the version is not compared here (PROC_20). An id that stands in several files is
+// the one of the subsystem of from, the file that names it.
+func status(load func(string) []byte, index *review.Index, uplink, from string) string {
 
 	id, _, _ := strings.Cut(uplink, "@")
-	file, key := index.FileOf(id)
+	file, key := index.FileFrom(id, from)
 	if file == "" || key == "" {
 		return missing
 	}

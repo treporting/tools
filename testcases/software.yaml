@@ -466,19 +466,19 @@ testcases:
   status: approved
   verification_method: [review]
 - object_key: TC_59
-  object_version: '1.1.1'
+  object_version: '1.2.1'
   object_text: 'a requirement whose source_ids name an object at another x than it has: linkcheck
     reports the link'
   design_technique: equivalence partitioning
-  target_ids: [SR_32@1.1.1]
+  target_ids: [SR_32@2.1.1]
   status: approved
   verification_method: [review]
 - object_key: TC_60
-  object_version: '1.1.1'
+  object_version: '1.2.1'
   object_text: 'a requirement whose source_ids name an object at its x, with another y and z:
     linkcheck reports no link'
   design_technique: equivalence partitioning
-  target_ids: [SR_32@1.1.1]
+  target_ids: [SR_32@2.1.1]
   status: approved
   verification_method: [review]
 - object_key: TC_61
@@ -487,22 +487,22 @@ testcases:
     reports the entry'
   design_technique: equivalence partitioning
   target_ids: [SR_32@1.1.1]
-  status: approved
+  status: obsolete
   verification_method: [review]
 - object_key: TC_62
-  object_version: '1.1.1'
+  object_version: '1.2.1'
   object_text: 'a control whose controls names a user need at another x than it has: linkcheck
     reports the entry'
   design_technique: equivalence partitioning
-  target_ids: [SR_32@1.1.1]
+  target_ids: [SR_32@2.1.1]
   status: approved
   verification_method: [review]
 - object_key: TC_63
-  object_version: '1.1.1'
+  object_version: '1.2.1'
   object_text: 'a requirement whose source_ids name a regulatory requirement at another x than the
     file of its module holds: linkcheck reports the link'
   design_technique: equivalence partitioning
-  target_ids: [SR_32@1.1.1]
+  target_ids: [SR_32@2.1.1]
   status: approved
   verification_method: [review]
 - object_key: TC_64
@@ -1557,34 +1557,89 @@ testcases:
   status: approved
   verification_method: [review]
 - object_key: TC_197
-  object_version: '1.1.1'
-  object_text: 'a link in source_ids, target_ids, allocated or controls names an obsolete object at its
-    version: linkcheck reports the link as obsolete; a link to an approved object at its version is not
+  object_version: '2.1.1'
+  object_text: 'a link in source_ids, target_ids or controls names an obsolete object at its version:
+    linkcheck reports the link as obsolete; a link to an approved object at its version is not
     reported'
   design_technique: equivalence partitioning
-  target_ids: [SR_127@1.1.1]
+  target_ids: [SR_127@2.1.1]
   status: approved
   verification_method: [review]
 - object_key: TC_198
-  object_version: '1.1.1'
+  object_version: '1.2.1'
   object_text: 'an @implements names an obsolete object at its version: linkcheck reports it as obsolete'
   design_technique: equivalence partitioning
-  target_ids: [SR_127@1.1.1]
+  target_ids: [SR_127@2.1.1]
   status: approved
   verification_method: [review]
 - object_key: TC_199
-  object_version: '1.1.1'
+  object_version: '1.2.1'
   object_text: 'a link names an obsolete object of the repo above: linkcheck with the repo above reports
     it as obsolete'
   design_technique: equivalence partitioning
-  target_ids: [SR_127@1.1.1]
+  target_ids: [SR_127@2.1.1]
   status: approved
   verification_method: [review]
 - object_key: TC_200
-  object_version: '1.1.1'
+  object_version: '1.2.1'
   object_text: 'an obsolete object and an approved object name an object at another x than it has:
     linkcheck reports the link of the approved object only'
   design_technique: equivalence partitioning
-  target_ids: [SR_128@1.1.1]
+  target_ids: [SR_128@2.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_201
+  object_version: '1.1.1'
+  object_text: 'a requirement of r3 whose component names the repo of a subsystem: uplinkcheck reports no
+    component'
+  design_technique: equivalence partitioning
+  target_ids: [SR_129@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_202
+  object_version: '1.1.1'
+  object_text: 'a requirement of r3 whose component names no subsystem by its repo: uplinkcheck reports the
+    component'
+  design_technique: equivalence partitioning
+  target_ids: [SR_129@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_203
+  object_version: '1.1.1'
+  object_text: 'a requirement of r6 whose component names a component, and one of r7 whose component names a
+    module: uplinkcheck reports neither'
+  design_technique: equivalence partitioning
+  target_ids: [SR_129@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_204
+  object_version: '1.1.1'
+  object_text: 'a requirement of r6 whose component names no component, and one of r7 whose component names no
+    module: uplinkcheck reports both'
+  design_technique: equivalence partitioning
+  target_ids: [SR_129@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_205
+  object_version: '1.1.1'
+  object_text: 'a requirement of r3 whose interface names an interface of r3 by its name, its object_text
+    without backticks: uplinkcheck reports no interface'
+  design_technique: equivalence partitioning
+  target_ids: [SR_130@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_206
+  object_version: '1.1.1'
+  object_text: 'a requirement of r3 whose interface names no interface of r3: uplinkcheck reports the interface'
+  design_technique: equivalence partitioning
+  target_ids: [SR_130@1.1.1]
+  status: approved
+  verification_method: [review]
+- object_key: TC_207
+  object_version: '1.1.1'
+  object_text: 'a requirement of r6 whose interface names no interface of r6, and one of r6 with no
+    interface: uplinkcheck reports the first only'
+  design_technique: equivalence partitioning
+  target_ids: [SR_130@1.1.1]
   status: approved
   verification_method: [review]

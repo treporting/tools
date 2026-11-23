@@ -1563,14 +1563,14 @@ testcases:
     reported'
   design_technique: equivalence partitioning
   target_ids: [SR_127@1.1.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_198
   object_version: '1.1.1'
   object_text: 'an @implements names an obsolete object at its version: linkcheck reports it as obsolete'
   design_technique: equivalence partitioning
   target_ids: [SR_127@1.1.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_199
   object_version: '1.1.1'
@@ -1578,7 +1578,7 @@ testcases:
     it as obsolete'
   design_technique: equivalence partitioning
   target_ids: [SR_127@1.1.1]
-  status: draft
+  status: approved
   verification_method: [review]
 - object_key: TC_200
   object_version: '1.1.1'
@@ -1586,5 +1586,5 @@ testcases:
     linkcheck reports the link of the approved object only'
   design_technique: equivalence partitioning
   target_ids: [SR_128@1.1.1]
-  status: draft
+  status: approved
   verification_method: [review]

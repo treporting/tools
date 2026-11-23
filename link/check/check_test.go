@@ -264,3 +264,112 @@ func TestAnAnnotationIntoTheRepoAboveIsCompared(t *testing.T) {
 		t.Errorf("findings %q, compared %d, want %q and 1", lines(got), compared, want)
 	}
 }
+
+// obsoleteTools holds TOOL_9 obsolete and TOOL_1 approved, both at 1.1.1.
+const obsoleteTools = `schema: schemas/tool-requirements.schema.json
+type: requirements
+level: tool
+requirements:
+- object_key: TOOL_1
+  object_version: '1.1.1'
+  status: approved
+- object_key: TOOL_9
+  object_version: '1.1.1'
+  status: obsolete
+`
+
+// A link, an entry of the allocation and of controls, and an annotation that name an obsolete
+// object are reported, though their version matches.
+//
+// @implements TC_197@1.1.1, TC_198@1.1.1
+func TestALinkToAnObsoleteObjectIsReported(t *testing.T) {
+	f := files{
+		"requirements/tool-requirements.yaml": obsoleteTools,
+		"tools/software-requirements.yaml": `type: requirements
+requirements:
+- object_key: SR_1
+  source_ids: [TOOL_1@1.1.1, TOOL_9@1.1.1]
+`,
+		"architecture/system-architecture.yaml": `type: architecture
+elements:
+- object_key: ARC_1
+  allocated: [TOOL_9@1.1.1]
+`,
+		"safety/hazards.yaml": `type: hazards
+controls:
+- object_key: HAZC_1
+  controls: [TOOL_9@1.1.1]
+`,
+		"tools/testcases/software.yaml": `type: testcases
+testcases:
+- object_key: TC_1
+  target_ids: [TOOL_9@1.1.1]
+`,
+	}
+	got, compared, err := f.links()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{
+		"ARC_1 allocated names TOOL_9@1.1.1: its object is obsolete",
+		"HAZC_1 controls names TOOL_9@1.1.1: its object is obsolete",
+		"SR_1 source_ids names TOOL_9@1.1.1: its object is obsolete",
+		"TC_1 target_ids names TOOL_9@1.1.1: its object is obsolete",
+	}
+	if !reflect.DeepEqual(lines(got), want) || compared != 5 {
+		t.Errorf("findings %q, compared %d, want %q and 5", lines(got), compared, want)
+	}
+	ids, _ := Annotations(f.read, f.index(), []annotation.Annotation{
+		{File: "a.go", Line: 3, Kind: "implements", IDs: []string{"TOOL_1", "TOOL_9"}, Versions: []string{"1.1.1", "1.1.1"}},
+	})
+	want = []string{"a.go:3 @implements names TOOL_9@1.1.1: its object is obsolete"}
+	if !reflect.DeepEqual(lines(ids), want) {
+		t.Errorf("annotations: findings %q, want %q", lines(ids), want)
+	}
+}
+
+// A link to an obsolete object in the repo above is reported.
+//
+// @implements TC_199@1.1.1
+func TestALinkToAnObsoleteObjectAboveIsReported(t *testing.T) {
+	above := files{"requirements/tool-requirements.yaml": obsoleteTools}
+	own := files{"tools/software-requirements.yaml": `type: requirements
+requirements:
+- object_key: SR_1
+  source_ids: [TOOL_9@1.1.1]
+`}
+	got, _, err := LinksWithAbove(own.read, own.index(), &review.Repo{Read: above.read, Index: above.index()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"SR_1 source_ids names TOOL_9@1.1.1: its object is obsolete"}
+	if !reflect.DeepEqual(lines(got), want) {
+		t.Errorf("findings %q, want %q", lines(got), want)
+	}
+}
+
+// The links of an obsolete object are not compared: its link to TOOL_9, which has moved on in x,
+// is no finding, and the link of SR_2, approved, is.
+//
+// @implements TC_200@1.1.1
+func TestTheLinksOfAnObsoleteObjectAreNotCompared(t *testing.T) {
+	got, compared, err := files{
+		"requirements/tool-requirements.yaml": tools,
+		"tools/software-requirements.yaml": `type: requirements
+requirements:
+- object_key: SR_1
+  status: obsolete
+  source_ids: [TOOL_9@3.1.1]
+- object_key: SR_2
+  status: approved
+  source_ids: [TOOL_9@3.1.1]
+`,
+	}.links()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"SR_2 source_ids names TOOL_9@3.1.1: its object has 4.1.1"}
+	if !reflect.DeepEqual(lines(got), want) || compared != 1 {
+		t.Errorf("findings %q, compared %d, want %q and 1", lines(got), compared, want)
+	}
+}

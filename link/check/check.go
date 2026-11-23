@@ -1,7 +1,8 @@
 // Package check makes the link check (TOOL_16): it compares the version a link, a target, an entry
 // of the allocation or of controls, or an annotation names with the version its object has, and reports
-// each whose object has another x. It reports and does not decide (definitions.md, section Link
-// check and impact assessment).
+// each whose object has another x. It makes the status check too (TOOL_36): it reports each whose
+// object is obsolete, and compares no link of an obsolete object (TOOL_38). It reports and does not
+// decide (definitions.md, section Link check and impact assessment).
 package check
 
 import (
@@ -17,14 +18,19 @@ import (
 // Read answers the content of a file of the repo, by its path from the root.
 type Read func(file string) ([]byte, error)
 
-// Finding is one link whose object has another x than the version it names.
+// Finding is one link whose object has another x than the version it names, or whose object is
+// obsolete.
 type Finding struct {
-	Where string // the object and its field, or the file and line of an annotation
-	Link  string // the link as it names it, with its version
-	Has   string // the version its object has
+	Where    string // the object and its field, or the file and line of an annotation
+	Link     string // the link as it names it, with its version
+	Has      string // the version its object has; empty where it is obsolete
+	Obsolete bool   // its object is obsolete
 }
 
 func (f Finding) String() string {
+	if f.Obsolete {
+		return f.Where + " names " + f.Link + ": its object is obsolete"
+	}
 	return f.Where + " names " + f.Link + ": its object has " + f.Has
 }
 
@@ -33,12 +39,15 @@ func (f Finding) String() string {
 var fields = []string{"source_ids", "target_ids", "allocated", "controls"}
 
 // Links reads every file of objects and answers each entry of source_ids, target_ids, allocated
-// and controls whose object has another x than the version it names. It answers too how many entries
-// it compared. An entry whose object no file holds, or that names no version, is not compared:
-// uplinkcheck and schemacheck report it.
+// and controls whose object has another x than the version it names, and each whose object is
+// obsolete. It answers too how many entries it compared. An entry whose object no file holds, or that
+// names no version, is not compared: uplinkcheck and schemacheck report it. The entries of an
+// obsolete object are not compared.
 //
 // @implements SR_32@1.1.1
 // @implements SR_87@1.1.1
+// @implements SR_127@1.1.1
+// @implements SR_128@1.1.1
 func Links(read Read, index *review.Index) ([]Finding, int, error) {
 	return LinksWithAbove(read, index, nil)
 }
@@ -56,13 +65,19 @@ func LinksWithAbove(read Read, index *review.Index, above *review.Repo) ([]Findi
 		for _, object := range objects(versions.load(file)) {
 			for _, field := range fields {
 				for _, link := range object.links(field) {
+					if versions.obsolete(link) {
+						findings = append(findings, Finding{Where: object.Key + " " + field, Link: link, Obsolete: true})
+					}
+					if object.Status == "obsolete" {
+						continue
+					}
 					has, ok := versions.suspect(link)
 					if !ok {
 						continue
 					}
 					compared++
 					if has != "" {
-						findings = append(findings, Finding{object.Key + " " + field, link, has})
+						findings = append(findings, Finding{Where: object.Key + " " + field, Link: link, Has: has})
 					}
 				}
 			}
@@ -72,10 +87,11 @@ func LinksWithAbove(read Read, index *review.Index, above *review.Repo) ([]Findi
 }
 
 // Annotations answers each id an annotation names whose object has another x than the version it
-// names, and how many ids it compared. An id whose object no file holds, or that names no version,
-// is not compared: annotationcheck reports it.
+// names, or whose object is obsolete, and how many ids it compared. An id whose object no file holds,
+// or that names no version, is not compared: annotationcheck reports it.
 //
 // @implements SR_33@2.1.1
+// @implements SR_127@1.1.1
 func Annotations(read Read, index *review.Index, annotations []annotation.Annotation) ([]Finding, int) {
 	return AnnotationsWithAbove(read, index, nil, annotations)
 }
@@ -92,13 +108,17 @@ func AnnotationsWithAbove(read Read, index *review.Index, above *review.Repo, an
 	for _, a := range annotations {
 		for i, id := range a.IDs {
 			link := id + "@" + a.Versions[i]
+			where := fmt.Sprintf("%s:%d @%s", a.File, a.Line, a.Kind)
+			if versions.obsolete(link) {
+				findings = append(findings, Finding{Where: where, Link: link, Obsolete: true})
+			}
 			has, ok := versions.suspect(link)
 			if !ok {
 				continue
 			}
 			compared++
 			if has != "" {
-				findings = append(findings, Finding{fmt.Sprintf("%s:%d @%s", a.File, a.Line, a.Kind), link, has})
+				findings = append(findings, Finding{Where: where, Link: link, Has: has})
 			}
 		}
 	}
@@ -138,31 +158,53 @@ func (v *versions) load(file string) []byte {
 // names, "" where it is the same, and false where the two cannot be compared.
 func (v *versions) suspect(link string) (string, bool) {
 
-	id, named, _ := strings.Cut(link, "@")
+	_, named, _ := strings.Cut(link, "@")
 	if !version.MatchString(named) {
 		return "", false
 	}
-	file, key := v.index.FileOf(id)
-	if file == "" || key == "" {
-		if v.above != nil {
-			return v.above.suspect(link)
-		}
-		return "", false
-	}
-	found := review.ObjectIn(v.load(file), key)
-	if found == nil {
-		return "", false
-	}
-	var o struct {
-		Version string `yaml:"object_version"`
-	}
-	if yaml.Unmarshal(found, &o) != nil || !version.MatchString(o.Version) {
+	o, ok := v.find(link)
+	if !ok || !version.MatchString(o.Version) {
 		return "", false
 	}
 	if x(o.Version) == x(named) {
 		return "", true
 	}
 	return o.Version, true
+}
+
+// obsolete answers whether the object of link is obsolete; false where no file holds it.
+func (v *versions) obsolete(link string) bool {
+	o, ok := v.find(link)
+	return ok && o.Status == "obsolete"
+}
+
+// found is the version and the status of an object.
+type found struct {
+	Version string `yaml:"object_version"`
+	Status  string `yaml:"status"`
+}
+
+// find answers the version and the status of the object of link, in its repo or the repo above,
+// and false where no file holds it.
+func (v *versions) find(link string) (found, bool) {
+
+	id, _, _ := strings.Cut(link, "@")
+	file, key := v.index.FileOf(id)
+	if file == "" || key == "" {
+		if v.above != nil {
+			return v.above.find(link)
+		}
+		return found{}, false
+	}
+	data := review.ObjectIn(v.load(file), key)
+	if data == nil {
+		return found{}, false
+	}
+	var o found
+	if yaml.Unmarshal(data, &o) != nil {
+		return found{}, false
+	}
+	return o, true
 }
 
 // version is the form of a version: x.y.z.
@@ -174,9 +216,11 @@ func x(version string) string {
 	return first
 }
 
-// object is an object of a file of requirements, with the fields that name other objects.
+// object is an object of a file of requirements, with its status and the fields that name other
+// objects.
 type object struct {
 	Key    string         `yaml:"object_key"`
+	Status string         `yaml:"status"`
 	Fields map[string]any `yaml:",inline"`
 }
 

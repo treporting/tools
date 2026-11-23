@@ -328,32 +328,32 @@ requirements:
 - object_key: SR_32
   object_version: '1.1.1'
   component: link
-  object_text: report every link in `source_ids`, entry of `allocated` and entry of `controls` whose
-    object has another x than the version it names
-  source_ids: [TOOL_16@1.1.1]
+  object_text: report every link in `source_ids` and entry of `controls` whose object has another x
+    than the version it names
+  source_ids: [TOOL_16@2.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [test]
 - object_key: SR_33
   object_version: '2.1.1'
   component: link
   object_text: report every `@implements`, `@verifies` and `@refines` whose id has another x than the
     version it names
-  source_ids: [TOOL_16@1.1.1]
+  source_ids: [TOOL_16@2.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [test]
 - object_key: SR_34
   object_version: '1.1.1'
   component: ci
   object_text: on every pull request, in .github/workflows/tools.yml, make the link check in a job of its
     own and show its report in the log, without failing
-  source_ids: [TOOL_16@1.1.1]
+  source_ids: [TOOL_16@2.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [demonstration]
 - object_key: SR_35
   object_version: '1.1.1'
@@ -894,10 +894,10 @@ requirements:
   object_version: '1.1.1'
   component: link
   object_text: report every link in `target_ids` whose object has another x than the version it names
-  source_ids: [TOOL_16@1.1.2]
+  source_ids: [TOOL_16@2.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [test]
 - object_key: SR_88
   object_version: '2.1.1'
@@ -1134,10 +1134,10 @@ requirements:
   component: link
   object_text: with the repo above given, compare a link or an annotation whose object the repo itself
     does not hold with its object in the repo above
-  source_ids: [TOOL_16@1.1.2]
+  source_ids: [TOOL_16@2.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [test]
 - object_key: SR_110
   object_version: '1.1.1'
@@ -1321,20 +1321,50 @@ requirements:
 - object_key: SR_127
   object_version: '1.1.1'
   component: link
-  object_text: report every link in `source_ids` and `target_ids`, entry of `allocated` and of
-    `controls`, and every `@implements`, `@verifies` and `@refines`, whose object is obsolete
-  source_ids: [TOOL_36@1.1.1]
+  object_text: report every link in `source_ids` and `target_ids`, entry of `controls`, and every
+    `@implements`, `@verifies` and `@refines`, whose object is obsolete
+  source_ids: [TOOL_36@2.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [test]
 - object_key: SR_128
   object_version: '1.1.1'
   component: link
-  object_text: compare no link in `source_ids` and `target_ids`, and no entry of `allocated` and of
-    `controls`, of an obsolete object
+  object_text: compare no link in `source_ids` and `target_ids`, and no entry of `controls`, of an
+    obsolete object
   source_ids: [TOOL_38@1.1.1]
   priority: 'medium'
   safety: ''
-  status: approved
+  status: draft
   verification_method: [test]
+- object_key: SR_129
+  object_version: '1.1.1'
+  component: uplink
+  object_text: report a requirement of r3, r6 or r7 whose `component` names no part of its level - on
+    r3 no subsystem by its `repo`, on r6 no component, on r7 no module
+  source_ids: [TOOL_39@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: draft
+  verification_method: [test]
+- object_key: SR_130
+  object_version: '1.1.1'
+  component: uplink
+  object_text: report a requirement of r3 or r6 whose `interface` names no interface of its level
+  source_ids: [TOOL_39@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: draft
+  verification_method: [test]
+- object_key: SR_131
+  object_version: '1.1.1'
+  component: ci
+  object_text: on every pull request, in .github/workflows/tools.yml, check the `component` and the
+    `interface` of the requirements of r3, r6 and r7, and fail where one names no part or interface of
+    its level
+  source_ids: [TOOL_39@1.1.1]
+  priority: 'medium'
+  safety: ''
+  status: draft
+  verification_method: [demonstration]

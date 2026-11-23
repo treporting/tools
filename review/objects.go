@@ -126,6 +126,39 @@ func (ix *Index) FileOf(target string) (file, key string) {
 	return "", ""
 }
 
+// FileFrom is FileOf, seen from the file that names the target: where the target stands in more
+// than one file, it answers the one whose folder lies closest to from - the file of the same
+// subsystem, as an id is unique together with its subsystem and its document (formats.md, Ids).
+// From empty, or no folder in common, answers the first, as FileOf does.
+//
+// @implements SR_25@2.2.1, SR_28@1.1.1, SR_32@2.1.1, SR_33@2.2.1, SR_87@1.2.1
+func (ix *Index) FileFrom(target, from string) (file, key string) {
+
+	file, key = ix.FileOf(target)
+	files := ix.of[target]
+	if len(files) < 2 || from == "" {
+		return file, key
+	}
+	best := -1
+	for _, f := range files {
+		if n := commonFolders(f, from); n > best {
+			best, file = n, f
+		}
+	}
+	return file, key
+}
+
+// commonFolders answers how many folders, from the root, the paths a and b have in common.
+func commonFolders(a, b string) int {
+
+	as, bs := strings.Split(a, "/"), strings.Split(b, "/")
+	n := 0
+	for n < len(as)-1 && n < len(bs)-1 && as[n] == bs[n] {
+		n++
+	}
+	return n
+}
+
 // FilesOf answers every file that holds a target, in the order git lists them; a document is its
 // own file. An id is unique only together with its file, as the software requirements of two
 // subsystems in one repo both hold SR_1 (formats.md, Ids).

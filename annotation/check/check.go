@@ -215,7 +215,7 @@ func Check(git Git, base string, index *review.Index, annotations []Annotation) 
 	var findings []Finding
 	for _, a := range annotations {
 		for _, id := range a.IDs {
-			if message := status(git, base, index, id); message != "" {
+			if message := status(git, base, index, id, a.File); message != "" {
 				findings = append(findings, Finding{a, id, message})
 			}
 		}
@@ -223,10 +223,11 @@ func Check(git Git, base string, index *review.Index, annotations []Annotation) 
 	return findings
 }
 
-// status answers why id does not count in the base commit, or "" where it is approved there.
-func status(git Git, base string, index *review.Index, id string) string {
+// status answers why id does not count in the base commit, or "" where it is approved there. An id
+// that stands in several files is the one of the subsystem of from, the file of the annotation.
+func status(git Git, base string, index *review.Index, id, from string) string {
 
-	file, key := fileOf(index, id)
+	file, key := fileOf(index, id, from)
 	if file == "" || key == "" {
 		return "no file of objects holds such an id"
 	}
@@ -254,14 +255,14 @@ func status(git Git, base string, index *review.Index, id string) string {
 // same prefix and number.
 //
 // @implements SR_114@1.1.1
-func fileOf(index *review.Index, id string) (file, key string) {
+func fileOf(index *review.Index, id, from string) (file, key string) {
 
-	if file, key := index.FileOf(id); file != "" {
+	if file, key := index.FileFrom(id, from); file != "" {
 		return file, key
 	}
 	for _, k := range index.Keys() {
 		if sameKey(k, id) {
-			return index.FileOf(k)
+			return index.FileFrom(k, from)
 		}
 	}
 	return "", ""

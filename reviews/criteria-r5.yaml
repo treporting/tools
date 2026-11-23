@@ -45,9 +45,10 @@ criteria:
   question: Does it state rightly what its uplinks ask for?
 - object_key: RC_10
   source: treporting - traceable and allocated; REG_ISO29148_3 - rationale
-  object_text: traceable - every uplink exists, and a system requirement it names is allocated to its
-    subsystem; where it names none, it gives its rationale
-  question: Does every uplink exist and, where it is a system requirement, is it allocated to this subsystem - or is there a rationale?
+  object_text: traceable - every uplink exists, and a system requirement it names is uplink of a
+    requirement of the architecture whose `component` is its subsystem; where it names none, it gives
+    its rationale
+  question: Does every uplink exist and, where it is a system requirement, is it uplink of a requirement of the architecture whose component is this subsystem - or is there a rationale?
 - object_key: RC_11
   source: REG_ISO29148_1 - conforming; what to conform to is set by treporting, formats.md
   object_text: conforming - it follows formats.md - id, component, status and verification method need to

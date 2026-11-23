@@ -281,7 +281,7 @@ requirements:
 // A link, an entry of the allocation and of controls, and an annotation that name an obsolete
 // object are reported, though their version matches.
 //
-// @verifies SR_127@1.1.1
+// @implements TC_197@1.1.1, TC_198@1.1.1
 func TestALinkToAnObsoleteObjectIsReported(t *testing.T) {
 	f := files{
 		"requirements/tool-requirements.yaml": obsoleteTools,
@@ -330,7 +330,7 @@ testcases:
 
 // A link to an obsolete object in the repo above is reported.
 //
-// @verifies SR_127@1.1.1
+// @implements TC_199@1.1.1
 func TestALinkToAnObsoleteObjectAboveIsReported(t *testing.T) {
 	above := files{"requirements/tool-requirements.yaml": obsoleteTools}
 	own := files{"tools/software-requirements.yaml": `type: requirements
@@ -351,7 +351,7 @@ requirements:
 // The links of an obsolete object are not compared: its link to TOOL_9, which has moved on in x,
 // is no finding, and the link of SR_2, approved, is.
 //
-// @verifies SR_128@1.1.1
+// @implements TC_200@1.1.1
 func TestTheLinksOfAnObsoleteObjectAreNotCompared(t *testing.T) {
 	got, compared, err := files{
 		"requirements/tool-requirements.yaml": tools,

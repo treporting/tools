@@ -329,6 +329,11 @@ It checks the state, not a change: on `main` a requirement stays approved until 
 its review, and a change whose review failed does not reach `main` (harness.md, step 10). So an
 approved requirement never names a draft there, unless someone merges one.
 
+It also checks where a requirement of r3, r6 or r7 stands (TOOL_39; SR_129 to SR_131): its
+`component` names a part of its level - on r3 a subsystem by its `repo` - and its `interface` an
+interface of its level, by its name. A part no requirement names is no finding: a missing link
+blocks nothing (traceability.md, section Where a suspect link blocks).
+
 The CI runs it on every pull request (SR_29).
 
 ```bash
@@ -349,8 +354,7 @@ as definitions.md sets it out in the section Link check and impact assessment. I
 version each entry names with the version its object has, and reports each whose object has
 another x (traceability.md, section When a link is suspect):
 
-- the links in `source_ids`, the entries of `allocated` and of `controls` in every file of
-  objects (SR_32)
+- the links in `source_ids` and the entries of `controls` in every file of objects (SR_32)
 - the targets in `target_ids` of every test case (SR_87)
 - the ids of `@implements`, `@verifies` and `@refines`, found as annotationcheck finds them (SR_33)
 
@@ -820,3 +824,4 @@ run of the job `test`, kept as artifacts of the run.
 | 44.1.1 | 2026-11-20 | build steps; baseline; objectcode | #37 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 45.1.1 | 2026-11-20 | objectcode: object-code.yml | #37 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 46.1.1 | 2026-11-21 | reviewskeleton: -file, where an id is not unique in the repo | #49 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 47.1.1 | 2026-11-23 | uplinkcheck: component and interface; linkcheck: no entry of `allocated` | #57 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

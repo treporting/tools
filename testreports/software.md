@@ -5,19 +5,19 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 
 ## Test environment
 
-- Label: T0471.0
-- Commit: 961bae7
-- Date: 2026-11-18
+- Label: T048.0
+- Commit: 34ce1b3
+- Date: 2026-11-24
 - Operating system: linux/amd64
-- Runner: GitHub Actions 1000007359
-- Go go1.25.14
+- Runner: GitHub Actions 1000009760
+- Go go1.25.0
 
 ## Original data
 
 | File | Made by | Stored At |
 |---|---|---|
-| root-integration.xml | `gotestsum --junitfile root-integration.xml -- -race -timeout 30m -tags integration ./...` | - |
-| root-unit.xml | `gotestsum --junitfile root-unit.xml -- -race -timeout 30m ./...` | - |
+| root-integration.xml | `gotestsum --junitfile root-integration.xml -- -race -timeout 30m -tags integration -coverpkg=./... -coverprofile=/home/runner/work/_temp/coverage/root-integration.out ./...` | - |
+| root-unit.xml | `gotestsum --junitfile root-unit.xml -- -race -timeout 30m -coverpkg=./... -coverprofile=/home/runner/work/_temp/coverage/root-unit.out ./...` | - |
 
 ## Test specification
 
@@ -81,11 +81,11 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_85@1.1.1 | TC_56@1.1.1 | an approved requirement whose last review result passed and has the status completed: approvalcheck reports no open review | approved |
 | SR_86@2.1.1 | TC_57@2.1.1 | a file git knows of the type testcases that holds TC_1: the id TC_1 is found in that file | approved |
 | SR_86@2.1.1 | TC_58@2.1.1 | a review result that holds RR_1, and a file of criteria without objects: RR_1 is found in no file, and neither file is a file of objects | approved |
-| SR_32@1.1.1 | TC_59@1.1.1 | a requirement whose source_ids name an object at another x than it has: linkcheck reports the link | approved |
-| SR_32@1.1.1 | TC_60@1.1.1 | a requirement whose source_ids name an object at its x, with another y and z: linkcheck reports no link | approved |
-| SR_32@1.1.1 | TC_61@1.1.1 | an element whose allocated names a requirement at another x than it has: linkcheck reports the entry | approved |
-| SR_32@1.1.1 | TC_62@1.1.1 | a control whose controls names a user need at another x than it has: linkcheck reports the entry | approved |
-| SR_32@1.1.1 | TC_63@1.1.1 | a requirement whose source_ids name a regulatory requirement at another x than the file of its module holds: linkcheck reports the link | approved |
+| SR_32@2.1.1 | TC_59@1.2.1 | a requirement whose source_ids name an object at another x than it has: linkcheck reports the link | approved |
+| SR_32@2.1.1 | TC_60@1.2.1 | a requirement whose source_ids name an object at its x, with another y and z: linkcheck reports no link | approved |
+| SR_32@1.1.1 | TC_61@1.1.1 | an element whose allocated names a requirement at another x than it has: linkcheck reports the entry | obsolete |
+| SR_32@2.1.1 | TC_62@1.2.1 | a control whose controls names a user need at another x than it has: linkcheck reports the entry | approved |
+| SR_32@2.1.1 | TC_63@1.2.1 | a requirement whose source_ids name a regulatory requirement at another x than the file of its module holds: linkcheck reports the link | approved |
 | SR_33@2.1.1 | TC_64@1.1.1 | an @implements whose id names a requirement at another x than it has: linkcheck reports the annotation | approved |
 | SR_33@2.1.1 | TC_65@1.1.1 | a @verifies whose id names a requirement at its x, with another z: linkcheck reports no annotation | approved |
 | SR_33@2.1.1 | TC_66@1.1.1 | a @refines in the $comment of a schema whose id names an element at another x than it has: linkcheck reports the annotation | approved |
@@ -200,6 +200,42 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_114@1.1.1 | TC_175@1.1.1 | an @implements that names SR_7, the base commit holding SR_07 approved: annotationcheck reports nothing | approved |
 | SR_114@1.1.1 | TC_176@1.1.1 | an @implements that names SR_07, the files of the repo holding SR_7: annotationcheck finds the object | approved |
 | SR_114@1.1.1 | TC_177@1.1.1 | an @implements that names SR_7, the base commit holding SR_70 and no SR_7: annotationcheck reports SR_7 | approved |
+| SR_115@1.1.1 | TC_178@1.1.1 | a Go binary built at a commit with go1.25.14 for linux/amd64: its section names the binary, go1.25.14, linux/amd64 and the commit | approved |
+| SR_116@1.1.1 | TC_179@1.1.1 | a JavaScript bundle built by webpack, babel and terser on node at a commit: its section names the bundle, node, webpack, babel and terser each with its version, a hash of their configuration, and the commit | approved |
+| SR_116@1.1.1 | TC_180@1.1.1 | the same bundle built twice, the second time with another option of terser: the hash of the configuration differs, the versions are the same | approved |
+| SR_117@2.1.1 | TC_181@1.2.1 | a Go binary with a function the tests call, a function they do not call, and a function the compiler inlined: three rows, the third with no name, not in the binary and no hash; the first called, the second not, each with the statements the tests ran of all | approved |
+| SR_117@2.1.1 | TC_182@2.1.1 | a bundle in which an async method of a class of the source became a wrapper and a function `_callee`: one row, keyed `folder/file@Class.method` by the source map, not by a name in the bundle | approved |
+| SR_118@1.1.1 | TC_183@1.1.1 | the same source built twice with the same Go version, the second time with a function added before it, so that its addresses move: the hash of the function is the same | approved |
+| SR_118@1.1.1 | TC_184@1.1.1 | the same source built twice, the linker naming the unnamed type data `_type:*` in one build and `typerel.*` in the other: the hash of the function is the same | approved |
+| SR_118@1.1.1 | TC_185@1.1.1 | a function that calls fmt.Sprint instead of fmt.Sprintf, and one with another constant: the hash of each differs | approved |
+| SR_119@1.1.1 | TC_186@1.1.1 | the same source bundled twice, the minifier choosing other names for the local variables of a function: the hash of the function is the same | approved |
+| SR_119@1.1.1 | TC_187@1.1.1 | a function that calls another function of another module, and one with another literal: the hash of each differs | approved |
+| SR_119@1.1.1 | TC_188@1.1.1 | a method that became a wrapper and a function `_callee` in the bundle, changed in the `_callee` only: the hash of the method differs | approved |
+| SR_117@2.1.1 | TC_189@1.1.1 | a Go file with a method `Lines` on two types, one with a pointer receiver: two rows, keyed `folder/file@A.Lines` and `folder/file@B.Lines`, each with the hash of its own code | approved |
+| SR_117@2.1.1 | TC_190@1.1.1 | a JavaScript source file with two classes, each with a method `render`: two rows, keyed `folder/file@A.render` and `folder/file@B.render`, each with its own coverage | approved |
+| SR_123@1.1.1 | TC_191@1.1.1 | SR_1 in two files `a/requirements.yaml` and `b/requirements.yaml`, the skeleton made for SR_1 with -file `b/requirements.yaml`: the result of SR_1 has the field file `b/requirements.yaml` | approved |
+| SR_123@1.1.1 | TC_192@1.1.1 | SR_1 in two files, the skeleton made for SR_1 without -file: no file is written, and the report names both files | approved |
+| SR_124@1.1.1 | TC_193@1.1.1 | SR_1 approved in `a/requirements.yaml` and in `b/requirements.yaml`, one passed and completed result naming SR_1 with the field file `b/requirements.yaml`: SR_1 of `a` is reported as without review, SR_1 of `b` is not | approved |
+| SR_124@1.1.1 | TC_194@1.1.1 | a passed and completed result naming SR_1 without the field file: with SR_1 approved in one file only, it is not reported; with SR_1 approved in two files, both are reported as without review | approved |
+| SR_125@1.1.1 | TC_195@1.1.1 | SR_1 in `a/requirements.yaml`, last changed by the reviewer, and in `b/requirements.yaml`, last changed by another: a result of that reviewer with the field file `b/requirements.yaml` is not reported, one with `a/requirements.yaml` is | approved |
+| SR_126@1.1.1 | TC_196@1.1.1 | a result naming SR_1 with the field file `b/requirements.yaml`, which holds SR_2 only: the result is reported | approved |
+| SR_127@2.1.1 | TC_197@2.1.1 | a link in source_ids, target_ids or controls names an obsolete object at its version: linkcheck reports the link as obsolete; a link to an approved object at its version is not reported | approved |
+| SR_127@2.1.1 | TC_198@1.2.1 | an @implements names an obsolete object at its version: linkcheck reports it as obsolete | approved |
+| SR_127@2.1.1 | TC_199@1.2.1 | a link names an obsolete object of the repo above: linkcheck with the repo above reports it as obsolete | approved |
+| SR_128@2.1.1 | TC_200@1.2.1 | an obsolete object and an approved object name an object at another x than it has: linkcheck reports the link of the approved object only | approved |
+| SR_129@1.1.1 | TC_201@1.1.1 | a requirement of r3 whose component names the repo of a subsystem: uplinkcheck reports no component | approved |
+| SR_129@1.1.1 | TC_202@1.1.1 | a requirement of r3 whose component names no subsystem by its repo: uplinkcheck reports the component | approved |
+| SR_129@1.1.1 | TC_203@1.1.1 | a requirement of r6 whose component names a component, and one of r7 whose component names a module: uplinkcheck reports neither | approved |
+| SR_129@1.1.1 | TC_204@1.1.1 | a requirement of r6 whose component names no component, and one of r7 whose component names no module: uplinkcheck reports both | approved |
+| SR_130@1.1.1 | TC_205@1.1.1 | a requirement of r3 whose interface names an interface of r3 by its name, its object_text without backticks: uplinkcheck reports no interface | approved |
+| SR_130@1.1.1 | TC_206@1.1.1 | a requirement of r3 whose interface names no interface of r3: uplinkcheck reports the interface | approved |
+| SR_130@1.1.1 | TC_207@1.1.1 | a requirement of r6 whose interface names no interface of r6, and one of r6 with no interface: uplinkcheck reports the first only | approved |
+| SR_32@2.1.1 | TC_208@1.1.1 | two subsystems of a repo hold SR_1 at different x, and a requirement of the one names the SR_1 of its own subsystem at the version it has: linkcheck reports no link | approved |
+| SR_32@2.1.1 | TC_209@1.1.1 | a requirement names SR_1 at the x of the SR_1 of another subsystem, not at the x of its own: linkcheck reports the link | approved |
+| SR_87@1.2.1 | TC_210@1.1.1 | two subsystems of a repo hold SR_1 at different x, and a test case of the one names the SR_1 of its own subsystem at the version it has: linkcheck reports no link | approved |
+| SR_33@2.2.1 | TC_211@1.1.1 | an @implements in the code of one subsystem names the SR_1 of its own subsystem at the version it has, and another subsystem holds SR_1 at another x: linkcheck reports no annotation | approved |
+| SR_28@1.1.1 | TC_212@1.1.1 | an approved requirement names SR_1, approved in its own subsystem and draft in another: uplinkcheck reports no uplink | approved |
+| SR_25@2.2.1 | TC_213@1.1.1 | an @implements in the code of one subsystem names SR_1, in the base commit approved in its own subsystem and draft in another: annotationcheck reports no id | approved |
 
 ## Test implementation
 
@@ -227,6 +263,7 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_114@1.1.1 | TC_175@1.1.1 | TestANewKeyFindsTheOldOneInTheBaseCommit | annotation/check/check_test.go |
 | SR_114@1.1.1 | TC_176@1.1.1 | TestAnOldKeyFindsTheNewOne | annotation/check/check_test.go |
 | SR_114@1.1.1 | TC_177@1.1.1 | TestAnotherNumberIsAnotherKey | annotation/check/check_test.go |
+| SR_25@2.2.1 | TC_213@1.1.1 | TestAnIdIsLookedUpInItsOwnSubsystem | annotation/check/context_test.go |
 | SR_49@1.1.1, SR_50@1.1.1 |  | TestCommandNamesWhatFailsAndExitsWithOne | licence/check/check_integration_test.go |
 | SR_47@1.1.1, SR_48@1.1.1 |  | TestCheckByTheKindOfPackage | licence/check/check_test.go |
 | SR_47@1.1.1 |  | TestFits | licence/check/check_test.go |
@@ -241,19 +278,39 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_48@1.1.1 | TC_128@1.1.1 | TestEachTypeOfPURLWithItsLicence | licence/check/check_test.go |
 | SR_48@1.1.1 | TC_129@1.1.1 | TestEachTypeOfPURLWithItsLicence | licence/check/check_test.go |
 | SR_49@1.1.1 | TC_131@1.1.1 | TestEachTypeOfPURLWithItsLicence | licence/check/check_test.go |
-| SR_32@1.1.1 | TC_59@1.1.1 | TestOnlyAnotherXIsReported | link/check/check_test.go |
-| SR_32@1.1.1 | TC_60@1.1.1 | TestOnlyAnotherXIsReported | link/check/check_test.go |
-| SR_32@1.1.1 | TC_61@1.1.1 | TestTheAllocationAndControlsAreCompared | link/check/check_test.go |
-| SR_32@1.1.1 | TC_62@1.1.1 | TestTheAllocationAndControlsAreCompared | link/check/check_test.go |
+| SR_32@2.1.1 | TC_59@1.2.1 | TestOnlyAnotherXIsReported | link/check/check_test.go |
+| SR_32@2.1.1 | TC_60@1.2.1 | TestOnlyAnotherXIsReported | link/check/check_test.go |
+| SR_32@2.1.1 | TC_62@1.2.1 | TestControlsAreCompared | link/check/check_test.go |
 | SR_87@1.1.1 | TC_67@1.1.1 | TestATargetOfATestCaseIsCompared | link/check/check_test.go |
 | SR_87@1.1.1 | TC_68@1.1.1 | TestATargetOfATestCaseIsCompared | link/check/check_test.go |
-| SR_32@1.1.1 |  | TestAMissingObjectIsNotCompared | link/check/check_test.go |
+| SR_32@2.1.1 |  | TestAMissingObjectIsNotCompared | link/check/check_test.go |
 | SR_33@2.1.1 | TC_64@1.1.1 | TestAnAnnotationWithAnotherXIsReported | link/check/check_test.go |
 | SR_33@2.1.1 | TC_65@1.1.1 | TestAnAnnotationWithAnotherXIsReported | link/check/check_test.go |
 | SR_33@2.1.1 | TC_66@1.1.1 | TestARefinesWithAnotherXIsReported | link/check/check_test.go |
-| SR_32@1.1.1 | TC_63@1.1.1 | TestALinkToAModuleIsCompared | link/check/check_test.go |
+| SR_32@2.1.1 | TC_63@1.2.1 | TestALinkToAModuleIsCompared | link/check/check_test.go |
 | SR_109@1.1.1 | TC_168@1.1.1 | TestALinkIntoTheRepoAboveIsCompared | link/check/check_test.go |
 | SR_109@1.1.1 | TC_169@1.1.1 | TestAnAnnotationIntoTheRepoAboveIsCompared | link/check/check_test.go |
+| SR_127@2.1.1 | TC_197@2.1.1 | TestALinkToAnObsoleteObjectIsReported | link/check/check_test.go |
+| SR_127@2.1.1 | TC_198@1.2.1 | TestALinkToAnObsoleteObjectIsReported | link/check/check_test.go |
+| SR_127@2.1.1 | TC_199@1.2.1 | TestALinkToAnObsoleteObjectAboveIsReported | link/check/check_test.go |
+| SR_128@2.1.1 | TC_200@1.2.1 | TestTheLinksOfAnObsoleteObjectAreNotCompared | link/check/check_test.go |
+| SR_32@2.1.1 | TC_208@1.1.1 | TestALinkIsComparedWithTheObjectOfItsOwnSubsystem | link/check/context_test.go |
+| SR_32@2.1.1 | TC_209@1.1.1 | TestALinkIsComparedWithTheObjectOfItsOwnSubsystem | link/check/context_test.go |
+| SR_87@1.2.1 | TC_210@1.1.1 | TestATargetIsComparedWithTheObjectOfItsOwnSubsystem | link/check/context_test.go |
+| SR_33@2.2.1 | TC_211@1.1.1 | TestAnAnnotationIsComparedWithTheObjectOfItsOwnSubsystem | link/check/context_test.go |
+| SR_119@1.1.1 | TC_186@1.1.1 | TestTheHashIgnoresTheNamesTheBundlerChose | objectcode/write/bundle_test.go |
+| SR_119@1.1.1 | TC_187@1.1.1 | TestTheHashSeesAnotherCallAndAnotherLiteral | objectcode/write/bundle_test.go |
+| SR_117@2.1.1 | TC_182@2.1.1 | TestAMethodSplitByTheBundlerIsOneRow | objectcode/write/bundle_test.go |
+| SR_119@1.1.1 | TC_188@1.1.1 | TestTheHashOfASplitMethodSeesItsCallee | objectcode/write/bundle_test.go |
+| SR_116@1.1.1 | TC_179@1.1.1 | TestTheSectionNamesTheBundle | objectcode/write/bundle_test.go |
+| SR_116@1.1.1 | TC_180@1.1.1 | TestTheHashOfTheConfigurationSeesAnOption | objectcode/write/bundle_test.go |
+| SR_117@2.1.1 | TC_190@1.1.1 | TestMethodsOfTheSameNameInTwoClassesAreTwoRows | objectcode/write/bundle_test.go |
+| SR_115@1.1.1 | TC_178@1.1.1 | TestTheSectionNamesTheBinary | objectcode/write/objectcode_integration_test.go |
+| SR_117@2.1.1 | TC_181@1.2.1 | TestTheTableNamesEachFunction | objectcode/write/objectcode_integration_test.go |
+| SR_117@2.1.1 | TC_189@1.1.1 | TestMethodsOfTheSameNameOnTwoTypesAreTwoRows | objectcode/write/objectcode_integration_test.go |
+| SR_118@1.1.1 | TC_183@1.1.1 | TestTheHashStaysWhereOnlyAddressesMove | objectcode/write/objectcode_integration_test.go |
+| SR_118@1.1.1 | TC_184@1.1.1 | TestHashIgnoresTheNamesOfUnnamedData | objectcode/write/write_test.go |
+| SR_118@1.1.1 | TC_185@1.1.1 | TestHashSeesAnotherCallAndAnotherConstant | objectcode/write/write_test.go |
 | SR_71@1.1.1 | TC_99@1.1.1 | TestGitReadsTheRepoAtTheTag | pdf/export/export_integration_test.go |
 | SR_68@1.1.1 | TC_133@1.1.1 | TestGitReadsTheRepoAtTheTag | pdf/export/export_integration_test.go |
 | SR_74@1.1.1 |  | TestGitFailsWhereThereIsNoSuchRef | pdf/export/export_integration_test.go |
@@ -288,6 +345,8 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_80@2.1.3 | TC_53@1.1.1 | TestOnlyTheEntryOfADocumentChanged | review/approval/approval_integration_test.go |
 | SR_110@1.1.1 | TC_170@1.1.1 | TestASchemaIsTakenFromTheRepoAbove | review/approval/approval_integration_test.go |
 | SR_110@1.1.1 | TC_171@1.1.1 | TestWithoutTheRepoAboveTheSchemaIsMissing | review/approval/approval_integration_test.go |
+| SR_124@1.1.1 | TC_193@1.1.1 | TestAResultCountsForTheFileItNames | review/approval/approval_integration_test.go |
+| SR_124@1.1.1 | TC_194@1.1.1 | TestAResultWithoutAFileCountsWhereTheIdIsUnique | review/approval/approval_integration_test.go |
 | SR_79@2.1.2 |  | TestBlobHashIsTheHashOfGit | review/approval/approval_test.go |
 | SR_78@1.1.1 |  | TestFindXReadsTheAttributesForXAlsoInsideOneOf | review/approval/approval_test.go |
 | SR_78@1.1.1 |  | TestXOfKeepsOnlyTheAttributesForX | review/approval/approval_test.go |
@@ -324,6 +383,8 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_84@1.1.2 | TC_34@1.1.1 | TestACompletedReviewHasItsCompletedAt | review/check/check_test.go |
 | SR_84@1.1.2 | TC_35@1.1.1 | TestACompletedReviewHasItsCompletedAt | review/check/check_test.go |
 | SR_84@1.1.2 | TC_36@1.1.1 | TestACompletedReviewHasItsCompletedAt | review/check/check_test.go |
+| SR_125@1.1.1 | TC_195@1.1.1 | TestTheAuthorIsTakenFromTheFileTheResultNames | review/check/check_test.go |
+| SR_126@1.1.1 | TC_196@1.1.1 | TestAFileThatHoldsNoneOfTheTargets | review/check/check_test.go |
 | SR_86@2.1.1 | TC_57@2.1.1 | TestEveryFileThatHoldsObjectsIsIndexed | review/objects_test.go |
 | SR_86@2.1.1 | TC_58@2.1.1 | TestEveryFileThatHoldsObjectsIsIndexed | review/objects_test.go |
 | SR_11@2.1.1, SR_12@1.1.1, SR_13@1.1.1, SR_14@1.1.1 |  | TestASkeletonOnAHistoryOfGit | review/skeleton/skeleton_integration_test.go |
@@ -337,6 +398,8 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_15@1.1.3 | TC_30@1.1.1 | TestNothingWhereATargetIsMissingOrTheLevelsDiffer | review/skeleton/skeleton_test.go |
 | SR_17@2.1.3 | TC_32@1.1.1 | TestTheSkeletonNamesItsSchemaTypeAndLevel | review/skeleton/skeleton_test.go |
 | SR_83@1.1.2 | TC_33@1.1.1 | TestTheSkeletonIsAnOpenRecord | review/skeleton/skeleton_test.go |
+| SR_123@1.1.1 | TC_191@1.1.1 | TestTheFileGivenIsTheFileOfTheResult | review/skeleton/skeleton_test.go |
+| SR_123@1.1.1 | TC_192@1.1.1 | TestNothingWhereAnIdStandsInTwoFilesAndNoFileIsGiven | review/skeleton/skeleton_test.go |
 | SR_21@1.1.1 | TC_82@1.1.1 | TestTheSameRuleset | ruleset/check/check_test.go |
 | SR_21@1.1.1 | TC_83@1.1.1 | TestARequiredCheckMissingOnGitHub | ruleset/check/check_test.go |
 | SR_21@1.1.1 | TC_85@1.1.1 | TestAnotherEnforcementOnGitHub | ruleset/check/check_test.go |
@@ -427,6 +490,14 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_28@1.1.1 |  | TestARegulatoryRequirementIsFoundInItsModule | uplink/check/check_test.go |
 | SR_108@1.1.1 | TC_166@1.1.1 | TestAnUplinkIsLookedUpInTheRepoAbove | uplink/check/check_test.go |
 | SR_108@1.1.1 | TC_167@1.1.1 | TestWithoutTheRepoAboveAnUplinkThereIsMissing | uplink/check/check_test.go |
+| SR_28@1.1.1 | TC_212@1.1.1 | TestAnUplinkIsLookedUpInItsOwnSubsystem | uplink/check/context_test.go |
+| SR_129@1.1.1 | TC_201@1.1.1 | TestAPartAndAnInterfaceOfR3Pass | uplink/check/parts_test.go |
+| SR_130@1.1.1 | TC_205@1.1.1 | TestAPartAndAnInterfaceOfR3Pass | uplink/check/parts_test.go |
+| SR_129@1.1.1 | TC_202@1.1.1 | TestAComponentAndAnInterfaceR3DoesNotHaveAreReported | uplink/check/parts_test.go |
+| SR_130@1.1.1 | TC_206@1.1.1 | TestAComponentAndAnInterfaceR3DoesNotHaveAreReported | uplink/check/parts_test.go |
+| SR_129@1.1.1 | TC_203@1.1.1 | TestAPartOfR6AndOfR7Pass | uplink/check/parts_test.go |
+| SR_129@1.1.1 | TC_204@1.1.1 | TestAComponentR6AndR7DoNotHaveIsReported | uplink/check/parts_test.go |
+| SR_130@1.1.1 | TC_207@1.1.1 | TestAnInterfaceR6DoesNotHaveIsReported | uplink/check/parts_test.go |
 
 ## Test execution
 
@@ -454,6 +525,7 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_114@1.1.1 | TC_175@1.1.1 | TestANewKeyFindsTheOldOneInTheBaseCommit | passed |
 | SR_114@1.1.1 | TC_176@1.1.1 | TestAnOldKeyFindsTheNewOne | passed |
 | SR_114@1.1.1 | TC_177@1.1.1 | TestAnotherNumberIsAnotherKey | passed |
+| SR_25@2.2.1 | TC_213@1.1.1 | TestAnIdIsLookedUpInItsOwnSubsystem | passed |
 | SR_49@1.1.1, SR_50@1.1.1 |  | TestCommandNamesWhatFailsAndExitsWithOne | passed |
 | SR_47@1.1.1, SR_48@1.1.1 |  | TestCheckByTheKindOfPackage | passed |
 | SR_47@1.1.1 |  | TestFits | passed |
@@ -468,19 +540,39 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_48@1.1.1 | TC_128@1.1.1 | TestEachTypeOfPURLWithItsLicence | passed |
 | SR_48@1.1.1 | TC_129@1.1.1 | TestEachTypeOfPURLWithItsLicence | passed |
 | SR_49@1.1.1 | TC_131@1.1.1 | TestEachTypeOfPURLWithItsLicence | passed |
-| SR_32@1.1.1 | TC_59@1.1.1 | TestOnlyAnotherXIsReported | passed |
-| SR_32@1.1.1 | TC_60@1.1.1 | TestOnlyAnotherXIsReported | passed |
-| SR_32@1.1.1 | TC_61@1.1.1 | TestTheAllocationAndControlsAreCompared | passed |
-| SR_32@1.1.1 | TC_62@1.1.1 | TestTheAllocationAndControlsAreCompared | passed |
+| SR_32@2.1.1 | TC_59@1.2.1 | TestOnlyAnotherXIsReported | passed |
+| SR_32@2.1.1 | TC_60@1.2.1 | TestOnlyAnotherXIsReported | passed |
+| SR_32@2.1.1 | TC_62@1.2.1 | TestControlsAreCompared | passed |
 | SR_87@1.1.1 | TC_67@1.1.1 | TestATargetOfATestCaseIsCompared | passed |
 | SR_87@1.1.1 | TC_68@1.1.1 | TestATargetOfATestCaseIsCompared | passed |
-| SR_32@1.1.1 |  | TestAMissingObjectIsNotCompared | passed |
+| SR_32@2.1.1 |  | TestAMissingObjectIsNotCompared | passed |
 | SR_33@2.1.1 | TC_64@1.1.1 | TestAnAnnotationWithAnotherXIsReported | passed |
 | SR_33@2.1.1 | TC_65@1.1.1 | TestAnAnnotationWithAnotherXIsReported | passed |
 | SR_33@2.1.1 | TC_66@1.1.1 | TestARefinesWithAnotherXIsReported | passed |
-| SR_32@1.1.1 | TC_63@1.1.1 | TestALinkToAModuleIsCompared | passed |
+| SR_32@2.1.1 | TC_63@1.2.1 | TestALinkToAModuleIsCompared | passed |
 | SR_109@1.1.1 | TC_168@1.1.1 | TestALinkIntoTheRepoAboveIsCompared | passed |
 | SR_109@1.1.1 | TC_169@1.1.1 | TestAnAnnotationIntoTheRepoAboveIsCompared | passed |
+| SR_127@2.1.1 | TC_197@2.1.1 | TestALinkToAnObsoleteObjectIsReported | passed |
+| SR_127@2.1.1 | TC_198@1.2.1 | TestALinkToAnObsoleteObjectIsReported | passed |
+| SR_127@2.1.1 | TC_199@1.2.1 | TestALinkToAnObsoleteObjectAboveIsReported | passed |
+| SR_128@2.1.1 | TC_200@1.2.1 | TestTheLinksOfAnObsoleteObjectAreNotCompared | passed |
+| SR_32@2.1.1 | TC_208@1.1.1 | TestALinkIsComparedWithTheObjectOfItsOwnSubsystem | passed |
+| SR_32@2.1.1 | TC_209@1.1.1 | TestALinkIsComparedWithTheObjectOfItsOwnSubsystem | passed |
+| SR_87@1.2.1 | TC_210@1.1.1 | TestATargetIsComparedWithTheObjectOfItsOwnSubsystem | passed |
+| SR_33@2.2.1 | TC_211@1.1.1 | TestAnAnnotationIsComparedWithTheObjectOfItsOwnSubsystem | passed |
+| SR_119@1.1.1 | TC_186@1.1.1 | TestTheHashIgnoresTheNamesTheBundlerChose | passed |
+| SR_119@1.1.1 | TC_187@1.1.1 | TestTheHashSeesAnotherCallAndAnotherLiteral | passed |
+| SR_117@2.1.1 | TC_182@2.1.1 | TestAMethodSplitByTheBundlerIsOneRow | passed |
+| SR_119@1.1.1 | TC_188@1.1.1 | TestTheHashOfASplitMethodSeesItsCallee | passed |
+| SR_116@1.1.1 | TC_179@1.1.1 | TestTheSectionNamesTheBundle | passed |
+| SR_116@1.1.1 | TC_180@1.1.1 | TestTheHashOfTheConfigurationSeesAnOption | passed |
+| SR_117@2.1.1 | TC_190@1.1.1 | TestMethodsOfTheSameNameInTwoClassesAreTwoRows | passed |
+| SR_115@1.1.1 | TC_178@1.1.1 | TestTheSectionNamesTheBinary | passed |
+| SR_117@2.1.1 | TC_181@1.2.1 | TestTheTableNamesEachFunction | passed |
+| SR_117@2.1.1 | TC_189@1.1.1 | TestMethodsOfTheSameNameOnTwoTypesAreTwoRows | passed |
+| SR_118@1.1.1 | TC_183@1.1.1 | TestTheHashStaysWhereOnlyAddressesMove | passed |
+| SR_118@1.1.1 | TC_184@1.1.1 | TestHashIgnoresTheNamesOfUnnamedData | passed |
+| SR_118@1.1.1 | TC_185@1.1.1 | TestHashSeesAnotherCallAndAnotherConstant | passed |
 | SR_71@1.1.1 | TC_99@1.1.1 | TestGitReadsTheRepoAtTheTag | passed |
 | SR_68@1.1.1 | TC_133@1.1.1 | TestGitReadsTheRepoAtTheTag | passed |
 | SR_74@1.1.1 |  | TestGitFailsWhereThereIsNoSuchRef | passed |
@@ -515,6 +607,8 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_80@2.1.3 | TC_53@1.1.1 | TestOnlyTheEntryOfADocumentChanged | passed |
 | SR_110@1.1.1 | TC_170@1.1.1 | TestASchemaIsTakenFromTheRepoAbove | passed |
 | SR_110@1.1.1 | TC_171@1.1.1 | TestWithoutTheRepoAboveTheSchemaIsMissing | passed |
+| SR_124@1.1.1 | TC_193@1.1.1 | TestAResultCountsForTheFileItNames | passed |
+| SR_124@1.1.1 | TC_194@1.1.1 | TestAResultWithoutAFileCountsWhereTheIdIsUnique | passed |
 | SR_79@2.1.2 |  | TestBlobHashIsTheHashOfGit | passed |
 | SR_78@1.1.1 |  | TestFindXReadsTheAttributesForXAlsoInsideOneOf | passed |
 | SR_78@1.1.1 |  | TestXOfKeepsOnlyTheAttributesForX | passed |
@@ -551,6 +645,8 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_84@1.1.2 | TC_34@1.1.1 | TestACompletedReviewHasItsCompletedAt | passed |
 | SR_84@1.1.2 | TC_35@1.1.1 | TestACompletedReviewHasItsCompletedAt | passed |
 | SR_84@1.1.2 | TC_36@1.1.1 | TestACompletedReviewHasItsCompletedAt | passed |
+| SR_125@1.1.1 | TC_195@1.1.1 | TestTheAuthorIsTakenFromTheFileTheResultNames | passed |
+| SR_126@1.1.1 | TC_196@1.1.1 | TestAFileThatHoldsNoneOfTheTargets | passed |
 | SR_86@2.1.1 | TC_57@2.1.1 | TestEveryFileThatHoldsObjectsIsIndexed | passed |
 | SR_86@2.1.1 | TC_58@2.1.1 | TestEveryFileThatHoldsObjectsIsIndexed | passed |
 | SR_11@2.1.1, SR_12@1.1.1, SR_13@1.1.1, SR_14@1.1.1 |  | TestASkeletonOnAHistoryOfGit | passed |
@@ -564,6 +660,8 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_15@1.1.3 | TC_30@1.1.1 | TestNothingWhereATargetIsMissingOrTheLevelsDiffer | passed |
 | SR_17@2.1.3 | TC_32@1.1.1 | TestTheSkeletonNamesItsSchemaTypeAndLevel | passed |
 | SR_83@1.1.2 | TC_33@1.1.1 | TestTheSkeletonIsAnOpenRecord | passed |
+| SR_123@1.1.1 | TC_191@1.1.1 | TestTheFileGivenIsTheFileOfTheResult | passed |
+| SR_123@1.1.1 | TC_192@1.1.1 | TestNothingWhereAnIdStandsInTwoFilesAndNoFileIsGiven | passed |
 | SR_21@1.1.1 | TC_82@1.1.1 | TestTheSameRuleset | passed |
 | SR_21@1.1.1 | TC_83@1.1.1 | TestARequiredCheckMissingOnGitHub | passed |
 | SR_21@1.1.1 | TC_85@1.1.1 | TestAnotherEnforcementOnGitHub | passed |
@@ -654,6 +752,14 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | SR_28@1.1.1 |  | TestARegulatoryRequirementIsFoundInItsModule | passed |
 | SR_108@1.1.1 | TC_166@1.1.1 | TestAnUplinkIsLookedUpInTheRepoAbove | passed |
 | SR_108@1.1.1 | TC_167@1.1.1 | TestWithoutTheRepoAboveAnUplinkThereIsMissing | passed |
+| SR_28@1.1.1 | TC_212@1.1.1 | TestAnUplinkIsLookedUpInItsOwnSubsystem | passed |
+| SR_129@1.1.1 | TC_201@1.1.1 | TestAPartAndAnInterfaceOfR3Pass | passed |
+| SR_130@1.1.1 | TC_205@1.1.1 | TestAPartAndAnInterfaceOfR3Pass | passed |
+| SR_129@1.1.1 | TC_202@1.1.1 | TestAComponentAndAnInterfaceR3DoesNotHaveAreReported | passed |
+| SR_130@1.1.1 | TC_206@1.1.1 | TestAComponentAndAnInterfaceR3DoesNotHaveAreReported | passed |
+| SR_129@1.1.1 | TC_203@1.1.1 | TestAPartOfR6AndOfR7Pass | passed |
+| SR_129@1.1.1 | TC_204@1.1.1 | TestAComponentR6AndR7DoNotHaveIsReported | passed |
+| SR_130@1.1.1 | TC_207@1.1.1 | TestAnInterfaceR6DoesNotHaveIsReported | passed |
 
 ## Deviations
 
@@ -665,6 +771,7 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 
 | Requirement | Test case | Test case status | Test procedure | Test procedure status |
 |---|---|---|---|---|
+| SR_32@1.1.1 | TC_61@1.1.1 | obsolete | - | - |
 | SR_38@1.2.1 | TC_107@1.1.1 | obsolete | - | - |
 
 ## Change history
@@ -675,3 +782,4 @@ written by the tool testreport (TOOL_34) and not edited by hand.
 | 2.1.1 | 2026-11-15 | T046.1 | #21 | testreport dc56473 |
 | 3.1.1 | 2026-11-16 | T047.0 | #26 | testreport ee21d8c |
 | 4.1.1 | 2026-11-18 | T0471.0 | #32 | testreport 961bae7 |
+| 5.1.1 | 2026-11-24 | T048.0 | #65 | testreport 34ce1b3 |

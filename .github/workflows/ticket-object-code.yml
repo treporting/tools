@@ -26,5 +26,5 @@ jobs:
     with:
       ref: ${{ inputs.ref }}
       above: treporting/specs-and-deploy-process
-      above-ref: T0471
+      above-ref: T048
     secrets: inherit

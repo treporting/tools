@@ -1368,3 +1368,13 @@ requirements:
   safety: ''
   status: approved
   verification_method: [demonstration]
+- object_key: SR_132
+  object_version: '1.1.1'
+  component: baseline
+  object_text: in baseline.yml, after licencecheck, check the links and annotations of the head of
+    main whose both ends the repo holds, and fail where one is suspect
+  source_ids: [TOOL_17@1.1.5]
+  priority: 'medium'
+  safety: ''
+  status: draft
+  verification_method: [demonstration]

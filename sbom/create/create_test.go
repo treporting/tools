@@ -107,7 +107,7 @@ func TestOpenIsEmptyWhereEveryLicenceIsKnown(t *testing.T) {
 	}
 }
 
-// @verifies SR_41@1.2.1
+// @verifies SR_41@2.1.1
 func TestAValueDoesNotBreakTheTable(t *testing.T) {
 	md := Markdown(SBOM{Repo: "r", Packages: []Package{{PURL: "pkg:x", Licence: "a|b"}}})
 	if !strings.Contains(md, `| a\|b |`) {

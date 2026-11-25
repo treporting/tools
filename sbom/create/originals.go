@@ -25,7 +25,7 @@ const Folder = "sbom"
 // module cache of Go, as go env GOMODCACHE names it, replaced by $GOMODCACHE: a stored file names
 // no directory of the machine it ran on.
 //
-// @implements SR_101@1.1.1, SR_102@1.1.1, SR_105@1.1.1
+// @implements SR_101@2.1.1, SR_102@1.1.1, SR_105@1.1.1
 func GoListOriginal(root, dir, list, modcache string) Original {
 	if modcache != "" {
 		list = strings.ReplaceAll(list, modcache, "$GOMODCACHE")
@@ -40,7 +40,7 @@ func GoListOriginal(root, dir, list, modcache string) Original {
 
 // LockOriginal answers the package-lock.json of dir, a directory of the repo in root.
 //
-// @implements SR_101@1.1.1, SR_102@1.1.1
+// @implements SR_101@2.1.1, SR_102@1.1.1
 func LockOriginal(root, dir string, lock []byte) Original {
 	return Original{
 		File:     slug(root, dir) + "-package-lock.json",
@@ -52,7 +52,7 @@ func LockOriginal(root, dir string, lock []byte) Original {
 
 // ApkOriginal answers the /lib/apk/db/installed of an image.
 //
-// @implements SR_101@1.1.1, SR_102@1.1.1
+// @implements SR_101@2.1.1, SR_102@1.1.1
 func ApkOriginal(image string, installed []byte) Original {
 	return Original{
 		File:     "apk-" + dashes(image) + ".txt",

@@ -1376,5 +1376,5 @@ requirements:
   source_ids: [TOOL_17@1.1.5]
   priority: 'medium'
   safety: ''
-  status: draft
+  status: approved
   verification_method: [demonstration]

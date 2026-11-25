@@ -365,6 +365,11 @@ decide whether the child still fits; that is the impact assessment.
 The CI runs it on every pull request in a job of its own (SR_34). The job does not fail and is no
 required check: a suspect link blocks the baseline, not the pull request (PROC_20).
 
+The baseline runs it with `-fail` and without `-above` (SR_132): it compares only the links whose
+both ends the repo holds, and exits with 1 where one is suspect. A link to an object of the repo
+above blocks the baseline that holds that object (traceability.md, section Where a suspect link
+blocks).
+
 ```bash
 cd tools
 go run ./link/cmd/linkcheck -root ../specs-and-deploy-process
@@ -623,7 +628,8 @@ tags before a baseline:
 3. `sbom`: `baseline.sh <label> <ticket number> [name=Dockerfile]...` builds the images,
    writes `sbom.md` with both tags in its table made with, and its entry in `documents.yaml`,
    checks the licences, and checks the
-   approvals of every approved object (approvalcheck, SR_82). It writes the test reports, and the
+   approvals of every approved object (approvalcheck, SR_82) and the links whose both ends the repo
+   holds (linkcheck, SR_132). It writes the test reports, and the
    object code report from the sections of the job `object-code` of `build` (SR_120). Where it passes, it
    pushes the branch with one commit and opens the pull request, with a token of the GitHub App
    `treporting-baseline` (devops.md, section Baseline).
@@ -825,3 +831,4 @@ run of the job `test`, kept as artifacts of the run.
 | 45.1.1 | 2026-11-20 | objectcode: object-code.yml | #37 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 46.1.1 | 2026-11-21 | reviewskeleton: -file, where an id is not unique in the repo | #49 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
 | 47.1.1 | 2026-11-23 | uplinkcheck: component and interface; linkcheck: no entry of `allocated` | #57 | Claude Opus 5.5, author; Mathias Fischer, reviewer |
+| 48.1.1 | 2026-11-25 | baseline; linkcheck: -fail | #71 | Claude Opus 5.5, author; Mathias Fischer, reviewer |

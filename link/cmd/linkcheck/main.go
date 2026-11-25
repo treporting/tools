@@ -3,14 +3,15 @@
 // status check too (TOOL_36): it reports each whose object is obsolete, and compares no link of an
 // obsolete object (TOOL_38).
 //
-//	linkcheck [-root dir] [-above dir] [-kinds file]
+//	linkcheck [-root dir] [-above dir] [-kinds file] [-fail]
 //
 // -above is the root of the repo above, where an object that this repo does not hold is looked up.
 // -kinds is the list of the kinds of files of the repo; annotation/kinds.yaml below the root where it
 // is not given.
 // It reads the files as they stand in the working tree. It prints every one whose object has
 // another x than it names or is obsolete, and exits with 0 all the same: it reports, and such a link
-// blocks the baseline, not the pull request (PROC_20, PROC_23). It exits with 2 where it cannot read the repo.
+// blocks the baseline, not the pull request (PROC_20, PROC_23). With -fail, as in the baseline, it
+// exits with 1 where one is suspect. It exits with 2 where it cannot read the repo.
 package main
 
 import (
@@ -26,12 +27,13 @@ import (
 	"github.com/treporting/tools/review"
 )
 
-// @implements SR_32@2.1.1, SR_33@2.2.1, SR_109@1.2.1, SR_127@2.1.1, SR_128@2.1.1
+// @implements SR_32@2.1.1, SR_33@2.2.1, SR_109@1.2.1, SR_127@2.1.1, SR_128@2.1.1, SR_132@1.1.1
 func main() {
 
 	root := flag.String("root", ".", "the root of the repo")
 	aboveRoot := flag.String("above", "", "the root of the repo above, empty for none")
 	kindsFile := flag.String("kinds", "", "the kinds of files of the repo; annotation/kinds.yaml below the root, if empty")
+	failSuspect := flag.Bool("fail", false, "exit with 1 where a link is suspect, as in the baseline")
 	flag.Parse()
 	if *kindsFile == "" {
 		*kindsFile = filepath.Join(*root, "annotation", "kinds.yaml")
@@ -89,6 +91,9 @@ func main() {
 		}
 	}
 	fmt.Printf("%d links and %d ids of annotations compared, %d suspect, %d obsolete\n", comparedLinks, comparedIDs, suspect, obsolete)
+	if *failSuspect && suspect > 0 {
+		os.Exit(1)
+	}
 }
 
 func fail(err error) {

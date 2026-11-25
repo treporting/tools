@@ -4,8 +4,8 @@
 #
 #	baseline.sh <label> <ticket number> [name=Dockerfile]...
 #
-# It builds the images, writes sbom.md with the label and the ticket, and checks its licences and
-# the approvals; it exits with 1 where they do not fit. Where JUNIT names a directory - the junit.xml
+# It builds the images, writes sbom.md with the label and the ticket, and checks its licences, the
+# approvals and the links whose both ends the repo holds; it exits with 1 where they do not fit. Where JUNIT names a directory - the junit.xml
 # that steps.sh test wrote there - it writes the test report of each test level from them.
 #
 # ABOVE names the root of the repo above - specs-and-deploy-process for the tools: baseline takes the schemas
@@ -20,15 +20,16 @@ set -uo pipefail
 # shellcheck source=common.sh
 . "$(dirname "$0")/common.sh"
 
-#	@implements SR_63@1.1.1, SR_82@2.1.3, SR_120@1.1.1
+#	@implements SR_63@1.1.1, SR_82@2.1.3, SR_120@1.1.1, SR_132@1.1.1
 baseline() {
-	local label="$1" ticket="$2" bin_sbom bin_licence bin_approval bin_testreport bin_objectcode
+	local label="$1" ticket="$2" bin_sbom bin_licence bin_approval bin_link bin_testreport bin_objectcode kinds
 	shift 2
 	#	every tool before the first of them writes, so that none is built from a changed working
 	#	tree and records its revision with -dirty
 	bin_sbom="$(tool sbom/cmd/sbom)"
 	bin_licence="$(tool licence/cmd/licencecheck)"
 	bin_approval="$(tool review/cmd/approvalcheck)"
+	bin_link="$(tool link/cmd/linkcheck)"
 	bin_testreport="$(tool testreport/cmd/testreport)"
 	bin_objectcode="$(tool objectcode/cmd/objectcode)"
 	build_images "$@"
@@ -38,6 +39,11 @@ baseline() {
 	run . "$bin_licence" -root .
 	#	every approved object of the head, after the licences - or those changed since APPROVAL_BASE
 	run . "$bin_approval" -root . ${ABOVE:+-above "$ABOVE"} ${APPROVAL_BASE:+-base "$APPROVAL_BASE"}
+	#	the links whose both ends the repo holds, so without the repo above: a link to an object there
+	#	blocks the baseline that holds that object (traceability.md, section Where a suspect link blocks)
+	kinds=annotation/kinds.yaml
+	[ -f kinds.yaml ] && kinds=kinds.yaml
+	run . "$bin_link" -root . -kinds "$kinds" -fail
 	[ "$failed" = 0 ] || return
 	if [ -n "${JUNIT:-}" ]; then
 		testreports "$bin_testreport" "$label" "$ticket"

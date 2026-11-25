@@ -41,7 +41,7 @@ func (i *images) Set(v string) error { *i = append(*i, v); return nil }
 
 // @implements SR_39@2.1.1
 // @implements SR_59@2.1.1
-// @implements SR_101@1.1.1, SR_102@1.1.1, SR_105@1.1.1
+// @implements SR_101@2.1.1, SR_102@1.1.1, SR_105@1.1.1
 // @implements SR_113@1.1.1
 func main() {
 

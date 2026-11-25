@@ -9,7 +9,7 @@ documents:
   level: r5
   object_version: '47.1.1'
   object_hash: 'c8b5dd0'
-  status: approved
+  status: draft
   verification_method: [review]
 - name: sbom/sbom.md
   type: document
